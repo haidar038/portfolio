@@ -1,0 +1,91 @@
+body {
+    background-image: linear-gradient(rgb(30, 35, 40),
+            rgb(42, 46, 52),
+            rgb(59, 63, 70));
+    /* background-color: white; */
+    background-repeat: no-repeat;
+}
+
+/* Font */
+.fs-hero1 {
+    font-size: 7vmax;
+}
+
+.fs-hero2 {
+    font-size: 2vmax;
+}
+
+/* Background */
+
+.bg-yellow-1 {
+    background-color: #f5b301;
+    transition: all ease 0.2s;
+}
+
+.bg-yellow-1:hover {
+    opacity: 0.8;
+}
+
+.bg-yellow-2 {
+    background-color: #fed053;
+}
+
+.bg-gray-1 {
+    background-color: #808285;
+}
+
+/* Color */
+.color-yellow-1 {
+    color: #f5b301;
+}
+
+/* Border */
+.border-1 {
+    border: 1px solid #353535;
+}
+
+/* Width & Height */
+.w-custom {
+    width: fit-content;
+}
+
+.h-custom {
+    height: 50vh;
+}
+
+.h-custom-2 {
+    height: 1.575in;
+}
+
+/* Screen Height */
+.sc-full {
+    height: max-content;
+}
+
+.sc-half {
+    height: 100vh;
+}
+
+/* Footer */
+.footer {
+    height: auto;
+    cursor: default;
+}
+
+.text-footer {
+    color: #353535;
+}
+
+.footer-logo {
+    color: rgb(30, 35, 40);
+    transition: all ease 0.25s;
+}
+
+.footer-logo:hover {
+    color: white;
+}
+
+/* Image */
+.rotate-image {
+    transform: rotate(180deg);
+}
