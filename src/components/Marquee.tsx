@@ -1,15 +1,23 @@
 interface MarqueeProps {
   text: string;
+  speed?: number;
 }
 
 /**
- * Marquee component - displays scrolling announcement text.
- * Placeholder component to be implemented in task 13.4.
+ * Retro marquee component using CSS animation for scrolling text
+ * for authentic early 2000s feel.
  */
-export default function Marquee({ text }: MarqueeProps) {
+export default function Marquee({ text, speed = 4 }: MarqueeProps) {
   return (
-    <div className="bg-retro-marquee-bg border-b border-retro-border-mid overflow-hidden">
-      <div className="py-1 px-2 text-retro-text-secondary text-sm whitespace-nowrap">
+    <div 
+      className="bg-retro-marquee-bg py-1 overflow-hidden" 
+      role="marquee" 
+      aria-label={text}
+    >
+      <div 
+        className="text-retro-green-glow font-retro-mono text-sm whitespace-nowrap animate-marquee"
+        style={{ animationDuration: `${25 / (speed / 4)}s` }}
+      >
         {text}
       </div>
     </div>

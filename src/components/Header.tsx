@@ -19,7 +19,7 @@ export default function Header() {
         {/* Left: Name & Info */}
         <div>
           <div className="text-retro-green-glow text-2xl sm:text-3xl md:text-4xl font-bold font-retro-display drop-shadow-[2px_2px_0px_#000033] tracking-wider">
-            {t("header.name")}
+            ★ M. Khaidar ★
           </div>
           <div
             className="text-retro-blue-light text-sm mt-1 tracking-wider"
