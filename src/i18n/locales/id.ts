@@ -1,0 +1,182 @@
+import type { Translations } from "../types";
+
+const id: Translations = {
+    // Header
+    "header.name": "★ M. Khaidar ★",
+    "header.subtitle": ":: Full-Stack JS Developer & Product Engineer &nbsp;|&nbsp; React · Supabase · TypeScript &nbsp;|&nbsp; Indonesia ::",
+    "header.tag.react": "React",
+    "header.tag.typescript": "TypeScript",
+    "header.tag.supabase": "Supabase",
+    "header.tag.founder": "Founder @ Binary Verse ✓",
+    "header.visitors": "pengunjung sejak 2024",
+    "header.online": "Online | Terakhir dilihat: Hari ini",
+
+    // Navigation
+    "nav.about": "Tentang Saya",
+    "nav.journey": "Perjalanan",
+    "nav.experience": "Pengalaman",
+    "nav.projects": "Proyek",
+    "nav.contact": "Kontak",
+    "nav.guestbook": "Buku Tamu",
+    "nav.resume": "Resume ↓",
+
+    // Sidebar
+    "sidebar.quickInfo": "INFO CEPAT",
+    "sidebar.navigate": "NAVIGASI",
+    "sidebar.skillMeter": "KEMAMPUAN",
+    "sidebar.currentlyUsing": "SEDANG DIGUNAKAN",
+    "sidebar.devWebring": "DEV WEBRING",
+    "sidebar.lastUpdated": "Terakhir Diperbarui:",
+    "sidebar.handcrafted": "Dibuat dengan VS Code",
+    "sidebar.name": "Nama:",
+    "sidebar.age": "Usia:",
+    "sidebar.location": "Lokasi:",
+    "sidebar.status": "Status:",
+    "sidebar.role": "Peran:",
+    "sidebar.timezone": "Zona Waktu:",
+    "sidebar.founder": "Founder:",
+    "sidebar.guestbook": "Buku Tamu",
+    "sidebar.blogroll": "Blogroll / Link",
+    "sidebar.construction": "SEDANG DIBANGUN",
+    "sidebar.blogComing": "Blog section\nsegera hadir!",
+
+    // Skill levels
+    "skill.beginner": "Pemula",
+    "skill.intermediate": "Menengah",
+    "skill.advanced": "Mahir",
+    "skill.expert": "Ahli",
+
+    // Sections
+    "section.aboutMe": "TENTANG SAYA",
+    "section.journey": "PERJALANAN / PENDIDIKAN",
+    "section.experience": "PENGALAMAN KERJA",
+    "section.projects": "PROYEK / PORTOFOLIO",
+    "section.contact": "HUBUNGI SAYA",
+
+    // About
+    "about.photoAlt": "[foto_haidar.jpg]",
+    "about.p1":
+        "Halo! Saya <b>Haidar</b>, seorang <b>Full-Stack JavaScript Developer & Product Engineer</b> yang berfokus pada pembangunan aplikasi web modern dengan pendekatan cepat, terstruktur, dan berorientasi pada hasil.",
+    "about.p2":
+        "Latar belakang saya sebagai <b>graphic designer</b> membentuk cara saya berpikir, bukan hanya tentang bagaimana sesuatu bekerja, tetapi juga bagaimana itu dirasakan oleh pengguna. Saya terbiasa mengerjakan produk dari nol hingga siap produksi.",
+    "about.p3": "Saya bekerja dengan pendekatan <b>rapid iteration</b>: mengubah ide menjadi prototype secepat mungkin, menguji langsung di real use case, dan iterasi berdasarkan feedback dan data.",
+    "about.fullName": "Nama Lengkap:",
+    "about.languages": "Bahasa:",
+    "about.basedIn": "Berdomisili di:",
+    "about.basedInValue": "Ternate, Maluku Utara",
+    "about.pronouns": "Pronouns:",
+    "about.role": "Peran:",
+    "about.primaryStack": "Stack Utama:",
+    "about.education": "Pendidikan:",
+    "about.focus": "Fokus:",
+    "about.techStack": "TECH STACK SAAT INI",
+    "about.frontend": "Frontend",
+    "about.backend": "Backend & Data",
+    "about.ai": "Integrasi AI",
+    "about.tools": "Tools & Deploy",
+    "about.quote": '"Produk yang baik bukan hanya berjalan, tapi juga terasa benar saat digunakan."',
+
+    // Projects
+    "projects.showing": "Menampilkan",
+    "projects.of": "dari",
+    "projects.prev": "« Sebelumnya",
+    "projects.next": "Berikutnya »",
+    "projects.page": "Halaman",
+    "projects.col.name": "Nama Proyek",
+    "projects.col.description": "Deskripsi",
+    "projects.col.stack": "Stack",
+    "projects.col.links": "Link",
+    "projects.featured": "★ UNGGULAN ★",
+    "projects.footer":
+        'Semua produk dibangun di bawah <a href="#" class="underline font-bold">Binary Verse</a> | Terbuka untuk kolaborasi - <a href="#contact" class="underline font-bold">hubungi saya</a>!',
+
+    // Contact
+    "contact.intro": "Jangan ragu untuk menghubungi saya! Saya selalu terbuka untuk mendiskusikan proyek baru, ide produk, peluang freelance, atau sekadar ngobrol tentang teknologi dan kode.",
+    "contact.formTitle": "Form Pesan Cepat:",
+    "contact.name": "Nama Anda:",
+    "contact.email": "Alamat E-mail:",
+    "contact.subject": "Subjek:",
+    "contact.message": "Pesan:",
+    "contact.send": "Kirim →",
+    "contact.clear": "Hapus",
+    "contact.selectSubject": "-- Pilih --",
+    "contact.freelance": "Proyek Freelance",
+    "contact.collab": "Kolaborasi",
+    "contact.product": "Pertanyaan Produk",
+    "contact.hi": "Sekedar menyapa!",
+    "contact.alertFill": "Mohon isi semua kolom sebelum mengirim!",
+    "contact.alertSent": "✔ Pesan berhasil dikirim!\n\nTerima kasih, {name}!\nSaya akan membalas ke {email} segera.",
+
+    // Experience
+    "experience.title": "PENGALAMAN KERJA",
+    "experience.featured": "★ UNGGULAN - LAB REKAYASA PRODUK FOUNDER-LED ★",
+    "experience.techTags": "Tech tags:",
+
+    // Journey
+    "journey.title": "PERJALANAN / PENDIDIKAN",
+    "journey.col.period": "Periode",
+    "journey.col.education": "Pendidikan / Sertifikasi",
+
+    // Footer
+    "footer.name": "★ M. KHAIDAR",
+    "footer.role": "Full-Stack JS Developer & Product Engineer",
+    "footer.copyright": "© 2024-2025 M. Khaidar · Hak Cipta Dilindungi",
+    "footer.browser": "Paling baik dilihat di Internet Explorer 6.0 resolusi 800x600 · Disarankan warna 32-bit",
+    "footer.handcrafted": "Dibuat dengan bangga menggunakan VS Code, tekad, dan kopi instan",
+    "footer.home": "Beranda",
+    "footer.about": "Tentang",
+    "footer.projects": "Proyek",
+    "footer.contact": "Kontak",
+    "footer.sitemap": "Peta Situs",
+    "footer.pageGenerated": "Halaman dihasilkan dalam 0.0043 detik | 37 query",
+
+    // Layout
+    "marquee.text":
+        "  ★ Selamat datang di portfolio pribadi saya - M. Khaidar ★   ☆ BARU: Wargahub sekarang LIVE - platform manajemen desa terintegrasi ☆   ★ Sedang membangun Smart Census, Warungly & Jaga Bumi ★   [ UPDATE ] 15+ produk dirilis di bawah Binary Verse   ★ Full-Stack JS Developer & Product Engineer - React · Supabase · TypeScript ★   ☆ Buku Tamu sekarang LIVE - ayo tandatangani! ☆   ★ Terima kasih telah berkunjung ★  ",
+
+    // Blogroll
+    "blogroll.title": "BLOGROLL / LINK",
+    "blogroll.description": "Koleksi kurasi website, tools, dan orang-orang yang menurut saya menarik. Ingin terdaftar di sini? Tanda tangani buku tamu saya!",
+    "blogroll.category.friend": "Teman & Rekan",
+    "blogroll.category.community": "Komunitas",
+    "blogroll.category.inspiration": "Inspirasi",
+    "blogroll.category.tool": "Tools & Layanan",
+    "blogroll.category.resource": "Sumber Belajar",
+    "blogroll.empty": "Belum ada link di kategori ini.",
+    "blogroll.backToHome": "« Kembali ke Beranda",
+
+    // Guestbook
+    "guestbook.title": "BUKU TAMU",
+    "guestbook.description": "Tinggalkan pesan! Ucapkan hai, bagikan pemikiran Anda, atau sekadar tanda bahwa Anda pernah berkunjung.",
+    "guestbook.form.title": "Tanda Tangan di Buku Tamu",
+    "guestbook.form.name": "Nama Anda:",
+    "guestbook.form.namePlaceholder": "cth. Budi Santoso",
+    "guestbook.form.message": "Pesan:",
+    "guestbook.form.messagePlaceholder": "Tulis pesan Anda di sini...",
+    "guestbook.form.submit": "Tanda Tangan! →",
+    "guestbook.form.clear": "Hapus",
+    "guestbook.form.sending": "Mengirim...",
+    "guestbook.form.success": "✔ Pesan Anda berhasil ditandatangani!",
+    "guestbook.form.error": "✘ Gagal mengirim pesan. Silakan coba lagi nanti.",
+    "guestbook.form.nameRequired": "Nama wajib diisi.",
+    "guestbook.form.messageRequired": "Pesan wajib diisi.",
+    "guestbook.form.nameTooLong": "Nama maksimal 50 karakter.",
+    "guestbook.form.messageTooLong": "Pesan maksimal 500 karakter.",
+    "guestbook.entries.title": "Entri Terbaru",
+    "guestbook.entries.empty": "Belum ada entri. Jadilah yang pertama menandatangani!",
+    "guestbook.entries.loadMore": "Muat Lebih Banyak ↓",
+    "guestbook.entries.loading": "Memuat entri...",
+    "guestbook.entries.offline": "Tidak dapat terhubung. Periksa koneksi Anda.",
+    "guestbook.backToHome": "« Kembali ke Beranda",
+
+    // Visitor counter
+    "visitor.since": "pengunjung sejak 2026",
+
+    // Error Fallback
+    "error.title": "Program ini telah melakukan operasi ilegal",
+    "error.message": "Terjadi kesalahan tak terduga. Silakan coba lagi atau kembali ke halaman utama.",
+    "error.retry": "Coba Lagi",
+    "error.goHome": "Ke Beranda",
+};
+
+export default id;
