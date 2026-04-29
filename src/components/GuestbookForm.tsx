@@ -1,4 +1,4 @@
-import { useState, type FormEvent } from "react";
+import { useState } from "react";
 import { collection, addDoc, serverTimestamp } from "firebase/firestore";
 import { db } from "../lib/firebase";
 import { useI18n } from "../i18n/useI18n";
@@ -25,7 +25,7 @@ export default function GuestbookForm() {
     setFeedback(null);
   }
 
-  async function handleSubmit(e: FormEvent) {
+  const handleSubmit: React.SubmitEventHandler<HTMLFormElement> = async (e) => {
     e.preventDefault();
 
     // Cooldown check
@@ -81,7 +81,7 @@ export default function GuestbookForm() {
   }
 
   return (
-    <div className="border-t border-l border-retro-border-mid border-b border-r p-3 bg-[#f0f0f0] mb-4">
+    <div className="border-t border-l border-retro-border-mid border-b border-r p-3 bg-retro-sidebar-bg mb-4">
       <div className="font-bold text-sm mb-3 text-retro-blue-dark flex items-center gap-1.5">
         <OldIcon name="VisualStudioNOTE16" size={20} alt="" /> {t("guestbook.form.title").replace(":", "")}
       </div>

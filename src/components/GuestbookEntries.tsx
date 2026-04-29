@@ -43,16 +43,16 @@ export default function GuestbookEntries() {
       const entriesRef = collection(db, "guestbook");
       const q = lastDoc
         ? query(
-            entriesRef,
-            orderBy("timestamp", "desc"),
-            startAfter(lastDoc),
-            limit(ENTRIES_PER_PAGE)
-          )
+          entriesRef,
+          orderBy("timestamp", "desc"),
+          startAfter(lastDoc),
+          limit(ENTRIES_PER_PAGE)
+        )
         : query(
-            entriesRef,
-            orderBy("timestamp", "desc"),
-            limit(ENTRIES_PER_PAGE)
-          );
+          entriesRef,
+          orderBy("timestamp", "desc"),
+          limit(ENTRIES_PER_PAGE)
+        );
 
       const snapshot = await getDocs(q);
 
@@ -118,9 +118,9 @@ export default function GuestbookEntries() {
   // Loading state
   if (loading) {
     return (
-      <div className="border-t border-l border-retro-border-mid border-b border-r p-3 bg-[#f0f0f0]">
+      <div className="border-t border-l border-retro-border-mid border-b border-r p-3 bg-retro-sidebar-bg">
         <div className="flex items-center gap-2 text-sm text-retro-blue-dark">
-          <OldIcon name="Hourglass16" size={16} alt="" />
+          <OldIcon name="VisualStudioCLOCK" size={16} alt="" />
           {t("guestbook.entries.loading")}
         </div>
       </div>
@@ -130,7 +130,7 @@ export default function GuestbookEntries() {
   // Error state with retry
   if (error) {
     return (
-      <div className="border-t border-l border-retro-border-mid border-b border-r p-3 bg-[#f0f0f0]">
+      <div className="border-t border-l border-retro-border-mid border-b border-r p-3 bg-retro-sidebar-bg">
         <div className="text-sm text-retro-red-link mb-2">{error}</div>
         <button
           type="button"
@@ -146,7 +146,7 @@ export default function GuestbookEntries() {
   // Empty state
   if (entries.length === 0) {
     return (
-      <div className="border-t border-l border-retro-border-mid border-b border-r p-3 bg-[#f0f0f0]">
+      <div className="border-t border-l border-retro-border-mid border-b border-r p-3 bg-retro-sidebar-bg">
         <div className="text-sm text-retro-blue-dark">
           {t("guestbook.entries.empty")}
         </div>
@@ -155,9 +155,9 @@ export default function GuestbookEntries() {
   }
 
   return (
-    <div className="border-t border-l border-retro-border-mid border-b border-r p-3 bg-[#f0f0f0]">
+    <div className="border-t border-l border-retro-border-mid border-b border-r p-3 bg-retro-sidebar-bg">
       <div className="font-bold text-sm mb-3 text-retro-blue-dark flex items-center gap-1.5">
-        <OldIcon name="FileText16" size={16} alt="" />
+        <OldIcon name="Windows95TextFile" size={16} alt="" />
         {t("guestbook.entries.title")}
       </div>
 
@@ -195,7 +195,7 @@ export default function GuestbookEntries() {
           >
             {loadingMore ? (
               <span className="flex items-center justify-center gap-2">
-                <OldIcon name="Hourglass16" size={14} alt="" />
+                <OldIcon name="VisualStudioCLOCK" size={14} alt="" />
                 {t("guestbook.entries.loading")}
               </span>
             ) : (

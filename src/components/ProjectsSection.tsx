@@ -175,7 +175,7 @@ export default function ProjectsSection(): ReactNode {
   return (
     <Section id="projects" title={t("section.projects")}>
       <div className="overflow-x-auto">
-        <table className="w-full border-collapse text-sm min-w-[600px]">
+        <table className="w-full border-collapse text-sm min-w-150">
           <thead>
             <tr className="bg-retro-blue-dark text-white text-sm">
               <td className="py-2 px-3 border border-[#002244] w-44 font-bold">

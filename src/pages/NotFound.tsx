@@ -15,7 +15,7 @@ export default function NotFound() {
       <SEOHead
         title="Page Not Found"
         description="The page you're looking for doesn't exist or has been moved."
-        url="https://khaidar.dev/404"
+        url="https://hydr.codes/404"
       />
       <div className="flex flex-col items-center justify-center py-12 text-center">
         <h1 className="text-4xl font-bold text-retro-text mb-4">404</h1>

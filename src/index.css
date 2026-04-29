@@ -46,7 +46,7 @@
     --color-retro-text-dim: #888888;
 
     /* ── System Fonts (Early 2000s) ── */
-    --font-retro-sans: Verdana, Arial, Helvetica, sans-serif;
+    --font-retro-sans: Verdana, sans-serif;
     --font-retro-mono: "Courier New", Courier, monospace;
     --font-retro-display: "Arial Black", Arial, sans-serif;
 

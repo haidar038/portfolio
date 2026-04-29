@@ -102,6 +102,9 @@ export interface Translations {
     "contact.hi": string;
     "contact.alertFill": string;
     "contact.alertSent": string;
+    "contact.alertFail": string;
+    "contact.alertError": string;
+    "contact.sending": string;
 
     // Experience
     "experience.title": string;

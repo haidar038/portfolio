@@ -8,7 +8,7 @@ interface SEOHeadProps {
   type?: 'website' | 'article';
 }
 
-const SITE_URL = 'https://khaidar.dev';
+const SITE_URL = 'https://hydr.codes';
 
 export default function SEOHead(props: SEOHeadProps) {
   const fullTitle = `${props.title} | M. Khaidar Portfolio`;

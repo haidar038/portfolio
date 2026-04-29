@@ -28,17 +28,56 @@ export default function ContactSection(): ReactNode {
   const [email, setEmail] = useState("");
   const [subject, setSubject] = useState("");
   const [message, setMessage] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
-  function handleSubmit() {
+  async function handleSubmit() {
     const n = name.trim();
     const e = email.trim();
+    const s = subject.trim();
     const m = message.trim();
+
+    // Validate required fields
     if (!n || !e || !m) {
       alert(t("contact.alertFill"));
       return;
     }
-    alert(t("contact.alertSent").replace("{name}", n).replace("{email}", e));
-    clearForm();
+
+    setLoading(true);
+    setError("");
+
+    try {
+      const response = await fetch("/api/contact", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          name: n,
+          email: e,
+          subject: s,
+          message: m,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        setError(data.error || "Failed to send email");
+        alert(t("contact.alertFail") || "Failed to send message. Please try again.");
+        return;
+      }
+
+      alert(t("contact.alertSent").replace("{name}", n).replace("{email}", e));
+      clearForm();
+    } catch (err) {
+      const errorMsg = err instanceof Error ? err.message : "Unknown error";
+      console.error("Contact form error:", errorMsg);
+      setError(errorMsg);
+      alert(t("contact.alertError") || "An error occurred. Please try again.");
+    } finally {
+      setLoading(false);
+    }
   }
 
   function clearForm() {
@@ -78,7 +117,7 @@ export default function ContactSection(): ReactNode {
 
         {/* Quick message form */}
         <div className="w-full lg:w-72 shrink-0">
-          <div className="border-t border-l border-retro-border-mid border-b border-r p-3 bg-[#f0f0f0]">
+          <div className="border-t border-l border-retro-border-mid border-b border-r p-3 bg-retro-sidebar">
             <div className="font-bold text-sm mb-2 text-retro-blue-dark flex items-center gap-1.5">
               <OldIcon name="VisualStudioNOTE16" size={20} alt="" /> {t("contact.formTitle")}
             </div>
@@ -134,17 +173,24 @@ export default function ContactSection(): ReactNode {
             <div className="flex justify-end gap-2">
               <button
                 onClick={clearForm}
-                className="retro-btn px-4 py-1.5 text-sm cursor-pointer"
+                disabled={loading}
+                className="retro-btn px-4 py-1.5 text-sm cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {t("contact.clear")}
               </button>
               <button
                 onClick={handleSubmit}
-                className="retro-btn px-5 py-1.5 text-sm cursor-pointer font-bold text-retro-blue-dark"
+                disabled={loading}
+                className="retro-btn px-5 py-1.5 text-sm cursor-pointer font-bold text-retro-blue-dark disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                {t("contact.send")}
+                {loading ? t("contact.sending") || "Sending..." : t("contact.send")}
               </button>
             </div>
+            {error && (
+              <div className="mt-2 text-xs text-red-600 bg-red-50 p-2 rounded">
+                {error}
+              </div>
+            )}
           </div>
         </div>
       </div>

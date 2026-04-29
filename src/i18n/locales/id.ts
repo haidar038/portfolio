@@ -106,6 +106,9 @@ const id: Translations = {
     "contact.hi": "Sekedar menyapa!",
     "contact.alertFill": "Mohon isi semua kolom sebelum mengirim!",
     "contact.alertSent": "✔ Pesan berhasil dikirim!\n\nTerima kasih, {name}!\nSaya akan membalas ke {email} segera.",
+    "contact.alertFail": "Gagal mengirim pesan. Silakan coba lagi atau hubungi saya secara langsung.",
+    "contact.alertError": "Terjadi kesalahan saat mengirim. Silakan coba lagi.",
+    "contact.sending": "Sedang mengirim...",
 
     // Experience
     "experience.title": "PENGALAMAN KERJA",

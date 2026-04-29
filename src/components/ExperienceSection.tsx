@@ -17,7 +17,7 @@ const JOBS: JobEntry[] = [
   {
     title: "CEO & CTO",
     type: "Founder",
-    period: "~2025 – Present",
+    period: "~2025 - Present",
     company: "Binary Verse",
     location: "Ternate, Maluku Utara",
     featured: true,
@@ -33,7 +33,7 @@ const JOBS: JobEntry[] = [
   {
     title: "Visual Jockey & Graphic Designer",
     type: "Contract",
-    period: "Dec 2025 – Present",
+    period: "Dec 2025 - Present",
     company: "Linea Inc. (Creative Agency)",
     location: "Remote",
     bullets: [
@@ -46,7 +46,7 @@ const JOBS: JobEntry[] = [
   {
     title: "Graphic Designer",
     type: "Full-time",
-    period: "Jun 2023 – Jun 2024",
+    period: "Jun 2023 - Jun 2024",
     company: "PT. Bintang Muara Kieraha (Muara Group)",
     location: "Ternate, Maluku Utara",
     bullets: [
@@ -59,7 +59,7 @@ const JOBS: JobEntry[] = [
   {
     title: "Graphic Designer & Web Developer",
     type: "Part-time",
-    period: "Mar 2022 – Present",
+    period: "Mar 2022 - Present",
     company: "Ternate Creative Space",
     location: "Ternate, Maluku Utara",
     bullets: [
@@ -72,7 +72,7 @@ const JOBS: JobEntry[] = [
   {
     title: "English Teacher",
     type: "Internship",
-    period: "Jan 2023 – Feb 2023",
+    period: "Jan 2023 - Feb 2023",
     company: "Thongkum Wittaya Nusorn School",
     location: "Thailand",
     bullets: [

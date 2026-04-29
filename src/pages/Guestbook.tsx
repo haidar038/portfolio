@@ -12,7 +12,7 @@ const GuestbookEntries = lazy(() => import("../components/GuestbookEntries"));
  */
 function LoadingFallback() {
   return (
-    <div className="border-t border-l border-retro-border-mid border-b border-r p-3 bg-[#f0f0f0] mb-4">
+    <div className="border-t border-l border-retro-border-mid border-b border-r p-3 bg-retro-sidebar-bg mb-4">
       <div className="text-sm text-retro-blue-dark">Loading...</div>
     </div>
   );
@@ -30,7 +30,7 @@ export default function Guestbook() {
       <SEOHead
         title="Guestbook"
         description="Leave a message in my guestbook! Share your thoughts, feedback, or just say hello."
-        url="https://khaidar.dev/guestbook"
+        url="https://hydr.codes/guestbook"
       />
       <div className="mb-4">
         <h1 className="text-lg font-bold text-retro-blue-dark mb-2">

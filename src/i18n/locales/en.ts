@@ -105,6 +105,9 @@ const en: Translations = {
     "contact.hi": "Just saying hi!",
     "contact.alertFill": "Please fill in all fields before sending!",
     "contact.alertSent": "✔ Message sent successfully!\n\nThank you, {name}!\nI will get back to you at {email} soon.",
+    "contact.alertFail": "Failed to send message. Please try again or contact me directly.",
+    "contact.alertError": "An error occurred while sending. Please try again.",
+    "contact.sending": "Sending...",
 
     // Experience
     "experience.title": "WORK EXPERIENCE",

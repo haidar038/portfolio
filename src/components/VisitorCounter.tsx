@@ -60,7 +60,7 @@ export default function VisitorCounter() {
   }, []);
 
   return (
-    <span className="font-mono text-sm">
+    <span className="font-retro-digital">
       {loading ? (
         <span className="text-retro-text-secondary">Loading...</span>
       ) : (

@@ -16,7 +16,7 @@ export default function Home() {
       <SEOHead
         title="M. Khaidar - Full-Stack Developer Portfolio"
         description="Personal portfolio of M. Khaidar — Full-Stack Developer specializing in React, TypeScript, and modern web technologies. Explore my projects, experience, and journey."
-        url="https://khaidar.dev/"
+        url="https://hydr.codes/"
       />
       <AboutSection />
       <JourneySection />

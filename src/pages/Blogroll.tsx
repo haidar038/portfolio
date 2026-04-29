@@ -42,7 +42,7 @@ export default function Blogroll() {
       <SEOHead
         title="Blogroll"
         description="A curated collection of links to friends, communities, tools, and resources that I find valuable."
-        url="https://khaidar.dev/blogroll"
+        url="https://hydr.codes/blogroll"
       />
       <div className="mb-4">
         <h1 className="text-lg font-bold text-retro-blue-dark mb-2">
@@ -65,7 +65,7 @@ export default function Blogroll() {
               </h2>
               <ul className="space-y-2">
                 {links.map((link) => (
-                  <li key={link.url} className="border-t border-l border-retro-border-mid border-b border-r p-2 bg-[#f0f0f0]">
+                  <li key={link.url} className="border-t border-l border-retro-border-mid border-b border-r p-2 bg-retro-sidebar-bg">
                     <a
                       href={link.url}
                       target="_blank"

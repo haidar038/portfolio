@@ -27,11 +27,11 @@ export default function WinDialog({ title, icon, children, onClose }: WinDialogP
         </span>
         <div className="flex gap-0.5">
           {/* Minimize button (decorative) */}
-          <span className="inline-block w-4 h-4 bg-retro-winface border-t border-l border-r border-b border-retro-border-mid text-[10px] text-center leading-[14px] font-bold">
+          <span className="inline-block w-4 h-4 bg-retro-winface border-t border-l border-r border-b border-retro-border-mid text-[10px] text-center leading-4 font-bold">
             _
           </span>
           {/* Maximize button (decorative) */}
-          <span className="inline-block w-4 h-4 bg-retro-winface border-t border-l border-r border-b border-retro-border-mid text-[10px] text-center leading-[14px] font-bold">
+          <span className="inline-block w-4 h-4 bg-retro-winface border-t border-l border-r border-b border-retro-border-mid text-[10px] text-center leading-4 font-bold">
             □
           </span>
           {/* Close button — functional if onClose provided */}
@@ -44,7 +44,7 @@ export default function WinDialog({ title, icon, children, onClose }: WinDialogP
               ✕
             </button>
           ) : (
-            <span className="inline-block w-4 h-4 bg-retro-winface border-t border-l border-r border-b border-retro-border-mid text-[10px] text-center leading-[14px]">
+            <span className="inline-block w-4 h-4 bg-retro-winface border-t border-l border-r border-b border-retro-border-mid text-[10px] text-center leading-4">
               ✕
             </span>
           )}
