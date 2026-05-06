@@ -1,7 +1,3 @@
 {
-  "rewrites": [{ "source": "/(.*)", "destination": "/index.html" }],
-  "env": {
-    "RESEND_API_KEY": "@resend_api_key",
-    "RESEND_EMAIL_FROM": "@resend_email_from"
-  }
+  "rewrites": [{ "source": "/(.*)", "destination": "/index.html" }]
 }
