@@ -15,17 +15,17 @@ export default function Header() {
 
 	return (
 		<div className="bg-retro-header-bg border-b-3 border-retro-blue-nav">
-			<div className="flex flex-col sm:flex-row justify-between items-start sm:items-start px-5 py-4 gap-4">
+			<div className="flex flex-col sm:flex-row justify-between items-start sm:items-start px-3 py-2 gap-2">
 				{/* Left: Name & Info */}
 				<div>
-					<div className="text-retro-green-glow text-2xl sm:text-3xl md:text-4xl font-bold font-retro-display drop-shadow-[2px_2px_0px_#000033] tracking-wider">
+					<div className="text-retro-green-glow text-xl sm:text-2xl md:text-3xl font-bold font-retro-display drop-shadow-[2px_2px_0px_#000033] tracking-wider">
 						★ M. Khaidar ★
 					</div>
 					<div
-						className="text-retro-blue-light text-sm mt-1 tracking-wider"
+						className="text-retro-blue-light text-xs mt-0.5 tracking-wider"
 						dangerouslySetInnerHTML={{ __html: t("header.subtitle") }}
 					/>
-					<div className="flex flex-wrap gap-2 mt-3">
+					<div className="flex flex-wrap gap-1 mt-1">
 						<span className="bg-retro-blue-nav text-white text-sm px-2 py-0.5 border border-[#6699cc]">
 							{t("header.tag.react")}
 						</span>
@@ -42,11 +42,11 @@ export default function Header() {
 				</div>
 
 				{/* Right: Counter + Language Toggle */}
-				<div className="text-left sm:text-right flex flex-col items-start sm:items-end gap-3">
+				<div className="text-left sm:text-right flex flex-col items-start sm:items-end gap-1.5">
 					{/* Language Toggle */}
 					<button
 						onClick={toggleLocale}
-						className="retro-btn text-sm px-3 py-1 cursor-pointer flex items-center gap-1.5"
+						className="retro-btn text-xs px-2 py-0.5 cursor-pointer flex items-center gap-1"
 						title="Switch language"
 						aria-label="Switch language"
 					>

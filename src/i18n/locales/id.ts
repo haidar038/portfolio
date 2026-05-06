@@ -82,6 +82,7 @@ const id: Translations = {
     "projects.prev": "« Sebelumnya",
     "projects.next": "Berikutnya »",
     "projects.page": "Halaman",
+    "projects.col.image": "Gambar",
     "projects.col.name": "Nama Proyek",
     "projects.col.description": "Deskripsi",
     "projects.col.stack": "Stack",

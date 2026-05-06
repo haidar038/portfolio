@@ -95,44 +95,44 @@ export default function ExperienceSection(): ReactNode {
       {JOBS.map((job) => (
         <div
           key={`${job.company}-${job.title}`}
-          className="p-3 mb-3 border-t-2 border-l-2 border-r-2 border-b-2 border-retro-border-light bg-retro-winface"
+          className="p-2 mb-2 border-t-2 border-l-2 border-r-2 border-b-2 border-retro-border-light bg-retro-winface"
         >
           {/* Featured badge */}
           {job.featured && (
-            <div className="text-retro-orange text-sm font-bold mb-1.5">
+            <div className="text-retro-orange text-xs font-bold mb-1">
               {t("experience.featured")}
             </div>
           )}
 
           {/* Job title row */}
-          <div className="flex flex-col sm:flex-row justify-between gap-1.5">
+          <div className="flex flex-col sm:flex-row justify-between gap-0.5">
             <div>
-              <b className="text-lg font-sans">{job.title}</b>
-              <span className="text-sm text-retro-text-muted ml-1.5">
+              <b className="text-sm font-sans">{job.title}</b>
+              <span className="text-xs text-retro-text-muted ml-1">
                 ({job.type})
               </span>
             </div>
-            <div className="text-sm text-retro-text-muted whitespace-nowrap">
+            <div className="text-xs text-retro-text-muted whitespace-nowrap">
               {job.period}
             </div>
           </div>
 
           {/* Company */}
-          <div className="text-retro-blue-accent text-sm mt-1 mb-1.5 font-bold">
+          <div className="text-retro-blue-accent text-xs mt-0.5 mb-1 font-bold">
             {job.company} - {job.location}
           </div>
 
           <div className="retro-hr" />
 
           {/* Bullet points */}
-          <ul className="list-disc ml-5 text-sm leading-loose m-0 mt-1.5 p-0">
+          <ul className="list-disc ml-4 text-xs leading-normal m-0 mt-1 p-0">
             {job.bullets.map((bullet, index) => (
               <li key={index}>{bullet}</li>
             ))}
           </ul>
 
           {/* Tech tags */}
-          <div className="mt-1.5 text-sm text-[#666]">
+          <div className="mt-1 text-xs text-[#666]">
             <b>{t("experience.techTags")}</b> {job.tags}
           </div>
         </div>

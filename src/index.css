@@ -194,6 +194,13 @@
 
 /* ═══════════ BASE STYLES ═══════════ */
 
+*{
+    -webkit-font-smoothing: none;
+    -moz-osx-font-smoothing: grayscale;
+    font-smooth: never;
+    text-rendering: optimizeSpeed;
+}
+
 html {
     scroll-behavior: smooth;
     overflow-x: hidden;
@@ -203,10 +210,12 @@ body {
     font-family: var(--font-retro-sans);
     font-size: 18px;
     background-color: var(--color-retro-page-bg);
-    background-image:
-        radial-gradient(circle, rgba(0, 0, 0, 0.06) 1px, transparent 1px),
-        repeating-linear-gradient(45deg, transparent, transparent 2px, rgba(255, 255, 255, 0.04) 2px, rgba(255, 255, 255, 0.04) 4px);
-    background-size: 20px 20px, auto;
+    /* Web 1.0 classic technical grid background */
+    background-image: 
+        linear-gradient(rgba(255, 255, 255, 0.15) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.15) 1px, transparent 1px);
+    background-size: 20px 20px;
+    background-position: 0 0, 0 0;
     color: #000000;
     margin: 0;
     padding: 8px 0 16px;
@@ -316,19 +325,34 @@ a:active {
     /* font-size: 16px; */
     padding: 3px 12px;
     cursor: pointer;
+    transition: all 0.08s ease;
+    user-select: none;
 }
 
-.retro-btn:active {
+.retro-btn:hover:not(:disabled) {
+    background-color: #e8e4d8;
+    box-shadow: inset -1px -1px 0 rgba(0, 0, 0, 0.1);
+}
+
+.retro-btn:focus-visible {
+    outline: 1px dotted var(--color-retro-blue-dark);
+    outline-offset: -4px;
+}
+
+.retro-btn:active:not(:disabled) {
     border-top: 2px solid var(--color-retro-border-dark);
     border-left: 2px solid var(--color-retro-border-dark);
     border-right: 2px solid var(--color-retro-border-light);
     border-bottom: 2px solid var(--color-retro-border-light);
-    padding: 3px 7px 1px 9px;
+    padding: 4px 11px 2px 13px;
+    background-color: #dcdad0;
 }
 
 .retro-btn:disabled {
-    opacity: 0.5;
+    opacity: 0.6;
     cursor: not-allowed;
+    background-color: #d0ccc4;
+    color: #808080;
 }
 
 /* Retro Input - Sunken/etched input field */
@@ -341,11 +365,21 @@ a:active {
     border-right: 2px solid var(--color-retro-border-light);
     background-color: white;
     outline: none;
+    transition: all 0.15s ease;
 }
 
 .retro-input:focus {
+    border-top: 2px solid var(--color-retro-blue-dark);
+    border-left: 2px solid var(--color-retro-blue-dark);
+    background-color: #fffbf0;
     outline: 1px dotted var(--color-retro-blue-dark);
-    outline-offset: -1px;
+    outline-offset: -2px;
+}
+
+.retro-input:disabled {
+    background-color: #f5f5f5;
+    color: #808080;
+    cursor: not-allowed;
 }
 
 /* Input styles - Global retro 3D sunken effect */
@@ -357,13 +391,31 @@ select {
     background-color: white;
     padding: 3px 6px;
     outline: none;
+    transition: all 0.15s ease;
+}
+
+input:not([type="checkbox"]):not([type="radio"]):not([type="submit"]):not([type="reset"]):not([type="button"]):not([type="range"]):hover,
+textarea:hover,
+select:hover {
+    border-color: #606060;
 }
 
 input:not([type="checkbox"]):not([type="radio"]):not([type="submit"]):not([type="reset"]):not([type="button"]):not([type="range"]):focus,
 textarea:focus,
 select:focus {
+    border: 2px inset #0000cc;
+    background-color: #fffbf0;
     outline: 1px dotted var(--color-retro-blue-dark);
-    outline-offset: -1px;
+    outline-offset: -2px;
+    box-shadow: inset 0 0 0 1px var(--color-retro-blue-light);
+}
+
+input:disabled,
+textarea:disabled,
+select:disabled {
+    background-color: #f5f5f5;
+    color: #808080;
+    cursor: not-allowed;
 }
 
 /* Button styles - Global retro 3D raised effect */
@@ -376,20 +428,43 @@ input[type="button"] {
     border: 2px outset #d4d0c8;
     padding: 3px 12px;
     cursor: pointer;
+    transition: all 0.08s ease;
+    user-select: none;
 }
 
-button:not(.retro-panel-title button):active,
-input[type="submit"]:active,
-input[type="reset"]:active,
-input[type="button"]:active {
+button:not(.retro-panel-title button):hover:not(:disabled),
+input[type="submit"]:hover:not(:disabled),
+input[type="reset"]:hover:not(:disabled),
+input[type="button"]:hover:not(:disabled) {
+    background-color: #e8e4d8;
+    box-shadow: inset -1px -1px 0 rgba(0, 0, 0, 0.1);
+}
+
+button:focus-visible,
+input[type="submit"]:focus-visible,
+input[type="reset"]:focus-visible,
+input[type="button"]:focus-visible {
+    outline: 1px dotted var(--color-retro-blue-dark);
+    outline-offset: -3px;
+}
+
+button:not(.retro-panel-title button):active:not(:disabled),
+input[type="submit"]:active:not(:disabled),
+input[type="reset"]:active:not(:disabled),
+input[type="button"]:active:not(:disabled) {
     border: 2px inset #d4d0c8;
     padding: 4px 11px 2px 13px;
+    background-color: #dcdad0;
 }
 
 button:disabled,
-input[type="submit"]:disabled {
-    opacity: 0.5;
+input[type="submit"]:disabled,
+input[type="reset"]:disabled,
+input[type="button"]:disabled {
+    opacity: 0.6;
     cursor: not-allowed;
+    background-color: #d0ccc4;
+    color: #808080;
 }
 
 /* ═══════════ BLINK UTILITY ═══════════ */

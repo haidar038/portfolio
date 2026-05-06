@@ -33,7 +33,7 @@ export default function Navigation() {
             href={item.download ? `/CV_${locale}.pdf` : item.href}
             {...(item.download ? { download: true } : {})}
             className={[
-              "nav-item px-3 py-1.5 sm:px-5 sm:py-2 border-r border-retro-blue-dark text-white font-bold font-sans text-xs sm:text-sm hover:text-retro-gold! hover:bg-transparent!",
+              "nav-item px-2 py-1 sm:px-3 sm:py-1.5 border-r border-retro-blue-dark text-white font-bold font-sans text-xs sm:text-xs hover:text-retro-gold! hover:bg-transparent!",
               item.color ?? "",
             ].join(" ")}
             style={{ textDecoration: "underline" }}

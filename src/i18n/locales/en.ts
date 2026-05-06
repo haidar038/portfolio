@@ -82,6 +82,7 @@ const en: Translations = {
     "projects.prev": "« Prev",
     "projects.next": "Next »",
     "projects.page": "Page",
+    "projects.col.image": "Image",
     "projects.col.name": "Project Name",
     "projects.col.description": "Description",
     "projects.col.stack": "Stack",

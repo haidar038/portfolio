@@ -79,6 +79,7 @@ export interface Translations {
     "projects.prev": string;
     "projects.next": string;
     "projects.page": string;
+    "projects.col.image": string;
     "projects.col.name": string;
     "projects.col.description": string;
     "projects.col.stack": string;

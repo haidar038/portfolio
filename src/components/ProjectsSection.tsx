@@ -11,6 +11,7 @@ interface ProjectEntry {
   links: { label: string; href: string }[];
   active?: boolean;
   status?: string;
+  thumbnail?: string;
 }
 
 const PROJECTS: ProjectEntry[] = [
@@ -23,6 +24,7 @@ const PROJECTS: ProjectEntry[] = [
     stack: ["React", "Supabase", "Vercel"],
     links: [{ label: "Live", href: "https://rindang.net" }],
     status: "Live Now",
+    thumbnail: "https://placehold.co/80x60/003366/00ff88?text=RIN"
   },
   {
     name: "Wargahub",
@@ -33,6 +35,7 @@ const PROJECTS: ProjectEntry[] = [
     stack: ["React", "Supabase", "TypeScript"],
     links: [{ label: "Live", href: "https://wargahub.biz.id" }],
     status: "Live Now",
+    thumbnail: "https://placehold.co/80x60/003366/00ff88?text=WAR"
   },
   {
     name: "Warungly",
@@ -43,6 +46,7 @@ const PROJECTS: ProjectEntry[] = [
     stack: ["Vite", "SQLite", "TypeScript"],
     links: [{ label: "Private", href: "#" }],
     status: "In Development",
+    thumbnail: "https://placehold.co/80x60/003366/ffcc00?text=WRL"
   },
   {
     name: "Smart Census",
@@ -52,6 +56,7 @@ const PROJECTS: ProjectEntry[] = [
     stack: ["React", "Supabase", "Groq AI"],
     links: [{ label: "Private", href: "#" }],
     status: "In Development",
+    thumbnail: "https://placehold.co/80x60/003366/ffcc00?text=SMC"
   },
   {
     name: "Jaga Bumi",
@@ -61,6 +66,7 @@ const PROJECTS: ProjectEntry[] = [
     stack: ["React", "Supabase", "TypeScript"],
     links: [{ label: "Private", href: "#" }],
     status: "In Development",
+    thumbnail: "https://placehold.co/80x60/003366/ffcc00?text=JGB"
   },
   {
     name: "Badonor",
@@ -70,6 +76,7 @@ const PROJECTS: ProjectEntry[] = [
     stack: ["React", "Supabase", "TypeScript"],
     links: [{ label: "Private", href: "#" }],
     status: "In Development",
+    thumbnail: "https://placehold.co/80x60/003366/ffcc00?text=BDN"
   },
   {
     name: "SapuLidi",
@@ -79,6 +86,7 @@ const PROJECTS: ProjectEntry[] = [
     stack: ["React", "Groq", "LLaMA", "Supabase"],
     links: [{ label: "GitHub", href: "https://sapulidiapp.vercel.app" }],
     status: "Live Demo",
+    thumbnail: "https://placehold.co/80x60/003366/00ff88?text=SPL"
   },
   {
     name: "Amtra Journey",
@@ -88,6 +96,7 @@ const PROJECTS: ProjectEntry[] = [
     stack: ["React", "Vite", "Tailwind", "Vercel"],
     links: [{ label: "Live", href: "https://amtrajourney.vercel.app" }],
     status: "Live Demo",
+    thumbnail: "https://placehold.co/80x60/003366/00ff88?text=AMJ"
   },
   {
     name: "PASIAR Ternate",
@@ -97,6 +106,7 @@ const PROJECTS: ProjectEntry[] = [
     stack: ["React", "Supabase", "Tailwind"],
     links: [{ label: "Live", href: "https://pasiar.ternatekota.go.id" }],
     status: "Live Now",
+    thumbnail: "https://placehold.co/80x60/003366/00ff88?text=PSR"
   },
   {
     name: "Modiv Eventcraft",
@@ -106,6 +116,7 @@ const PROJECTS: ProjectEntry[] = [
     stack: ["React", "Supabase", "TypeScript"],
     links: [{ label: "Live", href: "https://modiv-eventcraft.vercel.app" }],
     status: "Live Demo",
+    thumbnail: "https://placehold.co/80x60/003366/00ff88?text=MDV"
   },
   {
     name: "UniVertex",
@@ -115,6 +126,7 @@ const PROJECTS: ProjectEntry[] = [
     stack: ["React", "Supabase", "TypeScript"],
     links: [{ label: "Live", href: "https://univertex.vercel.app" }],
     status: "Live Demo",
+    thumbnail: "https://placehold.co/80x60/003366/00ff88?text=UNV"
   },
   {
     name: "ShortLink",
@@ -124,6 +136,7 @@ const PROJECTS: ProjectEntry[] = [
     stack: ["React", "Supabase", "TypeScript"],
     links: [{ label: "Live", href: "https://sl2.my.id" }],
     status: "Live Now",
+    thumbnail: "https://placehold.co/80x60/003366/00ff88?text=SHR"
   },
   {
     name: "WikiSnap",
@@ -133,6 +146,7 @@ const PROJECTS: ProjectEntry[] = [
     stack: ["React", "Groq AI", "TypeScript"],
     links: [{ label: "Live", href: "https://wikisnap.vercel.app" }],
     status: "Live Now",
+    thumbnail: "https://placehold.co/80x60/003366/00ff88?text=WKS"
   },
   {
     name: "Kagounga",
@@ -142,6 +156,7 @@ const PROJECTS: ProjectEntry[] = [
     stack: ["React", "Supabase", "Tailwind"],
     links: [{ label: "Live", href: "https://kagounga.vercel.app" }],
     status: "Live Demo",
+    thumbnail: "https://placehold.co/80x60/003366/00ff88?text=KAG"
   },
   {
     name: "Personal Portfolio",
@@ -151,6 +166,7 @@ const PROJECTS: ProjectEntry[] = [
     stack: ["SolidJS", "Tailwind", "TypeScript"],
     links: [{ label: "Github", href: "https://github.com/haidar038" }, { label: "Live", href: "https://hydr.codes" }],
     status: "Live Now",
+    thumbnail: "https://placehold.co/80x60/003366/00ff88?text=PRT"
   },
 ];
 
@@ -174,20 +190,23 @@ export default function ProjectsSection(): ReactNode {
 
   return (
     <Section id="projects" title={t("section.projects")}>
-      <div className="overflow-x-auto">
-        <table className="w-full border-collapse text-sm min-w-150">
+      <div className="overflow-x-auto border-2 border-t-[#c8c8c8] border-l-[#c8c8c8] border-b-retro-border-dark border-r-retro-border-dark bg-white p-0.5">
+        <table className="w-full border-collapse text-xs min-w-150">
           <thead>
-            <tr className="bg-retro-blue-dark text-white text-sm">
-              <td className="py-2 px-3 border border-[#002244] w-44 font-bold">
+            <tr className="bg-retro-blue-dark text-white text-xs border border-black">
+              <td className="py-1 px-2 border-r border-black w-24 text-center font-bold">
+                {t("projects.col.image")}
+              </td>
+              <td className="py-1 px-2 border-r border-black w-32 font-bold">
                 {t("projects.col.name")}
               </td>
-              <td className="py-2 px-3 border border-[#002244] font-bold">
+              <td className="py-1 px-2 border-r border-black font-bold">
                 {t("projects.col.description")}
               </td>
-              <td className="py-2 px-3 border border-[#002244] w-28 font-bold">
+              <td className="py-1 px-2 border-r border-black w-24 font-bold">
                 {t("projects.col.stack")}
               </td>
-              <td className="py-2 px-3 border border-[#002244] w-20 text-center font-bold">
+              <td className="py-1 px-2 w-16 text-center font-bold">
                 {t("projects.col.links")}
               </td>
             </tr>
@@ -199,42 +218,53 @@ export default function ProjectsSection(): ReactNode {
                 <tr
                   key={project.name}
                   className={[
-                    "hover:bg-retro-hover",
+                    "hover:bg-retro-hover border border-black",
                     globalIndex % 2 === 0 ? "bg-retro-cream-bg" : "bg-retro-alt-row",
                   ].join(" ")}
                 >
-                  <td className="py-2 px-3 border border-[#c8c8c8] align-top">
+                  <td className="p-2 border-r border-black align-top text-center">
+                    <img
+                      src={project.thumbnail}
+                      alt={project.name}
+                      width={80}
+                      height={60}
+                      className="border border-black inline-block"
+                      loading="lazy"
+                    />
+                  </td>
+                  <td className="py-1 px-2 border-r border-black align-top">
                     <b>{project.name}</b>
                     {project.featured && (
                       <>
                         <br />
-                        <span className="text-retro-orange text-sm font-bold">
+                        <span className="text-retro-orange text-xs font-bold">
                           {t("projects.featured")}
                         </span>
                       </>
                     )}
                     <br />
-                    <span className="text-retro-text-muted text-sm">
+                    <span className="text-retro-text-muted text-xs">
                       {project.year}
                     </span>
                   </td>
-                  <td className="py-2 px-3 border border-[#c8c8c8] leading-relaxed">
+                  <td className="py-1 px-2 border-r border-black leading-normal">
                     {project.description}
                     {project.status && (
-                      <span
-                        className={[
-                          "text-sm",
-                          project.status === "Live Now"
-                            ? "text-retro-green-online"
-                            : "text-retro-orange",
-                        ].join(" ")}
-                      >
-                        {" "}
-                        ← {project.status}
-                      </span>
+                      <div className="mt-1">
+                        <span
+                          className={[
+                            "text-[10px] px-1 border border-black inline-block",
+                            project.status.includes("Live")
+                              ? "bg-green-500 text-white"
+                              : "bg-[#cc4444] text-white",
+                          ].join(" ")}
+                        >
+                          {project.status.includes("Live") ? "✔" : "⚠"} {project.status}
+                        </span>
+                      </div>
                     )}
                   </td>
-                  <td className="py-2 px-3 border border-[#c8c8c8] align-top text-sm leading-relaxed">
+                  <td className="py-1 px-2 border-r border-black align-top text-xs leading-normal">
                     {project.stack.map((tech) => (
                       <span key={tech}>
                         {tech}
@@ -242,10 +272,10 @@ export default function ProjectsSection(): ReactNode {
                       </span>
                     ))}
                   </td>
-                  <td className="py-2 px-3 border border-[#c8c8c8] text-center align-top">
+                  <td className="py-1 px-2 text-center align-top">
                     {project.links.map((link) => (
                       <span key={link.label}>
-                        <a href={link.href}>[{link.label}]</a>
+                        <a href={link.href} className="underline text-blue-800 hover:bg-blue-800 hover:text-white">[{link.label}]</a>
                         <br />
                       </span>
                     ))}
@@ -258,13 +288,13 @@ export default function ProjectsSection(): ReactNode {
       </div>
 
       {/* Pagination */}
-      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 mt-3">
-        <div className="text-sm text-[#666]">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-1 mt-2">
+        <div className="text-xs text-[#666]">
           {t("projects.showing")} {showing}-{showingEnd} {t("projects.of")} {PROJECTS.length}
         </div>
-        <div className="flex items-center gap-1">
+        <div className="flex items-center gap-0.5">
           <button
-            className="retro-btn text-sm px-3 py-1 cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed"
+            className="retro-btn text-xs px-2 py-0 cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed"
             onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
             disabled={currentPage === 1}
           >
@@ -274,8 +304,8 @@ export default function ProjectsSection(): ReactNode {
             <button
               key={page}
               className={[
-                "retro-btn text-sm px-2 py-1 cursor-pointer",
-                page === currentPage ? "bg-retro-blue-dark text-white" : "",
+                "retro-btn text-xs px-1.5 py-0 cursor-pointer",
+                page === currentPage ? "bg-retro-blue-dark text-white border-inset" : "",
               ].join(" ")}
               onClick={() => setCurrentPage(page)}
             >
@@ -283,7 +313,7 @@ export default function ProjectsSection(): ReactNode {
             </button>
           ))}
           <button
-            className="retro-btn text-sm px-3 py-1 cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed"
+            className="retro-btn text-xs px-2 py-0 cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed"
             onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
             disabled={currentPage === totalPages}
           >
@@ -292,7 +322,7 @@ export default function ProjectsSection(): ReactNode {
         </div>
       </div>
 
-      <div className="mt-2 text-sm text-[#666]" dangerouslySetInnerHTML={{ __html: t("projects.footer") }} />
+      <div className="mt-1 text-xs text-[#666]" dangerouslySetInnerHTML={{ __html: t("projects.footer") }} />
     </Section>
   );
 }

@@ -41,13 +41,13 @@ export default function JourneySection() {
   return (
     <Section id="journey" title={t("section.journey")}>
       <div className="overflow-x-auto">
-        <table className="w-full border-collapse text-sm">
+        <table className="w-full border-collapse text-xs">
           <thead>
-            <tr className="bg-retro-blue-nav text-white text-sm">
-              <td className="py-1.5 px-3 border border-[#002244] w-28 font-bold">
+            <tr className="bg-retro-blue-nav text-white text-xs">
+              <td className="py-1 px-2 border border-[#002244] w-24 font-bold">
                 {t("journey.col.period")}
               </td>
-              <td className="py-1.5 px-3 border border-[#002244] font-bold">
+              <td className="py-1 px-2 border border-[#002244] font-bold">
                 {t("journey.col.education")}
               </td>
             </tr>
@@ -61,15 +61,15 @@ export default function JourneySection() {
                   index % 2 === 0 ? "bg-retro-alt-row" : "",
                 ].join(" ")}
               >
-                <td className="py-2 px-3 border border-[#c8c8c8] align-top text-retro-blue-accent font-bold text-sm whitespace-nowrap">
+                <td className="py-1 px-2 border border-[#c8c8c8] align-top text-retro-blue-accent font-bold text-xs whitespace-nowrap">
                   {entry.period}
                 </td>
-                <td className="py-2 px-3 border border-[#c8c8c8] leading-relaxed">
+                <td className="py-1 px-2 border border-[#c8c8c8] leading-normal">
                   <b>{entry.title}</b>
                   <br />
-                  <span className="text-retro-blue-nav">{entry.institution}</span>
+                  <span className="text-retro-blue-nav text-xs">{entry.institution}</span>
                   <br />
-                  <span className="text-retro-text-muted">
+                  <span className="text-retro-text-muted text-xs">
                     {entry.description}
                   </span>
                 </td>

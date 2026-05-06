@@ -81,14 +81,14 @@ export default function GuestbookForm() {
   }
 
   return (
-    <div className="border-t border-l border-retro-border-mid border-b border-r p-3 bg-retro-sidebar-bg mb-4">
-      <div className="font-bold text-sm mb-3 text-retro-blue-dark flex items-center gap-1.5">
-        <OldIcon name="VisualStudioNOTE16" size={20} alt="" /> {t("guestbook.form.title").replace(":", "")}
+    <div className="border-t border-l border-retro-border-mid border-b border-r p-2 bg-retro-sidebar-bg mb-2">
+      <div className="font-bold text-xs mb-1.5 text-retro-blue-dark flex items-center gap-1">
+        <OldIcon name="VisualStudioNOTE16" size={14} alt="" /> {t("guestbook.form.title").replace(":", "")}
       </div>
 
       <form onSubmit={handleSubmit}>
-        <div className="mb-3">
-          <label htmlFor="guestbook-name" className="text-sm block mb-1">{t("guestbook.form.name")}</label>
+        <div className="mb-2">
+          <label htmlFor="guestbook-name" className="text-xs block mb-0.5">{t("guestbook.form.name")}</label>
           <input
             id="guestbook-name"
             type="text"
@@ -96,23 +96,23 @@ export default function GuestbookForm() {
             value={name}
             onChange={(e) => setName(e.target.value)}
             maxLength={50}
-            className="retro-input w-full px-2 py-1.5 text-sm"
+            className="retro-input w-full px-1.5 py-1 text-xs"
             disabled={sending}
             aria-required="true"
           />
           <div className="text-[#999] text-xs mt-0.5 text-right">{name.length}/50</div>
         </div>
 
-        <div className="mb-2">
-          <label htmlFor="guestbook-message" className="text-sm block mb-1">{t("guestbook.form.message")}</label>
+        <div className="mb-1.5">
+          <label htmlFor="guestbook-message" className="text-xs block mb-0.5">{t("guestbook.form.message")}</label>
           <textarea
             id="guestbook-message"
-            rows={4}
+            rows={3}
             placeholder={t("guestbook.form.messagePlaceholder")}
             value={message}
             onChange={(e) => setMessage(e.target.value)}
             maxLength={500}
-            className="retro-input w-full px-2 py-1.5 text-sm resize-none"
+            className="retro-input w-full px-1.5 py-1 text-xs resize-none"
             disabled={sending}
             aria-required="true"
           />
@@ -123,7 +123,7 @@ export default function GuestbookForm() {
         {feedback && (
           <div
             role="alert"
-            className={`text-sm px-2 py-1.5 mb-2 border ${feedback.type === "success"
+            className={`text-xs px-1.5 py-1 mb-1.5 border ${feedback.type === "success"
               ? "bg-[#eeffee] text-[#006600] border-[#00aa00]"
               : "bg-[#ffeeee] text-retro-red-link border-retro-red-link"
               }`}
@@ -132,18 +132,18 @@ export default function GuestbookForm() {
           </div>
         )}
 
-        <div className="flex justify-end gap-2">
+        <div className="flex justify-end gap-1">
           <button
             type="button"
             onClick={clearForm}
-            className="retro-btn px-4 py-1.5 text-sm cursor-pointer"
+            className="retro-btn px-2 py-0.5 text-xs cursor-pointer"
             disabled={sending}
           >
             {t("guestbook.form.clear")}
           </button>
           <button
             type="submit"
-            className="retro-btn px-5 py-1.5 text-sm cursor-pointer font-bold text-retro-blue-dark"
+            className="retro-btn px-3 py-0.5 text-xs cursor-pointer font-bold text-retro-blue-dark"
             disabled={sending || cooldown}
           >
             {sending ? t("guestbook.form.sending") : cooldown ? t("guestbook.form.sending") : t("guestbook.form.submit")}
