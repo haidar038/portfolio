@@ -19,7 +19,7 @@ const CATEGORY_KEYS: Record<string, keyof Translations> = {
  * About Me section with avatar, bio, info table, and tech stack display.
  */
 export default function AboutSection() {
-  const { t } = useI18n();
+  const { t, locale } = useI18n();
 
   return (
     <Section id="about" title={t("section.aboutMe")}>
@@ -59,7 +59,7 @@ export default function AboutSection() {
         <div>
           <b>{t("about.basedIn")}</b> {t("about.basedInValue")} <OldIcon name="Windows2000MyNetworkPlaces" size={12} style={{ verticalAlign: "-1px" }} alt="Indonesia" />
         </div>
-        <div>
+        <div style={{ display: locale === "id" ? "none" : "block" }}>
           <b>{t("about.pronouns")}</b> He / Him
         </div>
         <div>
@@ -69,7 +69,7 @@ export default function AboutSection() {
           <b>{t("about.primaryStack")}</b> React · Supabase · TypeScript
         </div>
         <div>
-          <b>{t("about.education")}</b> Computer Science, Univ. Muhammadiyah Maluku Utara
+          <b>{t("about.education")}</b> {t("about.educationValue")}
         </div>
         <div>
           <b>{t("about.focus")}</b> SPA Development, AI Integration, Product Engineering

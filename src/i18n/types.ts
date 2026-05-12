@@ -65,6 +65,7 @@ export interface Translations {
     "about.role": string;
     "about.primaryStack": string;
     "about.education": string;
+    "about.educationValue": string;
     "about.focus": string;
     "about.techStack": string;
     "about.frontend": string;

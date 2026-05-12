@@ -26,16 +26,16 @@ export default function Header() {
 						dangerouslySetInnerHTML={{ __html: t("header.subtitle") }}
 					/>
 					<div className="flex flex-wrap gap-1 mt-1">
-						<span className="bg-retro-blue-nav text-white text-sm px-2 py-0.5 border border-[#6699cc]">
+						<span className="bg-retro-blue-nav text-white text-sm px-1 border border-[#6699cc]">
 							{t("header.tag.react")}
 						</span>
-						<span className="bg-retro-blue-nav text-white text-sm px-2 py-0.5 border border-[#6699cc]">
+						<span className="bg-retro-blue-nav text-white text-sm px-1 border border-[#6699cc]">
 							{t("header.tag.typescript")}
 						</span>
-						<span className="bg-retro-blue-nav text-white text-sm px-2 py-0.5 border border-[#6699cc]">
+						<span className="bg-retro-blue-nav text-white text-sm px-1 border border-[#6699cc]">
 							{t("header.tag.supabase")}
 						</span>
-						<span className="bg-retro-blue-nav text-white text-sm px-2 py-0.5 border border-[#6699cc]">
+						<span className="bg-retro-blue-nav text-white text-sm px-1 border border-[#6699cc]">
 							{t("header.tag.founder")}
 						</span>
 					</div>

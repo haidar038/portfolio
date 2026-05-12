@@ -7,8 +7,8 @@ const id: Translations = {
     "header.tag.react": "React",
     "header.tag.typescript": "TypeScript",
     "header.tag.supabase": "Supabase",
-    "header.tag.founder": "Founder @ Binary Verse ✓",
-    "header.visitors": "pengunjung sejak 2024",
+    "header.tag.founder": "Pendiri Binary Verse",
+    "header.visitors": "Pengunjung sejak 2025",
     "header.online": "Online | Terakhir dilihat: Hari ini",
 
     // Navigation
@@ -64,10 +64,11 @@ const id: Translations = {
     "about.languages": "Bahasa:",
     "about.basedIn": "Berdomisili di:",
     "about.basedInValue": "Ternate, Maluku Utara",
-    "about.pronouns": "Pronouns:",
+    "about.pronouns": "Kata Ganti:",
     "about.role": "Peran:",
     "about.primaryStack": "Stack Utama:",
     "about.education": "Pendidikan:",
+    "about.educationValue": "Teknik Informatika, Univ. Muhammadiyah Maluku Utara",
     "about.focus": "Fokus:",
     "about.techStack": "TECH STACK SAAT INI",
     "about.frontend": "Frontend",
@@ -174,7 +175,7 @@ const id: Translations = {
     "guestbook.backToHome": "« Kembali ke Beranda",
 
     // Visitor counter
-    "visitor.since": "pengunjung sejak 2026",
+    "visitor.since": "Pengunjung sejak 2026",
 
     // Error Fallback
     "error.title": "Program ini telah melakukan operasi ilegal",

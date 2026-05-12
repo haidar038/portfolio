@@ -7,8 +7,8 @@ const en: Translations = {
     "header.tag.react": "React",
     "header.tag.typescript": "TypeScript",
     "header.tag.supabase": "Supabase",
-    "header.tag.founder": "Founder @ Binary Verse ✓",
-    "header.visitors": "visitors since 2024",
+    "header.tag.founder": "Founder of Binary Verse",
+    "header.visitors": "visitors since 2025",
     "header.online": "Online | Last seen: Today",
 
     // Navigation
@@ -56,10 +56,11 @@ const en: Translations = {
     // About
     "about.photoAlt": "[haidar_photo.jpg]",
     "about.p1":
-        "Halo! Saya <b>Haidar</b>, seorang <b>Full-Stack JavaScript Developer & Product Engineer</b> yang berfokus pada pembangunan aplikasi web modern dengan pendekatan cepat, terstruktur, dan berorientasi pada hasil.",
-    "about.p2":
-        "Latar belakang saya sebagai <b>graphic designer</b> membentuk cara saya berpikir, bukan hanya tentang bagaimana sesuatu bekerja, tetapi juga bagaimana itu dirasakan oleh pengguna. Saya terbiasa mengerjakan produk dari nol hingga siap produksi.",
-    "about.p3": "Saya bekerja dengan pendekatan <b>rapid iteration</b>: mengubah ide menjadi prototype secepat mungkin, menguji langsung di real use case, dan iterasi berdasarkan feedback dan data.",
+  "Hi! I'm <b>Haidar</b>, a <b>Full-Stack JavaScript Developer & Product Engineer</b> focused on building modern web applications with a fast, structured, and results-driven approach.",
+"about.p2":
+  "My background as a <b>graphic designer</b> has shaped the way I think, not just about how things work, but also how they feel to users. I'm used to building products from the ground up all the way to production readiness.",
+"about.p3":
+  "I work with a <b>rapid iteration</b> approach: turning ideas into prototypes as quickly as possible, testing them in real-world use cases, and iterating based on feedback and data.",
     "about.fullName": "Full Name:",
     "about.languages": "Languages:",
     "about.basedIn": "Based in:",
@@ -68,13 +69,14 @@ const en: Translations = {
     "about.role": "Role:",
     "about.primaryStack": "Primary Stack:",
     "about.education": "Education:",
+    "about.educationValue": "Computer Science, Univ. Muhammadiyah Maluku Utara",
     "about.focus": "Focus:",
     "about.techStack": "CURRENT TECH STACK",
     "about.frontend": "Frontend",
     "about.backend": "Backend & Data",
     "about.ai": "AI Integration",
     "about.tools": "Tools & Deploy",
-    "about.quote": '"Produk yang baik bukan hanya berjalan, tapi juga terasa benar saat digunakan."',
+    "about.quote": '"A good product isn\'t just functional, it also feels right when you use it."',
 
     // Projects
     "projects.showing": "Showing",
@@ -173,7 +175,7 @@ const en: Translations = {
     "guestbook.backToHome": "« Back to Home",
 
     // Visitor counter
-    "visitor.since": "visitors since 2026",
+    "visitor.since": "Visitors since 2026",
 
     // Error Fallback
     "error.title": "This program has performed an illegal operation",
