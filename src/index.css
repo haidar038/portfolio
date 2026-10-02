@@ -49,6 +49,8 @@
     --font-retro-sans: Verdana, sans-serif;
     --font-retro-mono: "Courier New", Courier, monospace;
     --font-retro-display: "Arial Black", Arial, sans-serif;
+    --font-retro-digital: "DotGothic16", "Courier New", Courier, monospace;
+    --font-retro-pixel: "Press Start 2P", "DotGothic16", "Courier New", monospace;
 
     /* ── Marquee Animation ── */
     --animate-marquee: marquee-scroll 25s linear infinite;
@@ -382,10 +384,11 @@ a:active {
     cursor: not-allowed;
 }
 
-/* Input styles - Global retro 3D sunken effect */
-input:not([type="checkbox"]):not([type="radio"]):not([type="submit"]):not([type="reset"]):not([type="button"]):not([type="range"]),
-textarea,
-select {
+/* Input styles - Global retro 3D sunken effect
+   Note: .clippy-scope opts out for Clippy chat input. */
+input:not([type="checkbox"]):not([type="radio"]):not([type="submit"]):not([type="reset"]):not([type="button"]):not([type="range"]):not([data-no-retro]):not(.clippy-scope input),
+textarea:not([data-no-retro]):not(.clippy-scope textarea),
+select:not([data-no-retro]) {
     font-family: var(--font-retro-sans);
     border: 2px inset #808080;
     background-color: white;
@@ -418,11 +421,13 @@ select:disabled {
     cursor: not-allowed;
 }
 
-/* Button styles - Global retro 3D raised effect */
-button:not(.retro-panel-title button),
-input[type="submit"],
-input[type="reset"],
-input[type="button"] {
+/* Button styles - Global retro 3D raised effect
+   Note: .clippy-scope and [data-no-retro] opt out to avoid conflicts
+   with Clippy bubble / third-party widgets. */
+button:not(.retro-panel-title button):not([data-no-retro]):not(.clippy-scope button),
+input[type="submit"]:not([data-no-retro]),
+input[type="reset"]:not([data-no-retro]),
+input[type="button"]:not([data-no-retro]) {
     font-family: var(--font-retro-sans);
     background-color: var(--color-retro-winface);
     border: 2px outset #d4d0c8;
@@ -432,10 +437,10 @@ input[type="button"] {
     user-select: none;
 }
 
-button:not(.retro-panel-title button):hover:not(:disabled),
-input[type="submit"]:hover:not(:disabled),
-input[type="reset"]:hover:not(:disabled),
-input[type="button"]:hover:not(:disabled) {
+button:not(.retro-panel-title button):not([data-no-retro]):not(.clippy-scope button):hover:not(:disabled),
+input[type="submit"]:not([data-no-retro]):hover:not(:disabled),
+input[type="reset"]:not([data-no-retro]):hover:not(:disabled),
+input[type="button"]:not([data-no-retro]):hover:not(:disabled) {
     background-color: #e8e4d8;
     box-shadow: inset -1px -1px 0 rgba(0, 0, 0, 0.1);
 }
@@ -448,10 +453,10 @@ input[type="button"]:focus-visible {
     outline-offset: -3px;
 }
 
-button:not(.retro-panel-title button):active:not(:disabled),
-input[type="submit"]:active:not(:disabled),
-input[type="reset"]:active:not(:disabled),
-input[type="button"]:active:not(:disabled) {
+button:not(.retro-panel-title button):not([data-no-retro]):not(.clippy-scope button):active:not(:disabled),
+input[type="submit"]:not([data-no-retro]):active:not(:disabled),
+input[type="reset"]:not([data-no-retro]):active:not(:disabled),
+input[type="button"]:not([data-no-retro]):active:not(:disabled) {
     border: 2px inset #d4d0c8;
     padding: 4px 11px 2px 13px;
     background-color: #dcdad0;
@@ -465,6 +470,20 @@ input[type="button"]:disabled {
     cursor: not-allowed;
     background-color: #d0ccc4;
     color: #808080;
+}
+
+/* ═══════════ CLIPPY SCOPE ISOLATION ═══════════ */
+
+/* Clippy bubble + widgets keep their own styling, never inherit global retro bevel. */
+.clippy-scope button,
+.clippy-scope input,
+.clippy-scope textarea,
+.clippy-scope select {
+    font-family: var(--font-retro-sans);
+}
+
+.clippy-scope img {
+    image-rendering: pixelated;
 }
 
 /* ═══════════ BLINK UTILITY ═══════════ */

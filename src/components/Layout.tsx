@@ -1,10 +1,11 @@
-import { type ReactNode } from "react";
+import { useEffect, type ReactNode } from "react";
 import Header from "./Header";
 import Navigation from "./Navigation";
 import Marquee from "./Marquee";
 import Sidebar from "./Sidebar";
 import Footer from "./Footer";
 import { useI18n } from "../i18n/useI18n";
+import { wireRetroSounds } from "../lib/sound";
 
 interface LayoutProps {
   children: ReactNode;
@@ -17,6 +18,8 @@ interface LayoutProps {
  */
 export default function Layout({ children }: LayoutProps) {
   const { t } = useI18n();
+
+  useEffect(() => wireRetroSounds(), []);
 
   return (
     <div className="max-w-6xl mx-auto bg-retro-panel-bg border-t-2 border-l-2 border-r-2 border-b-2 border-retro-border-dark">

@@ -20,7 +20,7 @@ export default function WinDialog({ title, icon, children, onClose }: WinDialogP
   return (
     <div className="w-full border-t-2 border-l-2 border-r-2 border-b-2 border-retro-border-mid bg-retro-winface shadow-[2px_2px_0px_#000]">
       {/* Title Bar */}
-      <div className="flex items-center justify-between px-1.5 py-0.5 bg-linear-gradient-to-r from-[#000080] to-[#1084d0] select-none">
+      <div className="flex items-center justify-between px-1.5 py-0.5 bg-linear-to-r from-[#000080] to-[#1084d0] select-none">
         <span className="text-white text-xs font-bold flex items-center gap-1.5">
           {icon && <span className="text-sm">{icon}</span>}
           {title}

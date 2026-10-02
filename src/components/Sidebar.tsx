@@ -149,9 +149,9 @@ export default function Sidebar() {
 
       {/* BADGES */}
       <div className="flex flex-col items-center gap-2 mt-2 pt-2 border-t border-[#c8c8c8]">
-        <img src="https://placehold.co/88x31/c0c0c0/000000?text=HTML+4.01" alt="HTML 4.01 Compliant" className="border-2 border-t-white border-l-white border-r-retro-border-mid border-b-retro-border-mid opacity-80 hover:opacity-100 transition-opacity" />
-        <img src="https://placehold.co/88x31/c0c0c0/000000?text=IE+6.0" alt="Best Viewed in IE 6.0" className="border-2 border-t-white border-l-white border-r-retro-border-mid border-b-retro-border-mid opacity-80 hover:opacity-100 transition-opacity" />
-        <img src="https://placehold.co/88x31/c0c0c0/000000?text=CSS+2.0" alt="CSS 2.0 Compliant" className="border-2 border-t-white border-l-white border-r-retro-border-mid border-b-retro-border-mid opacity-80 hover:opacity-100 transition-opacity" />
+        <img src="/thumbnails/badge-html.svg" alt="HTML 4.01 Compliant" width={88} height={31} loading="lazy" className="border-2 border-t-white border-l-white border-r-retro-border-mid border-b-retro-border-mid opacity-80 hover:opacity-100 transition-opacity" />
+        <img src="/thumbnails/badge-ie.svg" alt="Best Viewed in IE 6.0" width={88} height={31} loading="lazy" className="border-2 border-t-white border-l-white border-r-retro-border-mid border-b-retro-border-mid opacity-80 hover:opacity-100 transition-opacity" />
+        <img src="/thumbnails/badge-css.svg" alt="CSS 2.0 Compliant" width={88} height={31} loading="lazy" className="border-2 border-t-white border-l-white border-r-retro-border-mid border-b-retro-border-mid opacity-80 hover:opacity-100 transition-opacity" />
       </div>
     </div>
   );

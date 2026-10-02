@@ -24,7 +24,7 @@ const PROJECTS: ProjectEntry[] = [
     stack: ["React", "Supabase", "Vercel"],
     links: [{ label: "Live", href: "https://rindang.net" }],
     status: "Live Now",
-    thumbnail: "https://placehold.co/80x60/003366/00ff88?text=RIN"
+    thumbnail: "/thumbnails/rindang.svg"
   },
   {
     name: "Wargahub",
@@ -35,7 +35,7 @@ const PROJECTS: ProjectEntry[] = [
     stack: ["React", "Supabase", "TypeScript"],
     links: [{ label: "Live", href: "https://wargahub.biz.id" }],
     status: "Live Now",
-    thumbnail: "https://placehold.co/80x60/003366/00ff88?text=WAR"
+    thumbnail: "/thumbnails/wargahub.svg"
   },
   {
     name: "Warungly",
@@ -46,7 +46,7 @@ const PROJECTS: ProjectEntry[] = [
     stack: ["Vite", "SQLite", "TypeScript"],
     links: [{ label: "Private", href: "#" }],
     status: "In Development",
-    thumbnail: "https://placehold.co/80x60/003366/ffcc00?text=WRL"
+    thumbnail: "/thumbnails/warungly.svg"
   },
   {
     name: "Smart Census",
@@ -56,7 +56,7 @@ const PROJECTS: ProjectEntry[] = [
     stack: ["React", "Supabase", "Groq AI"],
     links: [{ label: "Private", href: "#" }],
     status: "In Development",
-    thumbnail: "https://placehold.co/80x60/003366/ffcc00?text=SMC"
+    thumbnail: "/thumbnails/smart-census.svg"
   },
   {
     name: "Jaga Bumi",
@@ -66,7 +66,7 @@ const PROJECTS: ProjectEntry[] = [
     stack: ["React", "Supabase", "TypeScript"],
     links: [{ label: "Private", href: "#" }],
     status: "In Development",
-    thumbnail: "https://placehold.co/80x60/003366/ffcc00?text=JGB"
+    thumbnail: "/thumbnails/jaga-bumi.svg"
   },
   {
     name: "Badonor",
@@ -76,7 +76,7 @@ const PROJECTS: ProjectEntry[] = [
     stack: ["React", "Supabase", "TypeScript"],
     links: [{ label: "Private", href: "#" }],
     status: "In Development",
-    thumbnail: "https://placehold.co/80x60/003366/ffcc00?text=BDN"
+    thumbnail: "/thumbnails/badonor.svg"
   },
   {
     name: "SapuLidi",
@@ -86,7 +86,7 @@ const PROJECTS: ProjectEntry[] = [
     stack: ["React", "Groq", "LLaMA", "Supabase"],
     links: [{ label: "GitHub", href: "https://sapulidiapp.vercel.app" }],
     status: "Live Demo",
-    thumbnail: "https://placehold.co/80x60/003366/00ff88?text=SPL"
+    thumbnail: "/thumbnails/sapulidi.svg"
   },
   {
     name: "Amtra Journey",
@@ -96,7 +96,7 @@ const PROJECTS: ProjectEntry[] = [
     stack: ["React", "Vite", "Tailwind", "Vercel"],
     links: [{ label: "Live", href: "https://amtrajourney.vercel.app" }],
     status: "Live Demo",
-    thumbnail: "https://placehold.co/80x60/003366/00ff88?text=AMJ"
+    thumbnail: "/thumbnails/amtra-journey.svg"
   },
   {
     name: "PASIAR Ternate",
@@ -106,7 +106,7 @@ const PROJECTS: ProjectEntry[] = [
     stack: ["React", "Supabase", "Tailwind"],
     links: [{ label: "Live", href: "https://pasiar.ternatekota.go.id" }],
     status: "Live Now",
-    thumbnail: "https://placehold.co/80x60/003366/00ff88?text=PSR"
+    thumbnail: "/thumbnails/pasiar-ternate.svg"
   },
   {
     name: "Modiv Eventcraft",
@@ -116,7 +116,7 @@ const PROJECTS: ProjectEntry[] = [
     stack: ["React", "Supabase", "TypeScript"],
     links: [{ label: "Live", href: "https://modiv-eventcraft.vercel.app" }],
     status: "Live Demo",
-    thumbnail: "https://placehold.co/80x60/003366/00ff88?text=MDV"
+    thumbnail: "/thumbnails/modiv-eventcraft.svg"
   },
   {
     name: "UniVertex",
@@ -126,7 +126,7 @@ const PROJECTS: ProjectEntry[] = [
     stack: ["React", "Supabase", "TypeScript"],
     links: [{ label: "Live", href: "https://univertex.vercel.app" }],
     status: "Live Demo",
-    thumbnail: "https://placehold.co/80x60/003366/00ff88?text=UNV"
+    thumbnail: "/thumbnails/univertex.svg"
   },
   {
     name: "ShortLink",
@@ -136,7 +136,7 @@ const PROJECTS: ProjectEntry[] = [
     stack: ["React", "Supabase", "TypeScript"],
     links: [{ label: "Live", href: "https://sl2.my.id" }],
     status: "Live Now",
-    thumbnail: "https://placehold.co/80x60/003366/00ff88?text=SHR"
+    thumbnail: "/thumbnails/shortlink.svg"
   },
   {
     name: "WikiSnap",
@@ -146,7 +146,7 @@ const PROJECTS: ProjectEntry[] = [
     stack: ["React", "Groq AI", "TypeScript"],
     links: [{ label: "Live", href: "https://wikisnap.vercel.app" }],
     status: "Live Now",
-    thumbnail: "https://placehold.co/80x60/003366/00ff88?text=WKS"
+    thumbnail: "/thumbnails/wikisnap.svg"
   },
   {
     name: "Kagounga",
@@ -156,7 +156,7 @@ const PROJECTS: ProjectEntry[] = [
     stack: ["React", "Supabase", "Tailwind"],
     links: [{ label: "Live", href: "https://kagounga.vercel.app" }],
     status: "Live Demo",
-    thumbnail: "https://placehold.co/80x60/003366/00ff88?text=KAG"
+    thumbnail: "/thumbnails/kagounga.svg"
   },
   {
     name: "Personal Portfolio",
@@ -166,7 +166,7 @@ const PROJECTS: ProjectEntry[] = [
     stack: ["SolidJS", "Tailwind", "TypeScript"],
     links: [{ label: "Github", href: "https://github.com/haidar038" }, { label: "Live", href: "https://hydr.codes" }],
     status: "Live Now",
-    thumbnail: "https://placehold.co/80x60/003366/00ff88?text=PRT"
+    thumbnail: "/thumbnails/personal-portfolio.svg"
   },
 ];
 
@@ -230,6 +230,11 @@ export default function ProjectsSection(): ReactNode {
                       height={60}
                       className="border border-black inline-block"
                       loading="lazy"
+                      onError={(e) => {
+                        const el = e.currentTarget;
+                        if (el.src.endsWith("placeholder.svg")) return;
+                        el.src = "/thumbnails/placeholder.svg";
+                      }}
                     />
                   </td>
                   <td className="py-1 px-2 border-r border-black align-top">
