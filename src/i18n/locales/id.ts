@@ -177,6 +177,24 @@ const id: Translations = {
     // Visitor counter
     "visitor.since": "Pengunjung sejak 2026",
 
+    // Clippy assistant
+    "clippy.greeting": "Sepertinya Anda sedang mengunjungi portfolio Haidar! Klik saya kalau butuh tur.",
+    "clippy.idle": "Psst… masih di sana? Saya bisa ceritakan proyek, skill, atau cara menghubungi Haidar.",
+    "clippy.projectsHint": "Sepertinya Anda sedang melihat proyek Haidar! Mau cerita soal Rindang atau UniVertex?",
+    "clippy.guestbookHint": "Wah, Buku Tamu! Tinggalkan pesan agar Haidar tahu Anda mampir.",
+    "clippy.contactHint": "Mau menghubungi Haidar? Formulir kontak ada di sana — saya bisa bantu buatkan pesannya.",
+    "clippy.fallback": "Aduh, modem dial-up saya terputus! Coba tanya lagi sebentar ya.",
+    "clippy.offline": "Otak Clippy sedang offline, tapi portfolio tetap bisa dijelajahi!",
+    "clippy.chatPlaceholder": "Tanya Clippy…",
+    "clippy.send": "Kirim",
+    "clippy.mute": "Bisukan suara",
+    "clippy.unmute": "Nyalakan suara",
+    "clippy.close": "Tutup",
+
+    // Sound toggle
+    "sound.mute": "Bisukan",
+    "sound.unmute": "Suara",
+
     // Error Fallback
     "error.title": "Program ini telah melakukan operasi ilegal",
     "error.message": "Terjadi kesalahan tak terduga. Silakan coba lagi atau kembali ke halaman utama.",

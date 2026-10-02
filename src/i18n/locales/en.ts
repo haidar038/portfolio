@@ -177,6 +177,24 @@ const en: Translations = {
     // Visitor counter
     "visitor.since": "Visitors since 2026",
 
+    // Clippy assistant
+    "clippy.greeting": "It looks like you're visiting Haidar's portfolio! Click me if you need a tour.",
+    "clippy.idle": "Psst… still there? I can tell you about Haidar's projects, skills, or how to contact him.",
+    "clippy.projectsHint": "It looks like you're browsing Haidar's projects! Want the story behind Rindang or UniVertex?",
+    "clippy.guestbookHint": "Ooh, the Guestbook! Leave a message so Haidar knows you stopped by.",
+    "clippy.contactHint": "Looking to reach Haidar? The contact form is right there — I can even help draft the message.",
+    "clippy.fallback": "Uh oh, my dial-up modem just disconnected! Try asking again in a moment.",
+    "clippy.offline": "Clippy's brain is offline right now, but you can still browse the portfolio!",
+    "clippy.chatPlaceholder": "Ask Clippy…",
+    "clippy.send": "Send",
+    "clippy.mute": "Mute sounds",
+    "clippy.unmute": "Unmute sounds",
+    "clippy.close": "Close",
+
+    // Sound toggle
+    "sound.mute": "Mute",
+    "sound.unmute": "Sound",
+
     // Error Fallback
     "error.title": "This program has performed an illegal operation",
     "error.message": "An unexpected error occurred. Please try again or return to the homepage.",

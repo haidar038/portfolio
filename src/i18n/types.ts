@@ -172,6 +172,24 @@ export interface Translations {
     // Visitor counter
     "visitor.since": string;
 
+    // Clippy assistant (bilingual via useI18n locale)
+    "clippy.greeting": string;
+    "clippy.idle": string;
+    "clippy.projectsHint": string;
+    "clippy.guestbookHint": string;
+    "clippy.contactHint": string;
+    "clippy.fallback": string;
+    "clippy.offline": string;
+    "clippy.chatPlaceholder": string;
+    "clippy.send": string;
+    "clippy.mute": string;
+    "clippy.unmute": string;
+    "clippy.close": string;
+
+    // Sound toggle
+    "sound.mute": string;
+    "sound.unmute": string;
+
     // Error Fallback
     "error.title": string;
     "error.message": string;
