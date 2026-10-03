@@ -25,7 +25,7 @@ const JOURNEY_DATA: JourneyEntry[] = [
   },
   {
     period: "Self-directed",
-    title: "Full-Stack JavaScript & Product Engineering",
+    title: "Full-Stack Developer & Product Engineering",
     institution: "Self-taught / Project-based Learning",
     description:
       "Deep-dived into React, TypeScript, Supabase, Tailwind CSS, and modern SPA architecture. Mastered rapid prototyping, AI integration (Groq, LLM, OCR), and full-stack deployment on Vercel. Learned by building 15+ real products.",

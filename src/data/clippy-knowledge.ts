@@ -12,8 +12,8 @@ export interface ClippyKnowledge {
 
 export const CLIPPY_KNOWLEDGE: ClippyKnowledge = {
   profile: {
-    en: "M. Khaidar, 24, Product Engineer & Full-Stack JavaScript Developer from Ternate, Indonesia (WIT UTC+9). Founder of Binary Verse. UI/UX + graphic design background, builds products from concept to deployment.",
-    id: "M. Khaidar, 24, Product Engineer & Full-Stack JavaScript Developer dari Ternate, Indonesia (WIT UTC+9). Founder Binary Verse. Latar UI/UX + desain grafis, membangun produk dari konsep sampai deployment.",
+    en: "M. Khaidar, 24, Product Engineer & Full-Stack Developer from Ternate, Indonesia (WIT UTC+9). Founder of Binary Verse. UI/UX + graphic design background, builds products from concept to deployment.",
+    id: "M. Khaidar, 24, Product Engineer & Full-Stack Developer dari Ternate, Indonesia (WIT UTC+9). Founder Binary Verse. Latar UI/UX + desain grafis, membangun produk dari konsep sampai deployment.",
   },
   stack: [
     "React (Vite + TS)",
