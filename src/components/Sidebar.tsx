@@ -20,6 +20,20 @@ const LEVEL_STYLES: Record<SkillLevel, string> = {
 };
 
 const BLOG_URL = "https://cupofcode.cc/posts";
+const BIRTH_DATE = new Date(2001, 4, 30); // May 30, 2001
+
+function calculateAge(birthDate: Date, currentDate = new Date()): number {
+  const hasHadBirthdayThisYear =
+    currentDate.getMonth() > birthDate.getMonth() ||
+    (currentDate.getMonth() === birthDate.getMonth() &&
+      currentDate.getDate() >= birthDate.getDate());
+
+  return (
+    currentDate.getFullYear() -
+    birthDate.getFullYear() -
+    Number(!hasHadBirthdayThisYear)
+  );
+}
 
 function formatBlogDate(value: string | null, locale: "en" | "id"): string | null {
   if (!value) return null;
@@ -38,6 +52,7 @@ function formatBlogDate(value: string | null, locale: "en" | "id"): string | nul
  */
 export default function Sidebar() {
   const { t, locale } = useI18n();
+  const age = calculateAge(BIRTH_DATE);
   const [blogPosts, setBlogPosts] = useState<BlogPostSummary[]>([]);
   const [blogLoading, setBlogLoading] = useState(true);
   const [blogError, setBlogError] = useState(false);
@@ -60,6 +75,7 @@ export default function Sidebar() {
   }, []);
 
   const skillLevelKey = (level: SkillLevel) => `skill.${level}` as const;
+  const sortedSkills = [...SKILLS].sort((a, b) => a.name.localeCompare(b.name));
 
   return (
     <div className="w-full md:w-72 md:shrink-0 md:border-r-2 md:border-retro-border-mid bg-retro-panel-bg p-2 space-y-2">
@@ -71,7 +87,7 @@ export default function Sidebar() {
         </div>
         <div className="p-1.5 text-xs leading-normal">
           <b>{t("sidebar.name")}</b> M. Khaidar<br />
-          <b>{t("sidebar.age")}</b> 24<br />
+          <b>{t("sidebar.age")}</b> {age}<br />
           <b>{t("sidebar.location")}</b> Ternate, ID<br />
           <b>{t("sidebar.status")}</b> <span className="text-retro-green-online font-bold inline-flex items-center gap-0.5"><OldIcon name="WindowsXPMail" size={10} alt="" /> Online</span><br />
           <b>{t("sidebar.role")}</b> <span className="text-retro-orange">Product Engineer</span><br />
@@ -115,7 +131,7 @@ export default function Sidebar() {
           🖙 {t("sidebar.skillMeter")}
         </div>
         <div className="p-1.5 text-xs">
-          {SKILLS.map((skill) => (
+          {sortedSkills.map((skill) => (
             <div key={skill.name} className="mb-1">
               <div className="flex justify-between items-center">
                 <span>{skill.name}</span>
