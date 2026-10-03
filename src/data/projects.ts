@@ -21,6 +21,8 @@ export interface ProjectEntry {
   stack: string[];
   links: ProjectLink[];
   status: ProjectStatus;
+  /** Primary hosted image URL. Falls back to the local SVG thumbnail when unset or unavailable. */
+  thumbnailUrl?: string;
   thumbnail: string;
 }
 
@@ -29,7 +31,8 @@ export const PROJECTS: ProjectEntry[] = [
     id: "rindang",
     name: "Rindang",
     featured: true,
-    year: "2025",
+    year: "2023",
+    month: 10,
     description: {
       id: "Platform digital farming. Migrasi dari arsitektur monolithic (Flask + MySQL) ke stack modern SPA. Peningkatan performa, scalability, dan UI/UX yang lebih clean.",
       en: "Digital farming platform. Migrated from a monolithic architecture (Flask + MySQL) to a modern SPA stack with better performance, scalability, and cleaner UI/UX.",
@@ -44,6 +47,7 @@ export const PROJECTS: ProjectEntry[] = [
     name: "Wargahub",
     featured: false,
     year: "2025",
+    month: 10,
     description: {
       id: "Platform manajemen desa terintegrasi. Layanan publik digital, sistem pengaduan, publikasi, dan manajemen warga dengan role-based dashboard (admin, staff, warga). Terintegrasi dengan Smart Census.",
       en: "Integrated village management platform. Digital public services, complaint system, publications, and citizen management with role-based dashboards (admin, staff, residents). Integrated with Smart Census.",
@@ -58,6 +62,7 @@ export const PROJECTS: ProjectEntry[] = [
     name: "Warungly",
     featured: false,
     year: "2025",
+    month: 8,
     description: {
       id: "Web-based POS System dengan fitur lengkap: transaksi, inventory management, laporan keuangan, reporting & analytics, dan AI Assistant. Lightweight yet powerful business OS for UMKM.",
       en: "Full-featured web-based POS: transactions, inventory management, financial reports, analytics, and AI assistant. A lightweight yet powerful business OS for SMEs.",
@@ -66,6 +71,37 @@ export const PROJECTS: ProjectEntry[] = [
     links: [{ label: "Private", href: "#" }],
     status: "In Development",
     thumbnail: "/thumbnails/warungly.svg",
+  },
+  {
+    id: "binary-verse",
+    name: "Binary Verse",
+    featured: true,
+    year: "2025",
+    month: 7,
+    description: {
+      id: "Website company profile & platform digital untuk studio software development. Showcase project, layanan, dan tim. Branding visual kuat, storytelling produk digital.",
+      en: "Company profile website & digital platform for a software development studio. Project showcase, services, and team. Strong visual branding and digital product storytelling.",
+    },
+    stack: ["React", "Vite", "Tailwind", "Vercel"],
+    links: [{ label: "Live", href: "https://binaryverse.com" }],
+    status: "Live Now",
+    thumbnail: "/thumbnails/binary-verse.svg",
+  },
+  {
+    id: "cupofcode",
+    name: "Cup of Code",
+    year: "2026",
+    month: 6,
+    description: {
+      id: "Website mini blog .",
+      en: "Personal blog & project showcase website. Built with Astro JS + Tailwind CSS as a retro-concept UI/UX experiment. Iterated often.",
+    },
+    stack: ["Astro", "Tailwind", "TypeScript"],
+    links: [
+      { label: "Github", href: "https://github.com/haidar038/cupofcode" }
+    ],
+    status: "In Development",
+    thumbnail: "/thumbnails/cupofcode.svg",
   },
   {
     id: "smart-census",

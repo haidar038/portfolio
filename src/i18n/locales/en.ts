@@ -1,6 +1,15 @@
 import type { Translations } from "../types";
 
 const en: Translations = {
+  "seo.homeTitle": "M. Khaidar | Full-Stack Developer & Product Engineer",
+  "seo.homeDescription": "Personal portfolio of M. Khaidar, a Full-Stack Developer and Product Engineer building modern web experiences. Explore selected projects, professional experience, and technical journey.",
+  "seo.guestbookTitle": "Guestbook | M. Khaidar",
+  "seo.guestbookDescription": "Leave a message for M. Khaidar. Share feedback, a thought, or simply say hello in the portfolio guestbook.",
+  "seo.blogrollTitle": "Blogroll | M. Khaidar",
+  "seo.blogrollDescription": "A curated collection of friends, communities, tools, and resources recommended by M. Khaidar.",
+  "seo.notFoundTitle": "Page Not Found | M. Khaidar",
+  "seo.notFoundDescription": "This page does not exist or has moved. Return to M. Khaidar's portfolio to explore projects and experience.",
+
   // Header
   "header.name": "★ M. Khaidar ★",
   "header.subtitle": ":: Full-Stack JS Developer & Product Engineer &nbsp;|&nbsp; React · Supabase · TypeScript &nbsp;|&nbsp; Indonesia ::",
@@ -37,8 +46,11 @@ const en: Translations = {
   "sidebar.founder": "Founder:",
   "sidebar.guestbook": "Guestbook",
   "sidebar.blogroll": "Blogroll / Links",
-  "sidebar.construction": "UNDER CONSTRUCTION",
-  "sidebar.blogComing": "Blog section\ncoming soon!",
+  "sidebar.latestBlog": "LATEST BLOG",
+  "sidebar.blogLoading": "Loading latest posts...",
+  "sidebar.blogUnavailable": "The blog feed is unavailable right now.",
+  "sidebar.blogEmpty": "No published articles yet.",
+  "sidebar.blogAllPosts": "All posts ↗",
 
   // Skill levels
   "skill.beginner": "Beginner",
@@ -188,6 +200,7 @@ const en: Translations = {
   "clippy.contactHint": "Looking to reach Haidar? The contact form is right there — I can even help draft the message.",
   "clippy.fallback": "Uh oh, my dial-up modem just disconnected! Try asking again in a moment.",
   "clippy.offline": "Clippy's brain is offline right now, but you can still browse the portfolio!",
+  "clippy.rateLimitCooldown": "Too many questions at once. Try again in {seconds}s.",
   "clippy.chatPlaceholder": "Ask Clippy…",
   "clippy.send": "Send",
   "clippy.abort": "Abort",

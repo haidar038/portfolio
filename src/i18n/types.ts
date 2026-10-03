@@ -1,5 +1,15 @@
 /** Translation key structure - flat keys for simplicity */
 export interface Translations {
+    // Search and social metadata
+    "seo.homeTitle": string;
+    "seo.homeDescription": string;
+    "seo.guestbookTitle": string;
+    "seo.guestbookDescription": string;
+    "seo.blogrollTitle": string;
+    "seo.blogrollDescription": string;
+    "seo.notFoundTitle": string;
+    "seo.notFoundDescription": string;
+
     // Header
     "header.name": string;
     "header.subtitle": string;
@@ -36,8 +46,11 @@ export interface Translations {
     "sidebar.founder": string;
     "sidebar.guestbook": string;
     "sidebar.blogroll": string;
-    "sidebar.construction": string;
-    "sidebar.blogComing": string;
+    "sidebar.latestBlog": string;
+    "sidebar.blogLoading": string;
+    "sidebar.blogUnavailable": string;
+    "sidebar.blogEmpty": string;
+    "sidebar.blogAllPosts": string;
 
     // Skill levels
     "skill.beginner": string;
@@ -183,6 +196,7 @@ export interface Translations {
     "clippy.contactHint": string;
     "clippy.fallback": string;
     "clippy.offline": string;
+    "clippy.rateLimitCooldown": string;
     "clippy.chatPlaceholder": string;
     "clippy.send": string;
     "clippy.abort": string;

@@ -28,8 +28,8 @@ export default function Guestbook() {
   return (
     <Layout>
       <SEOHead
-        title="Guestbook"
-        description="Leave a message in my guestbook! Share your thoughts, feedback, or just say hello."
+        title={t("seo.guestbookTitle")}
+        description={t("seo.guestbookDescription")}
         url="https://hydr.codes/guestbook"
       />
       <div className="mb-4">

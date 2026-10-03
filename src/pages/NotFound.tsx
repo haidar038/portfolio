@@ -13,9 +13,10 @@ export default function NotFound() {
   return (
     <Layout>
       <SEOHead
-        title="Page Not Found"
-        description="The page you're looking for doesn't exist or has been moved."
+        title={t("seo.notFoundTitle")}
+        description={t("seo.notFoundDescription")}
         url="https://hydr.codes/404"
+        noindex
       />
       <div className="flex flex-col items-center justify-center py-12 text-center">
         <h1 className="text-4xl font-bold text-retro-text mb-4">404</h1>

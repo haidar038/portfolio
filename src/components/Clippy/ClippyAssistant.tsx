@@ -87,6 +87,8 @@ export default function ClippyAssistant() {
   const [messages, setMessages] = useState<ChatMsg[]>([]);
   const [input, setInput] = useState("");
   const [busy, setBusy] = useState(false);
+  const [rateLimitUntil, setRateLimitUntil] = useState<number | null>(null);
+  const [cooldownSeconds, setCooldownSeconds] = useState(0);
   const [muted, setMuted] = useState(areSoundsMuted());
   const greeted = useRef(false);
   const lastScrollHint = useRef(0);
@@ -98,6 +100,22 @@ export default function ClippyAssistant() {
   const suppressClickUntilRef = useRef(0);
   const localeRef = useRef(locale);
   const openRef = useRef(open);
+
+  useEffect(() => {
+    if (rateLimitUntil === null) return;
+
+    const updateCooldown = () => {
+      const remaining = Math.max(
+        0,
+        Math.ceil((rateLimitUntil - Date.now()) / 1000),
+      );
+      setCooldownSeconds(remaining);
+      if (remaining === 0) setRateLimitUntil(null);
+    };
+
+    const timer = window.setInterval(updateCooldown, 1000);
+    return () => window.clearInterval(timer);
+  }, [rateLimitUntil]);
 
   useLayoutEffect(() => {
     localeRef.current = locale;
@@ -334,7 +352,12 @@ export default function ClippyAssistant() {
 
   const send = useCallback(async () => {
     const text = input.trim();
-    if (!text || busy) return;
+    if (
+      !text ||
+      busy ||
+      cooldownSeconds > 0 ||
+      (rateLimitUntil !== null && rateLimitUntil > Date.now())
+    ) return;
     setInput("");
     setMessages((m) => [...m.slice(-19), { from: "user", text }]);
     setBusy(true);
@@ -359,6 +382,17 @@ export default function ClippyAssistant() {
         }),
         signal: ctrl.signal,
       });
+      if (res.status === 429) {
+        const retryAfter = Number(res.headers.get("Retry-After"));
+        const seconds =
+          Number.isFinite(retryAfter) && retryAfter > 0
+            ? Math.ceil(retryAfter)
+            : 60;
+        setInput(text);
+        setCooldownSeconds(seconds);
+        setRateLimitUntil(Date.now() + seconds * 1000);
+        return;
+      }
       if (res.status === 503) {
         say(t("clippy.offline"));
         return;
@@ -382,7 +416,7 @@ export default function ClippyAssistant() {
         /* ignore */
       }
     }
-  }, [input, busy, clippy, say, t]);
+  }, [input, busy, cooldownSeconds, rateLimitUntil, clippy, say, t]);
 
   const abort = useCallback(() => {
     userAbortedRef.current = true;
@@ -458,6 +492,14 @@ export default function ClippyAssistant() {
                 {m.text}
               </p>
             ))}
+            {cooldownSeconds > 0 && (
+              <p className="text-right text-retro-orange" aria-live="polite">
+                {t("clippy.rateLimitCooldown").replace(
+                  "{seconds}",
+                  String(cooldownSeconds),
+                )}
+              </p>
+            )}
             {busy && <p className="text-[#666633] blink">…</p>}
           </div>
           <div className="flex gap-1 p-1.5 border-t border-retro-border-mid">
@@ -482,7 +524,7 @@ export default function ClippyAssistant() {
             ) : (
               <button
                 onClick={() => void send()}
-                disabled={!input.trim()}
+                disabled={!input.trim() || cooldownSeconds > 0}
                 className="retro-btn px-2 py-0.5 text-xs cursor-pointer font-bold disabled:opacity-50"
               >
                 {t("clippy.send")}

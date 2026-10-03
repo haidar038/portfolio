@@ -77,16 +77,23 @@ export default function ProjectsSection(): ReactNode {
                 >
                   <td className="p-2 border-r border-black align-top text-center">
                     <img
-                      src={project.thumbnail}
+                      src={project.thumbnailUrl ?? project.thumbnail}
                       alt={project.name}
                       width={80}
-                      height={60}
-                      className="border border-black inline-block"
+                      height={80}
+                      className="border border-black inline-block aspect-square w-20 object-cover"
                       loading="lazy"
                       onError={(e) => {
                         const el = e.currentTarget;
-                        if (el.src.endsWith("placeholder.svg")) return;
-                        el.src = "/thumbnails/placeholder.svg";
+                        if (project.thumbnailUrl && el.dataset.fallback !== "true") {
+                          el.dataset.fallback = "true";
+                          el.src = project.thumbnail;
+                          return;
+                        }
+                        if (el.dataset.placeholder !== "true") {
+                          el.dataset.placeholder = "true";
+                          el.src = "/thumbnails/placeholder.svg";
+                        }
                       }}
                     />
                   </td>

@@ -40,8 +40,8 @@ export default function Blogroll() {
   return (
     <Layout>
       <SEOHead
-        title="Blogroll"
-        description="A curated collection of links to friends, communities, tools, and resources that I find valuable."
+        title={t("seo.blogrollTitle")}
+        description={t("seo.blogrollDescription")}
         url="https://hydr.codes/blogroll"
       />
       <div className="mb-4">

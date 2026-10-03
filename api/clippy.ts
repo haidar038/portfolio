@@ -10,26 +10,46 @@ import { buildKnowledgeBlock } from "../src/data/clippy-knowledge.js";
 const MODEL = process.env.CLIPPY_MODEL || "gemini-3.5-flash-lite";
 const TIMEOUT_MS = 8000;
 
-// Best-effort per-IP rate limit (Edge instances are ephemeral, but this
-// still blunts naive spam from a single burst).
+// Best-effort per-IP rate limit. Function instances are ephemeral, so the
+// counter is intentionally local to each instance.
 const hits = new Map<string, number[]>();
 const WINDOW_MS = 60_000;
 const MAX_HITS = 10;
+let lastSweepAt = 0;
 
-function rateLimited(ip: string): boolean {
+function rateLimitRetryAfter(ip: string): number | null {
   const now = Date.now();
+  if (now - lastSweepAt >= WINDOW_MS) {
+    for (const [key, timestamps] of hits) {
+      const active = timestamps.filter((timestamp) => now - timestamp < WINDOW_MS);
+      if (active.length === 0) hits.delete(key);
+      else hits.set(key, active);
+    }
+    lastSweepAt = now;
+  }
+
   const arr = (hits.get(ip) ?? []).filter((t) => now - t < WINDOW_MS);
+  if (arr.length >= MAX_HITS) {
+    hits.set(ip, arr);
+    return Math.max(1, Math.ceil((arr[0] + WINDOW_MS - now) / 1000));
+  }
+
   arr.push(now);
   hits.set(ip, arr);
-  return arr.length > MAX_HITS;
+  return null;
 }
 
-function json(data: unknown, status = 200): Response {
+function json(
+  data: unknown,
+  status = 200,
+  headers: Record<string, string> = {},
+): Response {
   return new Response(JSON.stringify(data), {
     status,
     headers: {
       "Content-Type": "application/json; charset=utf-8",
       "Access-Control-Allow-Origin": "*",
+      ...headers,
     },
   });
 }
@@ -75,8 +95,13 @@ async function handler(req: Request): Promise<Response> {
 
   const ip =
     req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ?? "unknown";
-  if (rateLimited(ip)) {
-    return json({ error: "Too many requests" }, 429);
+  const retryAfter = rateLimitRetryAfter(ip);
+  if (retryAfter !== null) {
+    return json(
+      { error: "Too many requests" },
+      429,
+      { "Retry-After": String(retryAfter), "Cache-Control": "no-store" },
+    );
   }
 
   let body: { prompt?: unknown; locale?: unknown; context?: unknown };

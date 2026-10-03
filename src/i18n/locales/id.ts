@@ -1,6 +1,15 @@
 import type { Translations } from "../types";
 
 const id: Translations = {
+    "seo.homeTitle": "M. Khaidar | Full-Stack Developer & Product Engineer",
+    "seo.homeDescription": "Portofolio M. Khaidar, Full-Stack Developer dan Product Engineer yang membangun pengalaman web modern. Jelajahi proyek, pengalaman profesional, dan perjalanan teknis.",
+    "seo.guestbookTitle": "Buku Tamu | M. Khaidar",
+    "seo.guestbookDescription": "Tinggalkan pesan untuk M. Khaidar. Bagikan masukan, pemikiran, atau sekadar menyapa melalui buku tamu portofolio.",
+    "seo.blogrollTitle": "Blogroll | M. Khaidar",
+    "seo.blogrollDescription": "Kumpulan pilihan teman, komunitas, alat, dan sumber daya yang direkomendasikan oleh M. Khaidar.",
+    "seo.notFoundTitle": "Halaman Tidak Ditemukan | M. Khaidar",
+    "seo.notFoundDescription": "Halaman ini tidak tersedia atau sudah dipindahkan. Kunjungi portofolio M. Khaidar untuk melihat proyek dan pengalaman.",
+
     // Header
     "header.name": "★ M. Khaidar ★",
     "header.subtitle": ":: Full-Stack JS Developer & Product Engineer &nbsp;|&nbsp; React · Supabase · TypeScript &nbsp;|&nbsp; Indonesia ::",
@@ -37,8 +46,11 @@ const id: Translations = {
     "sidebar.founder": "Founder:",
     "sidebar.guestbook": "Buku Tamu",
     "sidebar.blogroll": "Blogroll / Link",
-    "sidebar.construction": "SEDANG DIBANGUN",
-    "sidebar.blogComing": "Blog section\nsegera hadir!",
+    "sidebar.latestBlog": "ARTIKEL TERBARU",
+    "sidebar.blogLoading": "Memuat artikel terbaru...",
+    "sidebar.blogUnavailable": "Feed blog sedang tidak tersedia.",
+    "sidebar.blogEmpty": "Belum ada artikel yang terbit.",
+    "sidebar.blogAllPosts": "Semua artikel ↗",
 
     // Skill levels
     "skill.beginner": "Pemula",
@@ -188,6 +200,7 @@ const id: Translations = {
     "clippy.contactHint": "Mau menghubungi Haidar? Formulir kontak ada di sana — saya bisa bantu buatkan pesannya.",
     "clippy.fallback": "Aduh, modem dial-up saya terputus! Coba tanya lagi sebentar ya.",
     "clippy.offline": "Otak Clippy sedang offline, tapi portfolio tetap bisa dijelajahi!",
+    "clippy.rateLimitCooldown": "Terlalu banyak pertanyaan. Coba lagi dalam {seconds} detik.",
     "clippy.chatPlaceholder": "Tanya Clippy…",
     "clippy.send": "Kirim",
     "clippy.abort": "Batal",
