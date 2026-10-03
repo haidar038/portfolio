@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useClippy } from "@react95/clippy";
 import { useI18n } from "../../i18n/useI18n";
-import { playSound, setSoundsMuted, areSoundsMuted } from "../../lib/sound";
+import { playSound, setSoundsMuted, areSoundsMuted, startProcessing, stopLoops } from "../../lib/sound";
 
 interface ChatMsg {
   from: "clippy" | "user";
@@ -107,7 +107,7 @@ export default function ClippyAssistant() {
     goHome();
     setOpen(true);
     setCollapsed(false);
-    playSound("click", 0.25);
+    playSound("open", 0.5);
   }, [goHome]);
 
   // Character click (not drag) → home + open chat.
@@ -211,9 +211,12 @@ export default function ClippyAssistant() {
     return () => window.removeEventListener("scroll", onScroll);
   }, [clippy, say, t]);
 
-  // Abort in-flight request on unmount.
+  // Abort in-flight request + loops on unmount.
   useEffect(() => {
-    return () => abortRef.current?.abort();
+    return () => {
+      abortRef.current?.abort();
+      stopLoops();
+    };
   }, []);
 
   const send = useCallback(async () => {
@@ -222,6 +225,7 @@ export default function ClippyAssistant() {
     setInput("");
     setMessages((m) => [...m.slice(-19), { from: "user", text }]);
     setBusy(true);
+    playSound("send", 0.5);
     userAbortedRef.current = false;
     const ctrl = new AbortController();
     abortRef.current = ctrl;
@@ -231,6 +235,7 @@ export default function ClippyAssistant() {
     } catch {
       /* ignore */
     }
+    startProcessing();
     try {
       const res = await fetch("/api/clippy", {
         method: "POST",
@@ -252,6 +257,7 @@ export default function ClippyAssistant() {
     } finally {
       clearTimeout(timer);
       if (abortRef.current === ctrl) abortRef.current = null;
+      stopLoops();
       setBusy(false);
       try {
         clippy?.stop();
@@ -265,6 +271,7 @@ export default function ClippyAssistant() {
     userAbortedRef.current = true;
     abortRef.current?.abort();
     abortRef.current = null;
+    stopLoops();
     setBusy(false);
     try {
       clippy?.stop();
@@ -278,6 +285,12 @@ export default function ClippyAssistant() {
     const next = !muted;
     setMuted(next);
     setSoundsMuted(next);
+    if (!next) playSound("toggle-on", 0.5);
+  };
+
+  const closeChat = () => {
+    setOpen(false);
+    playSound("close", 0.5);
   };
 
   if (!open) return null;
@@ -305,7 +318,7 @@ export default function ClippyAssistant() {
           </button>
           <button
             data-no-retro
-            onClick={() => setOpen(false)}
+            onClick={closeChat}
             aria-label={t("clippy.close")}
             className="w-4 h-4 bg-retro-winface text-[10px] leading-none flex items-center justify-center cursor-pointer border border-retro-border-mid"
           >
