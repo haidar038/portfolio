@@ -56,7 +56,7 @@ const id: Translations = {
     // About
     "about.photoAlt": "[foto_haidar.jpg]",
     "about.p1":
-        "Halo! Saya <b>Haidar</b>, seorang <b>Full-Stack JavaScript Developer & Product Engineer</b> yang berfokus pada pembangunan aplikasi web modern dengan pendekatan cepat, terstruktur, dan berorientasi pada hasil.",
+        "Halo! Saya <b>Haidar</b>, seorang <b>Full-Stack Developer & Product Engineer</b> yang berfokus pada pembangunan aplikasi web modern dengan pendekatan cepat, terstruktur, dan berorientasi pada hasil.",
     "about.p2":
         "Latar belakang saya sebagai <b>graphic designer</b> membentuk cara saya berpikir, bukan hanya tentang bagaimana sesuatu bekerja, tetapi juga bagaimana itu dirasakan oleh pengguna. Saya terbiasa mengerjakan produk dari nol hingga siap produksi.",
     "about.p3": "Saya bekerja dengan pendekatan <b>rapid iteration</b>: mengubah ide menjadi prototype secepat mungkin, menguji langsung di real use case, dan iterasi berdasarkan feedback dan data.",
@@ -187,6 +187,10 @@ const id: Translations = {
     "clippy.offline": "Otak Clippy sedang offline, tapi portfolio tetap bisa dijelajahi!",
     "clippy.chatPlaceholder": "Tanya Clippy…",
     "clippy.send": "Kirim",
+    "clippy.abort": "Batal",
+    "clippy.chatTitle": "Ngobrol dengan Clippy",
+    "clippy.minimize": "Perkecil",
+    "clippy.restore": "Pulihkan",
     "clippy.mute": "Bisukan suara",
     "clippy.unmute": "Nyalakan suara",
     "clippy.close": "Tutup",

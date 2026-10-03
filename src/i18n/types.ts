@@ -182,6 +182,10 @@ export interface Translations {
     "clippy.offline": string;
     "clippy.chatPlaceholder": string;
     "clippy.send": string;
+    "clippy.abort": string;
+    "clippy.chatTitle": string;
+    "clippy.minimize": string;
+    "clippy.restore": string;
     "clippy.mute": string;
     "clippy.unmute": string;
     "clippy.close": string;
