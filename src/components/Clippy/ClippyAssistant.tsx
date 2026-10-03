@@ -288,6 +288,10 @@ export default function ClippyAssistant() {
         }),
         signal: ctrl.signal,
       });
+      if (res.status === 503) {
+        say(t("clippy.offline"));
+        return;
+      }
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       const data = await res.json();
       const reply = typeof data.reply === "string" ? data.reply : "";

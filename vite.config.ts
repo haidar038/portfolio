@@ -10,4 +10,14 @@ export default defineConfig({
     babel({ presets: [reactCompilerPreset()] }),
     tailwindcss()
   ],
+  // Local dev: forward /api to `vercel dev` (default :3000).
+  // Plain `vite dev` has no functions, so /api falls back gracefully.
+  server: {
+    proxy: {
+      "/api": {
+        target: "http://localhost:3000",
+        changeOrigin: true,
+      },
+    },
+  },
 })

@@ -34,18 +34,38 @@ export default async function handler(req: Request): Promise<Response> {
   try {
     // Parse request body
     const body = await req.json();
-    const { name, email, subject, message } = body;
+    const { name, email, subject, message, locale } = body;
+    const lang = locale === "id" ? "id" : "en";
 
     // Validate required fields
     if (!name || !email || !message) {
       return new Response(
         JSON.stringify({ error: "Missing required fields" }),
-        { 
-          status: 400, 
-          headers: { 
+        {
+          status: 400,
+          headers: {
             "Content-Type": "application/json",
             "Access-Control-Allow-Origin": "*",
-          } 
+          }
+        }
+      );
+    }
+
+    // Validate lengths (mirrors frontend maxLength)
+    if (
+      String(name).length > 100 ||
+      String(email).length > 254 ||
+      String(subject ?? "").length > 200 ||
+      String(message).length > 5000
+    ) {
+      return new Response(
+        JSON.stringify({ error: "Input too long" }),
+        {
+          status: 400,
+          headers: {
+            "Content-Type": "application/json",
+            "Access-Control-Allow-Origin": "*",
+          }
         }
       );
     }
@@ -92,8 +112,18 @@ export default async function handler(req: Request): Promise<Response> {
         from: process.env.RESEND_EMAIL_FROM || "onboarding@resend.dev",
         to: "haidar038@gmail.com", // Your email to receive messages
         replyTo: email, // User's email for reply
-        subject: `Portfolio Contact: ${subject || "No subject"}`,
-        html: `
+        subject: lang === "id"
+          ? `Kontak Portfolio: ${subject || "Tanpa subjek"}`
+          : `Portfolio Contact: ${subject || "No subject"}`,
+        html: lang === "id" ? `
+          <h2>Pengiriman Formulir Kontak Baru</h2>
+          <p><strong>Dari:</strong> ${escapeHtml(name)}</p>
+          <p><strong>Email:</strong> <a href="mailto:${escapeHtml(email)}">${escapeHtml(email)}</a></p>
+          <p><strong>Subjek:</strong> ${escapeHtml(subject || "Tanpa subjek")}</p>
+          <hr />
+          <h3>Pesan:</h3>
+          <p>${escapeHtml(message).replace(/\n/g, "<br />")}</p>
+        ` : `
           <h2>New Contact Form Submission</h2>
           <p><strong>From:</strong> ${escapeHtml(name)}</p>
           <p><strong>Email:</strong> <a href="mailto:${escapeHtml(email)}">${escapeHtml(email)}</a></p>

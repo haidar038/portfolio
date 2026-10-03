@@ -89,6 +89,9 @@ export interface Translations {
     "projects.footer": string;
 
     // Contact
+    "contact.namePlaceholder": string;
+    "contact.emailPlaceholder": string;
+    "contact.messagePlaceholder": string;
     "contact.intro": string;
     "contact.formTitle": string;
     "contact.name": string;

@@ -5,25 +5,25 @@ import OldIcon from "./OldIcon";
 
 interface ContactInfo {
   iconName: string;
-  label: string;
-  value: string;
+  label: { en: string; id: string };
+  value: { en: string; id: string };
   href?: string;
 }
 
 const CONTACT_INFO: ContactInfo[] = [
-  { iconName: "WindowsXPMail", label: "Email", value: "haidar038@gmail.com", href: "mailto:haidar038@gmail.com" },
-  { iconName: "WindowsNetwork", label: "GitHub", value: "github.com/haidar038", href: "https://github.com/haidar038" },
-  { iconName: "InternetConnection", label: "LinkedIn", value: "linkedin.com/in/haidar038", href: "https://linkedin.com/in/haidar038" },
-  { iconName: "VisualStudioPhone", label: "WhatsApp", value: "+62 812-4202-4542", href: "https://wa.me/+6281242024542" },
-  { iconName: "VisioMap", label: "Location", value: "Ternate, Maluku Utara, Indonesia" },
-  { iconName: "VisualStudioCLOCK", label: "Response", value: "Usually within 24 hours (WIT, UTC+9)" },
+  { iconName: "WindowsXPMail", label: { en: "Email", id: "Email" }, value: { en: "haidar038@gmail.com", id: "haidar038@gmail.com" }, href: "mailto:haidar038@gmail.com" },
+  { iconName: "WindowsNetwork", label: { en: "GitHub", id: "GitHub" }, value: { en: "github.com/haidar038", id: "github.com/haidar038" }, href: "https://github.com/haidar038" },
+  { iconName: "InternetConnection", label: { en: "LinkedIn", id: "LinkedIn" }, value: { en: "linkedin.com/in/haidar038", id: "linkedin.com/in/haidar038" }, href: "https://linkedin.com/in/haidar038" },
+  { iconName: "VisualStudioPhone", label: { en: "WhatsApp", id: "WhatsApp" }, value: { en: "+62 812-4202-4542", id: "+62 812-4202-4542" }, href: "https://wa.me/+6281242024542" },
+  { iconName: "VisioMap", label: { en: "Location", id: "Lokasi" }, value: { en: "Ternate, Maluku Utara, Indonesia", id: "Ternate, Maluku Utara, Indonesia" } },
+  { iconName: "VisualStudioCLOCK", label: { en: "Response", id: "Respons" }, value: { en: "Usually within 24 hours (WIT, UTC+9)", id: "Biasanya dalam 24 jam (WIT, UTC+9)" } },
 ];
 
 /**
  * Contact section with info table and quick message form.
  */
 export default function ContactSection(): ReactNode {
-  const { t } = useI18n();
+  const { t, locale } = useI18n();
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [subject, setSubject] = useState("");
@@ -57,6 +57,7 @@ export default function ContactSection(): ReactNode {
           email: e,
           subject: s,
           message: m,
+          locale,
         }),
       });
 
@@ -98,15 +99,15 @@ export default function ContactSection(): ReactNode {
           <table className="text-xs leading-normal">
             <tbody>
               {CONTACT_INFO.map((info) => (
-                <tr key={info.label}>
+                <tr key={info.label.en}>
                   <td className="text-retro-text-muted px-2 whitespace-nowrap">
-                    <OldIcon name={info.iconName} size={18} style={{ verticalAlign: "-2px", marginRight: "4px" }} alt={info.label} />{info.label}:
+                    <OldIcon name={info.iconName} size={18} style={{ verticalAlign: "-2px", marginRight: "4px" }} alt={info.label[locale]} />{info.label[locale]}:
                   </td>
                   <td className="px-2">
                     {info.href ? (
-                      <a href={info.href}>{info.value}</a>
+                      <a href={info.href}>{info.value[locale]}</a>
                     ) : (
-                      info.value
+                      info.value[locale]
                     )}
                   </td>
                 </tr>
@@ -126,8 +127,9 @@ export default function ContactSection(): ReactNode {
               <label className="text-xs block mb-0.5">{t("contact.name")}</label>
               <input
                 type="text"
-                placeholder="e.g. John Doe"
+                placeholder={t("contact.namePlaceholder")}
                 value={name}
+                maxLength={100}
                 onChange={(e) => setName(e.currentTarget.value)}
                 className="retro-input w-full px-1.5 py-1 text-xs"
               />
@@ -137,8 +139,9 @@ export default function ContactSection(): ReactNode {
               <label className="text-xs block mb-0.5">{t("contact.email")}</label>
               <input
                 type="text"
-                placeholder="you@example.com"
+                placeholder={t("contact.emailPlaceholder")}
                 value={email}
+                maxLength={254}
                 onChange={(e) => setEmail(e.currentTarget.value)}
                 className="retro-input w-full px-1.5 py-1 text-xs"
               />
@@ -163,8 +166,9 @@ export default function ContactSection(): ReactNode {
               <label className="text-xs block mb-0.5">{t("contact.message")}</label>
               <textarea
                 rows={3}
-                placeholder="Type your message here..."
+                placeholder={t("contact.messagePlaceholder")}
                 value={message}
+                maxLength={5000}
                 onChange={(e) => setMessage(e.currentTarget.value)}
                 className="retro-input w-full px-1.5 py-1 text-xs resize-none"
               />
