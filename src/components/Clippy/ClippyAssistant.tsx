@@ -13,6 +13,8 @@ const SCROLL_COOLDOWN_MS = 60000;
 const CLICK_MAX_DIST_PX = 6;
 const CLICK_MAX_MS = 400;
 const HOME_MARGIN_PX = 16;
+const PANEL_GAP_PX = 12;
+const DOCK_MS = 400;
 const FETCH_TIMEOUT_MS = 9000;
 
 function reducedMotion(): boolean {
@@ -32,14 +34,26 @@ function agentEl(clippy: unknown): HTMLElement | undefined {
   }
 }
 
-function homePos(el?: HTMLElement): { x: number; y: number } {
-  const w = window.innerWidth;
-  const h = window.innerHeight;
-  const ew = el?.offsetWidth || 120;
-  const eh = el?.offsetHeight || 100;
+function agentSize(el?: HTMLElement): { w: number; h: number } {
+  return { w: el?.offsetWidth || 120, h: el?.offsetHeight || 100 };
+}
+
+/** Chat closed: agent rests at bottom-right (dev-status position). */
+function closedAnchor(el?: HTMLElement): { x: number; y: number } {
+  const { w: ew, h: eh } = agentSize(el);
   return {
-    x: Math.max(8, w - ew - HOME_MARGIN_PX),
-    y: Math.max(8, h - eh - HOME_MARGIN_PX),
+    x: Math.max(8, window.innerWidth - ew - HOME_MARGIN_PX),
+    y: Math.max(8, window.innerHeight - eh - HOME_MARGIN_PX),
+  };
+}
+
+/** Chat open: agent docks above the panel. Panel height measured live. */
+function openAnchor(el?: HTMLElement, panel?: HTMLElement | null): { x: number; y: number } {
+  const { w: ew, h: eh } = agentSize(el);
+  const ph = panel?.offsetHeight || 320;
+  return {
+    x: Math.max(8, window.innerWidth - ew - HOME_MARGIN_PX),
+    y: Math.max(8, window.innerHeight - eh - ph - HOME_MARGIN_PX - PANEL_GAP_PX),
   };
 }
 
@@ -61,6 +75,7 @@ export default function ClippyAssistant() {
   const lastScrollHint = useRef(0);
   const abortRef = useRef<AbortController | null>(null);
   const userAbortedRef = useRef(false);
+  const panelRef = useRef<HTMLDivElement | null>(null);
   const localeRef = useRef(locale);
   localeRef.current = locale;
   const openRef = useRef(open);
@@ -85,32 +100,46 @@ export default function ClippyAssistant() {
     [clippy],
   );
 
-  const goHome = useCallback(() => {
-    if (!clippy) return;
-    try {
-      const el = agentEl(clippy);
-      const { x, y } = homePos(el);
-      if (reducedMotion()) {
-        if (el) {
-          el.style.left = `${x}px`;
-          el.style.top = `${y}px`;
+  const dockAt = useCallback(
+    (pos: { x: number; y: number }, instant = false) => {
+      if (!clippy) return;
+      try {
+        const el = agentEl(clippy);
+        if (reducedMotion() || instant) {
+          if (el) {
+            el.style.left = `${pos.x}px`;
+            el.style.top = `${pos.y}px`;
+          }
+          return;
         }
-        return;
+        clippy.moveTo(pos.x, pos.y, DOCK_MS);
+      } catch {
+        /* stays where it is */
       }
-      clippy.moveTo(x, y, 500);
-    } catch {
-      /* stays where it is */
-    }
-  }, [clippy]);
+    },
+    [clippy],
+  );
 
   const openChat = useCallback(() => {
-    goHome();
+    dockAt(openAnchor(agentEl(clippy), panelRef.current));
     setOpen(true);
     setCollapsed(false);
     playSound("open", 0.5);
-  }, [goHome]);
+  }, [dockAt, clippy]);
 
-  // Character click (not drag) → home + open chat.
+  const closeChat = useCallback(() => {
+    setOpen(false);
+    dockAt(closedAnchor(agentEl(clippy)));
+    playSound("close", 0.5);
+  }, [dockAt, clippy]);
+
+  const toggleChat = useCallback(() => {
+    if (openRef.current) closeChat();
+    else openChat();
+  }, [openChat, closeChat]);
+
+  // Character click (not drag) toggles chat. Right-click never triggers.
+  // Initial placement: bottom-right dev-status position, no animation.
   useEffect(() => {
     if (!clippy) return;
     const el = agentEl(clippy);
@@ -118,6 +147,7 @@ export default function ClippyAssistant() {
     el.style.cursor = "pointer";
     el.setAttribute("role", "button");
     el.setAttribute("tabindex", "0");
+    dockAt(closedAnchor(el), true);
     let sx = 0;
     let sy = 0;
     let st = 0;
@@ -127,15 +157,16 @@ export default function ClippyAssistant() {
       st = Date.now();
     };
     const up = (e: PointerEvent) => {
+      if (e.button !== 0) return;
       const moved = Math.hypot(e.clientX - sx, e.clientY - sy);
       if (moved <= CLICK_MAX_DIST_PX && Date.now() - st <= CLICK_MAX_MS) {
-        openChat();
+        toggleChat();
       }
     };
     const key = (e: KeyboardEvent) => {
       if (e.key === "Enter" || e.key === " ") {
         e.preventDefault();
-        openChat();
+        toggleChat();
       }
     };
     el.addEventListener("pointerdown", down);
@@ -146,7 +177,7 @@ export default function ClippyAssistant() {
       el.removeEventListener("pointerup", up);
       el.removeEventListener("keydown", key);
     };
-  }, [clippy, openChat]);
+  }, [clippy, toggleChat, dockAt]);
 
   // Greeting on load (static, works offline)
   useEffect(() => {
@@ -219,6 +250,17 @@ export default function ClippyAssistant() {
     };
   }, []);
 
+  // Viewport change while open → re-dock above the panel.
+  useEffect(() => {
+    if (!clippy) return;
+    const onResize = () => {
+      if (!openRef.current) return;
+      dockAt(openAnchor(agentEl(clippy), panelRef.current), true);
+    };
+    window.addEventListener("resize", onResize);
+    return () => window.removeEventListener("resize", onResize);
+  }, [clippy, dockAt]);
+
   const send = useCallback(async () => {
     const text = input.trim();
     if (!text || busy) return;
@@ -288,15 +330,13 @@ export default function ClippyAssistant() {
     if (!next) playSound("toggle-on", 0.5);
   };
 
-  const closeChat = () => {
-    setOpen(false);
-    playSound("close", 0.5);
-  };
-
   if (!open) return null;
 
   return (
-    <div className="clippy-scope fixed z-[70] right-3 bottom-3 w-80 max-w-[calc(100vw-1.5rem)] border-2 border-retro-border-mid bg-retro-winface shadow-[2px_2px_0px_#000]">
+    <div
+      ref={panelRef}
+      className="clippy-scope fixed z-70 right-3 bottom-3 w-80 max-w-[calc(100vw-1.5rem)] border-2 border-retro-border-mid bg-retro-winface shadow-[2px_2px_0px_#000]"
+    >
       <div className="flex items-center justify-between px-1.5 py-0.5 bg-linear-to-r from-[#000080] to-[#1084d0] select-none">
         <span className="text-white text-xs font-bold">📎 {t("clippy.chatTitle")}</span>
         <div className="flex gap-0.5">
@@ -355,7 +395,7 @@ export default function ClippyAssistant() {
               }}
               placeholder={t("clippy.chatPlaceholder")}
               maxLength={500}
-              className="flex-1 min-w-0 border-2 border-inset border-[#808080] bg-white px-1.5 py-1 text-xs outline-none"
+              className="flex-1 min-w-0 border-2 border-inset border-retro-border-mid bg-white px-1.5 py-1 text-xs outline-none"
             />
             {busy ? (
               <button
