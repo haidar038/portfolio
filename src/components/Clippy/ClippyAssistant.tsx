@@ -34,6 +34,23 @@ function agentEl(clippy: unknown): HTMLElement | undefined {
   }
 }
 
+/** Keep the library's drag loop aligned with positions applied by this component. */
+function setAgentPosition(clippy: unknown, el: HTMLElement, x: number, y: number) {
+  el.style.left = `${x}px`;
+  el.style.top = `${y}px`;
+
+  // @react95/clippy reuses these cached coordinates on the next mousedown.
+  // Our docking animation writes directly to the element, so refresh them too.
+  try {
+    if (!clippy || typeof clippy !== "object") return;
+    const dragState = clippy as { _targetX?: number; _targetY?: number };
+    if ("_targetX" in dragState) dragState._targetX = x;
+    if ("_targetY" in dragState) dragState._targetY = y;
+  } catch {
+    /* Optional library internals; the visual position is already updated. */
+  }
+}
+
 function agentSize(el?: HTMLElement): { w: number; h: number } {
   return { w: el?.offsetWidth || 120, h: el?.offsetHeight || 100 };
 }
@@ -121,8 +138,7 @@ export default function ClippyAssistant() {
         return;
       }
       if (reducedMotion() || instant) {
-        el.style.left = `${pos.x}px`;
-        el.style.top = `${pos.y}px`;
+        setAgentPosition(clippy, el, pos.x, pos.y);
         return;
       }
       const rect = el.getBoundingClientRect();
@@ -134,8 +150,12 @@ export default function ClippyAssistant() {
         if (moveTokenRef.current !== token) return;
         const progress = Math.min((now - start) / DOCK_MS, 1);
         const eased = swing(progress);
-        el.style.left = `${sx + (pos.x - sx) * eased}px`;
-        el.style.top = `${sy + (pos.y - sy) * eased}px`;
+        setAgentPosition(
+          clippy,
+          el,
+          sx + (pos.x - sx) * eased,
+          sy + (pos.y - sy) * eased,
+        );
         if (progress < 1) requestAnimationFrame(step);
       };
       requestAnimationFrame(step);
