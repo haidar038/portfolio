@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 import { useClippy } from "@react95/clippy";
 import { useI18n } from "../../i18n/useI18n";
 import { playSound, setSoundsMuted, areSoundsMuted, startProcessing, stopLoops } from "../../lib/sound";
@@ -76,6 +76,9 @@ export default function ClippyAssistant() {
   const abortRef = useRef<AbortController | null>(null);
   const userAbortedRef = useRef(false);
   const panelRef = useRef<HTMLDivElement | null>(null);
+  const moveTokenRef = useRef(0);
+  const draggedRef = useRef(false);
+  const suppressClickUntilRef = useRef(0);
   const localeRef = useRef(locale);
   localeRef.current = locale;
   const openRef = useRef(open);
@@ -100,43 +103,70 @@ export default function ClippyAssistant() {
     [clippy],
   );
 
-  const dockAt = useCallback(
+  /**
+   * Owned glide: single-flight by token, so rapid toggles can never stack
+   * competing loops (the lib's queued moveTo blinked between targets).
+   * Clears the lib queue first so no stale move fires mid-glide.
+   */
+  const glideTo = useCallback(
     (pos: { x: number; y: number }, instant = false) => {
       if (!clippy) return;
+      const token = ++moveTokenRef.current;
+      let el: HTMLElement | undefined;
       try {
-        const el = agentEl(clippy);
-        if (reducedMotion() || instant) {
-          if (el) {
-            el.style.left = `${pos.x}px`;
-            el.style.top = `${pos.y}px`;
-          }
-          return;
-        }
-        clippy.moveTo(pos.x, pos.y, DOCK_MS);
+        clippy.stop();
+        el = agentEl(clippy);
+        if (!el) return;
       } catch {
-        /* stays where it is */
+        return;
       }
+      if (reducedMotion() || instant) {
+        el.style.left = `${pos.x}px`;
+        el.style.top = `${pos.y}px`;
+        return;
+      }
+      const rect = el.getBoundingClientRect();
+      const sx = rect.left;
+      const sy = rect.top;
+      const start = performance.now();
+      const swing = (p: number) => 0.5 - Math.cos(p * Math.PI) / 2;
+      const step = (now: number) => {
+        if (moveTokenRef.current !== token) return;
+        const progress = Math.min((now - start) / DOCK_MS, 1);
+        const eased = swing(progress);
+        el.style.left = `${sx + (pos.x - sx) * eased}px`;
+        el.style.top = `${sy + (pos.y - sy) * eased}px`;
+        if (progress < 1) requestAnimationFrame(step);
+      };
+      requestAnimationFrame(step);
     },
     [clippy],
   );
 
   const openChat = useCallback(() => {
-    dockAt(openAnchor(agentEl(clippy), panelRef.current));
+    // Glide runs in the layout effect below, after the panel mounts
+    // so openAnchor measures the live panel height.
     setOpen(true);
     setCollapsed(false);
     playSound("open", 0.5);
-  }, [dockAt, clippy]);
+  }, []);
 
   const closeChat = useCallback(() => {
     setOpen(false);
-    dockAt(closedAnchor(agentEl(clippy)));
+    glideTo(closedAnchor(agentEl(clippy)));
     playSound("close", 0.5);
-  }, [dockAt, clippy]);
+  }, [glideTo, clippy]);
 
   const toggleChat = useCallback(() => {
     if (openRef.current) closeChat();
     else openChat();
   }, [openChat, closeChat]);
+
+  // Dock above the panel once it mounts / collapses (live height).
+  useLayoutEffect(() => {
+    if (!open || !clippy) return;
+    glideTo(openAnchor(agentEl(clippy), panelRef.current));
+  }, [open, collapsed, clippy, glideTo]);
 
   // Character click (not drag) toggles chat. Right-click never triggers.
   // Initial placement: bottom-right dev-status position, no animation.
@@ -147,7 +177,7 @@ export default function ClippyAssistant() {
     el.style.cursor = "pointer";
     el.setAttribute("role", "button");
     el.setAttribute("tabindex", "0");
-    dockAt(closedAnchor(el), true);
+    glideTo(closedAnchor(el), true);
     let sx = 0;
     let sy = 0;
     let st = 0;
@@ -155,9 +185,20 @@ export default function ClippyAssistant() {
       sx = e.clientX;
       sy = e.clientY;
       st = Date.now();
+      draggedRef.current = false;
+    };
+    const move = (e: PointerEvent) => {
+      if (Math.hypot(e.clientX - sx, e.clientY - sy) > CLICK_MAX_DIST_PX) {
+        draggedRef.current = true;
+      }
     };
     const up = (e: PointerEvent) => {
       if (e.button !== 0) return;
+      if (draggedRef.current) {
+        suppressClickUntilRef.current = Date.now() + 200;
+        return;
+      }
+      if (Date.now() < suppressClickUntilRef.current) return;
       const moved = Math.hypot(e.clientX - sx, e.clientY - sy);
       if (moved <= CLICK_MAX_DIST_PX && Date.now() - st <= CLICK_MAX_MS) {
         toggleChat();
@@ -170,14 +211,16 @@ export default function ClippyAssistant() {
       }
     };
     el.addEventListener("pointerdown", down);
+    el.addEventListener("pointermove", move);
     el.addEventListener("pointerup", up);
     el.addEventListener("keydown", key);
     return () => {
       el.removeEventListener("pointerdown", down);
+      el.removeEventListener("pointermove", move);
       el.removeEventListener("pointerup", up);
       el.removeEventListener("keydown", key);
     };
-  }, [clippy, toggleChat, dockAt]);
+  }, [clippy, toggleChat, glideTo]);
 
   // Greeting on load (static, works offline)
   useEffect(() => {
@@ -255,11 +298,11 @@ export default function ClippyAssistant() {
     if (!clippy) return;
     const onResize = () => {
       if (!openRef.current) return;
-      dockAt(openAnchor(agentEl(clippy), panelRef.current), true);
+      glideTo(openAnchor(agentEl(clippy), panelRef.current), true);
     };
     window.addEventListener("resize", onResize);
     return () => window.removeEventListener("resize", onResize);
-  }, [clippy, dockAt]);
+  }, [clippy, glideTo]);
 
   const send = useCallback(async () => {
     const text = input.trim();
