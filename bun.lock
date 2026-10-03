@@ -5,18 +5,18 @@
     "": {
       "name": "my-porto",
       "dependencies": {
-        "@tailwindcss/vite": "^4.2.4",
+        "@react95/clippy": "^2.2.3",
         "firebase": "^12.12.1",
         "react": "^19.2.5",
         "react-dom": "^19.2.5",
         "react-helmet-async": "^3.0.0",
         "react-router-dom": "^7.14.2",
-        "tailwindcss": "^4.2.4",
       },
       "devDependencies": {
         "@babel/core": "^7.29.0",
         "@eslint/js": "^10.0.1",
         "@rolldown/plugin-babel": "^0.2.3",
+        "@tailwindcss/vite": "^4.2.4",
         "@types/babel__core": "^7.20.5",
         "@types/node": "^24.12.2",
         "@types/react": "^19.2.14",
@@ -27,6 +27,7 @@
         "eslint-plugin-react-hooks": "^7.1.1",
         "eslint-plugin-react-refresh": "^0.5.2",
         "globals": "^17.5.0",
+        "tailwindcss": "^4.2.4",
         "typescript": "~6.0.2",
         "typescript-eslint": "^8.58.2",
         "vite": "^8.0.10",
@@ -224,6 +225,8 @@
 
     "@protobufjs/utf8": ["@protobufjs/utf8@1.1.0", "", {}, "sha512-Vvn3zZrhQZkkBE8LSuW3em98c0FwgO4nxzv6OdSxPKJIEKY2bGbHn+mhGIPerzI4twdxaP8/0+06HBpwf345Lw=="],
 
+    "@react95/clippy": ["@react95/clippy@2.2.3", "", { "dependencies": { "clippyjs": "0.1.0" }, "peerDependencies": { "react": ">= 16.8.0" } }, "sha512-e3fnowpYoy82B03Omqn+cSBo6MuUt1agvzi8lO/I/C12Dt8pyEBdSiMqBWphXhATsdGdrj1a3fZpLWX4o1pzzA=="],
+
     "@rolldown/binding-android-arm64": ["@rolldown/binding-android-arm64@1.0.0-rc.17", "", { "os": "android", "cpu": "arm64" }, "sha512-s70pVGhw4zqGeFnXWvAzJDlvxhlRollagdCCKRgOsgUOH3N1l0LIxf83AtGzmb5SiVM4Hjl5HyarMRfdfj3DaQ=="],
 
     "@rolldown/binding-darwin-arm64": ["@rolldown/binding-darwin-arm64@1.0.0-rc.17", "", { "os": "darwin", "cpu": "arm64" }, "sha512-4ksWc9n0mhlZpZ9PMZgTGjeOPRu8MB1Z3Tz0Mo02eWfWCHMW1zN82Qz/pL/rC+yQa+8ZnutMF0JjJe7PjwasYw=="],
@@ -353,6 +356,8 @@
     "browserslist": ["browserslist@4.28.2", "", { "dependencies": { "baseline-browser-mapping": "^2.10.12", "caniuse-lite": "^1.0.30001782", "electron-to-chromium": "^1.5.328", "node-releases": "^2.0.36", "update-browserslist-db": "^1.2.3" }, "bin": { "browserslist": "cli.js" } }, "sha512-48xSriZYYg+8qXna9kwqjIVzuQxi+KYWp2+5nCYnYKPTr0LvD89Jqk2Or5ogxz0NUMfIjhh2lIUX/LyX9B4oIg=="],
 
     "caniuse-lite": ["caniuse-lite@1.0.30001790", "", {}, "sha512-bOoxfJPyYo+ds6W0YfptaCWbFnJYjh2Y1Eow5lRv+vI2u8ganPZqNm1JwNh0t2ELQCqIWg4B3dWEusgAmsoyOw=="],
+
+    "clippyjs": ["clippyjs@0.1.0", "", {}, "sha512-XnchzSR8H8X43TvwnAktK5xDewKGSyfGu8DagBZCbOUdx0dWAFrFdxdCWlaJkyfx4M3Amvvu13jbHQ/IYQOD+w=="],
 
     "cliui": ["cliui@8.0.1", "", { "dependencies": { "string-width": "^4.2.0", "strip-ansi": "^6.0.1", "wrap-ansi": "^7.0.0" } }, "sha512-BSeNnyus75C4//NQ9gQt1/csTXyo/8Sb+afLAkzAptFuMsod9HFokGNudZpi/oQV73hnVK+sR+5PVRMd+Dr7YQ=="],
 
