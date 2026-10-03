@@ -1,4 +1,4 @@
-import { PROJECTS } from "./projects";
+import { PROJECTS } from "./projects.js";
 
 /* Compact knowledge injected into the Clippy system prompt.
    Derived from the canonical dataset (WS2) — only active projects. */

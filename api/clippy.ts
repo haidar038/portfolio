@@ -6,7 +6,7 @@
  * Deployed to: Vercel Edge Functions
  */
 
-import { buildKnowledgeBlock } from "../src/data/clippy-knowledge";
+import { buildKnowledgeBlock } from "../src/data/clippy-knowledge.js";
 
 const MODEL = process.env.CLIPPY_MODEL || "gemini-3.5-flash-lite";
 const TIMEOUT_MS = 8000;
