@@ -12,7 +12,7 @@ import {
 
 const PACK = "mechanical" as const;
 const PREF_KEY = "portfolio.sound.enabled";
-const VOLUME = 0.7;
+const VOLUME = 0.85;
 
 /** Legacy kinds kept for compat, mapped to semantic cues. */
 const KIND_TO_CUE = {
@@ -127,7 +127,7 @@ export function stopLoops(): void {
 /* One-time global wiring: press cue on .retro-btn, unlock on first gesture.
    Call once from Layout/App. Returns cleanup fn. */
 export function wireRetroSounds(): () => void {
-  if (typeof document === "undefined") return () => {};
+  if (typeof document === "undefined") return () => { };
   const onPointerDown = () => unlockSounds();
   const onKeyDown = () => unlockSounds();
   const onClick = (e: MouseEvent) => {
