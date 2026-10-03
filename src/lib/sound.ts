@@ -33,6 +33,7 @@ export type SoundKind = keyof typeof KIND_TO_CUE;
 let player: UISFXPlayer | null = null;
 let muted = false;
 let unlocked = false;
+let unlocking = false;
 const activeLoops = new Set<PlayingSFX>();
 
 function getPlayer(): UISFXPlayer | null {
@@ -62,11 +63,18 @@ function persist() {
 /** Call synchronously inside a pointer/keyboard handler to unlock audio. */
 export function unlockSounds(): void {
   const p = getPlayer();
-  if (!p || unlocked) return;
-  unlocked = true;
-  void p.unlock().catch(() => {
-    /* autoplay denied — cues stay silent until next gesture */
-  });
+  if (!p || unlocked || unlocking) return;
+  unlocking = true;
+  void p
+    .unlock()
+    .then((success) => {
+      unlocked = success;
+      unlocking = false;
+    })
+    .catch(() => {
+      unlocking = false;
+      /* autoplay denied — a later user gesture can retry */
+    });
 }
 
 export function setSoundsMuted(m: boolean): void {
@@ -90,12 +98,10 @@ export function playSound(kind: SoundKind, volume = VOLUME): void {
   if (muted) return;
   if (typeof window === "undefined") return;
   // Suppress background/async cues until the first real gesture.
-  if (!unlocked) {
-    unlockSounds();
-    return;
-  }
+  if (!unlocked) return;
   try {
-    getPlayer()?.play(KIND_TO_CUE[kind], { volume }) ?? null;
+    const soundPlayer = getPlayer();
+    if (soundPlayer) soundPlayer.play(KIND_TO_CUE[kind], { volume });
   } catch {
     /* never break UI for sound */
   }

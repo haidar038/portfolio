@@ -140,7 +140,7 @@ const id: Translations = {
 
     // Layout
     "marquee.text":
-        "  ★ Selamat datang di portfolio pribadi saya - M. Khaidar ★   ☆ BARU: Wargahub sekarang LIVE - platform manajemen desa terintegrasi ☆   ★ Sedang membangun Smart Census, Warungly & Jaga Bumi ★   [ UPDATE ] 15+ produk dirilis di bawah Binary Verse   ★ Full-Stack JS Developer & Product Engineer - React · Supabase · TypeScript ★   ☆ Buku Tamu sekarang LIVE - ayo tandatangani! ☆   ★ Terima kasih telah berkunjung ★  ",
+        "  ★ Selamat datang di portfolio pribadi saya - M. Khaidar ★   ☆ BARU: Wargahub sekarang LIVE - platform manajemen desa terintegrasi ☆   ★ Sedang membangun Smart Census, Warungly & Jaga Bumi ★   [ UPDATE ] 10+ produk dirilis di bawah Binary Verse   ★ Full-Stack JS Developer & Product Engineer - React · Supabase · TypeScript ★   ☆ Buku Tamu sekarang LIVE - ayo tandatangani! ☆   ★ Terima kasih telah berkunjung ★  ",
 
     // Blogroll
     "blogroll.title": "BLOGROLL / LINK",

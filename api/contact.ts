@@ -1,10 +1,9 @@
 /**
- * Edge Function: Send contact form email via Resend API
+ * Vercel Node.js Web Handler: Send contact form email via Resend API
  * Endpoint: POST /api/contact
- * Deployed to: Vercel Edge Functions
  */
 
-export default async function handler(req: Request): Promise<Response> {
+async function handler(req: Request): Promise<Response> {
   // Handle CORS preflight
   if (req.method === "OPTIONS") {
     return new Response(null, {
@@ -181,6 +180,8 @@ export default async function handler(req: Request): Promise<Response> {
     );
   }
 }
+
+export default { fetch: handler };
 
 /**
  * Escape HTML special characters to prevent XSS

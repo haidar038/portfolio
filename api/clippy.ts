@@ -1,9 +1,8 @@
 /**
- * Edge Function: Clippy AI brain via Gemini Interactions API
+ * Vercel Node.js Function: Clippy AI brain via Gemini Interactions API
  * Endpoint: POST /api/clippy
  * Body: { prompt: string (max 500), locale: "en" | "id", context?: string (max 200) }
  * Returns: { reply: string }
- * Deployed to: Vercel Edge Functions
  */
 
 import { buildKnowledgeBlock } from "../src/data/clippy-knowledge.js";
@@ -29,7 +28,7 @@ function json(data: unknown, status = 200): Response {
   return new Response(JSON.stringify(data), {
     status,
     headers: {
-      "Content-Type": "application/json",
+      "Content-Type": "application/json; charset=utf-8",
       "Access-Control-Allow-Origin": "*",
     },
   });
@@ -46,17 +45,17 @@ function systemPrompt(locale: string): string {
 }
 
 const REPLY_SCHEMA = {
-  type: "object",
+  type: "OBJECT",
   properties: {
-    reply: { type: "string", description: "Clippy reply, max 2-3 sentences" },
+    reply: { type: "STRING", description: "Clippy reply, max 2-3 sentences" },
   },
   required: ["reply"],
 };
 
-export default async function handler(req: Request): Promise<Response> {
+async function handler(req: Request): Promise<Response> {
   if (req.method === "OPTIONS") {
     return new Response(null, {
-      status: 200,
+      status: 204,
       headers: {
         "Access-Control-Allow-Origin": "*",
         "Access-Control-Allow-Methods": "POST, OPTIONS",
@@ -82,7 +81,11 @@ export default async function handler(req: Request): Promise<Response> {
 
   let body: { prompt?: unknown; locale?: unknown; context?: unknown };
   try {
-    body = await req.json();
+    const parsed: unknown = await req.json();
+    if (!parsed || typeof parsed !== "object" || Array.isArray(parsed)) {
+      return json({ error: "Invalid JSON" }, 400);
+    }
+    body = parsed as typeof body;
   } catch {
     return json({ error: "Invalid JSON" }, 400);
   }
@@ -103,14 +106,13 @@ export default async function handler(req: Request): Promise<Response> {
   const ctrl = new AbortController();
   const timer = setTimeout(() => ctrl.abort(), TIMEOUT_MS);
   try {
-    const res = await fetch(
+    const geminiResponse = await fetch(
       "https://generativelanguage.googleapis.com/v1beta/interactions",
       {
         method: "POST",
         headers: {
           "x-goog-api-key": apiKey,
           "Content-Type": "application/json",
-          "Api-Revision": "2026-05-20",
         },
         body: JSON.stringify({
           model: MODEL,
@@ -125,22 +127,25 @@ export default async function handler(req: Request): Promise<Response> {
       },
     );
 
-    if (!res.ok) {
-      console.error("Gemini error:", res.status);
+    if (!geminiResponse.ok) {
+      const details = (await geminiResponse.text().catch(() => "")).slice(0, 500);
+      console.error("Gemini API error:", geminiResponse.status, details);
       return json({ error: "AI service error" }, 502);
     }
 
-    const data = await res.json();
+    const data = await geminiResponse.json();
     // Interactions API: steps[] contains model_output with text content.
     const steps: Array<{
       type?: string;
       content?: Array<{ type?: string; text?: string }>;
     }> = data.steps ?? [];
     const textPart = steps
+      .filter((step) => step.type === "model_output")
       .flatMap((s) => s.content ?? [])
       .find((c) => typeof c.text === "string")?.text;
 
-    const raw = textPart ?? data.output_text ?? "";
+    const raw =
+      textPart ?? (typeof data.output_text === "string" ? data.output_text : "");
     let reply = "";
     try {
       reply = (JSON.parse(raw).reply as string) ?? "";
@@ -157,3 +162,5 @@ export default async function handler(req: Request): Promise<Response> {
     clearTimeout(timer);
   }
 }
+
+export default { fetch: handler };

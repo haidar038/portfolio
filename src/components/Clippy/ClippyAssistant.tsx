@@ -97,9 +97,12 @@ export default function ClippyAssistant() {
   const draggedRef = useRef(false);
   const suppressClickUntilRef = useRef(0);
   const localeRef = useRef(locale);
-  localeRef.current = locale;
   const openRef = useRef(open);
-  openRef.current = open;
+
+  useLayoutEffect(() => {
+    localeRef.current = locale;
+    openRef.current = open;
+  }, [locale, open]);
 
   const say = useCallback(
     (text: string, animation?: string) => {
@@ -202,6 +205,11 @@ export default function ClippyAssistant() {
     let sy = 0;
     let st = 0;
     const down = (e: PointerEvent) => {
+      // The library's next drag tick writes its cached target coordinates,
+      // which can still point at the last user-dragged position. Sync them
+      // from the live element before its mousedown handler starts that tick.
+      const rect = el.getBoundingClientRect();
+      setAgentPosition(clippy, el, rect.left, rect.top);
       sx = e.clientX;
       sy = e.clientY;
       st = Date.now();

@@ -46,8 +46,8 @@ export const JOURNEY_DATA: JourneyEntry[] = [
       id: "Otodidak / Pembelajaran Berbasis Proyek",
     },
     description: {
-      en: "Deep-dived into React, TypeScript, Supabase, Tailwind CSS, and modern SPA architecture. Mastered rapid prototyping, AI integration (Groq, LLM, OCR), and full-stack deployment on Vercel. Learned by building 15+ real products.",
-      id: "Mendalami React, TypeScript, Supabase, Tailwind CSS, dan arsitektur SPA modern. Menguasai rapid prototyping, integrasi AI (Groq, LLM, OCR), dan deployment full-stack di Vercel. Belajar dengan membangun 15+ produk nyata.",
+      en: "Deep-dived into React, TypeScript, Supabase, Tailwind CSS, and modern SPA architecture. Mastered rapid prototyping, AI integration (Groq, LLM, OCR), and full-stack deployment on Vercel. Learned by building 10+ real products.",
+      id: "Mendalami React, TypeScript, Supabase, Tailwind CSS, dan arsitektur SPA modern. Menguasai rapid prototyping, integrasi AI (Groq, LLM, OCR), dan deployment full-stack di Vercel. Belajar dengan membangun 10+ produk nyata.",
     },
   },
 ];

@@ -140,7 +140,7 @@ const en: Translations = {
 
   // Layout
   "marquee.text":
-    "  ★ Welcome to my personal portfolio - M. Khaidar ★ | ☆ NEW: Wargahub is now LIVE - integrated village management platform ☆ | ★ Currently building Smart Census, Warungly & Jaga Bumi ★ | [ UPDATE ] 15+ products shipped under Binary Verse   ★ Full-Stack JS Developer & Product Engineer - React · Supabase · TypeScript ★ | ☆ Guestbook is now LIVE - come sign it! ☆ | ★ Thank you for visiting ★ ",
+    "  ★ Welcome to my personal portfolio - M. Khaidar ★ | ☆ NEW: Wargahub is now LIVE - integrated village management platform ☆ | ★ Currently building Smart Census, Warungly & Jaga Bumi ★ | [ UPDATE ] 10+ products shipped under Binary Verse   ★ Full-Stack JS Developer & Product Engineer - React · Supabase · TypeScript ★ | ☆ Guestbook is now LIVE - come sign it! ☆ | ★ Thank you for visiting ★ ",
 
   // Blogroll
   "blogroll.title": "BLOGROLL / LINKS",

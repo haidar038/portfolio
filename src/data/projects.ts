@@ -218,10 +218,10 @@ export const PROJECTS: ProjectEntry[] = [
     name: "Personal Portfolio",
     year: "2025",
     description: {
-      id: "Website portfolio pribadi. Dibangun dengan SolidJS + Tailwind CSS, eksperimen UI/UX retro konsep. Showcase project dan skill. Iteratif dan sering di-refactor.",
-      en: "Personal portfolio website. Built with SolidJS + Tailwind CSS as a retro-concept UI/UX experiment. Project and skill showcase, iterated often.",
+      id: "Website portfolio pribadi. Dibangun dengan Vite + Tailwind CSS, eksperimen UI/UX retro konsep. Showcase project dan skill. Iteratif dan sering di-refactor.",
+      en: "Personal portfolio website. Built with Vite + Tailwind CSS as a retro-concept UI/UX experiment. Project and skill showcase, iterated often.",
     },
-    stack: ["SolidJS", "Tailwind", "TypeScript"],
+    stack: ["Vite", "Tailwind", "TypeScript"],
     links: [
       { label: "Github", href: "https://github.com/haidar038" },
       { label: "Live", href: "https://hydr.codes" },
