@@ -15,6 +15,8 @@ export interface ProjectEntry {
   name: string;
   featured?: boolean;
   year: string;
+  /** Month 1-12 for newest-first tracking. Optional until confirmed — missing sorts as oldest within its year and displays year only. */
+  month?: number;
   description: { en: string; id: string };
   stack: string[];
   links: ProjectLink[];
@@ -33,14 +35,14 @@ export const PROJECTS: ProjectEntry[] = [
       en: "Digital farming platform. Migrated from a monolithic architecture (Flask + MySQL) to a modern SPA stack with better performance, scalability, and cleaner UI/UX.",
     },
     stack: ["React", "Supabase", "Vercel"],
-    links: [{ label: "Live", href: "https://rindang.net" }],
+    links: [{ label: "Live", href: "https://rindang.vercel.app" }],
     status: "Live Now",
     thumbnail: "/thumbnails/rindang.svg",
   },
   {
     id: "wargahub",
     name: "Wargahub",
-    featured: true,
+    featured: false,
     year: "2025",
     description: {
       id: "Platform manajemen desa terintegrasi. Layanan publik digital, sistem pengaduan, publikasi, dan manajemen warga dengan role-based dashboard (admin, staff, warga). Terintegrasi dengan Smart Census.",
@@ -54,7 +56,7 @@ export const PROJECTS: ProjectEntry[] = [
   {
     id: "warungly",
     name: "Warungly",
-    featured: true,
+    featured: false,
     year: "2025",
     description: {
       id: "Web-based POS System dengan fitur lengkap: transaksi, inventory management, laporan keuangan, reporting & analytics, dan AI Assistant. Lightweight yet powerful business OS for UMKM.",
@@ -122,6 +124,7 @@ export const PROJECTS: ProjectEntry[] = [
     id: "amtra-journey",
     name: "Amtra Journey",
     year: "2025",
+    featured: true,
     description: {
       id: "Website company profile & platform digital untuk tour & trip di Yogyakarta. Rebuild ke modern SPA, UI/UX storytelling untuk trust & engagement, mobile-first responsive design.",
       en: "Company profile website & digital platform for tours and trips in Yogyakarta. Rebuilt as a modern SPA with storytelling UI/UX for trust and engagement, mobile-first.",
@@ -135,6 +138,7 @@ export const PROJECTS: ProjectEntry[] = [
     id: "pasiar-ternate",
     name: "PASIAR Ternate",
     year: "2025",
+    featured: true,
     description: {
       id: "Portal budaya dan informasi lokal Ternate. Migrasi dari WordPress ke React SPA dengan CMS custom berbasis Supabase. Digitalisasi konten lokal.",
       en: "Ternate local culture and information portal. Migrated from WordPress to a React SPA with a custom Supabase-based CMS. Local content digitalization.",

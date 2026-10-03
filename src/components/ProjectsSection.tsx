@@ -1,9 +1,28 @@
-import { useState, type ReactNode } from "react";
+import { useMemo, useState, type ReactNode } from "react";
 import Section from "./Section";
 import { useI18n } from "../i18n/useI18n";
 import { PROJECTS } from "../data/projects";
+import type { Locale } from "../i18n/types";
 
 const ITEMS_PER_PAGE = 5;
+
+/** Featured first, then newest-first by (year, month). Stable for ties. */
+function sortProjects<T extends { featured?: boolean; year: string; month?: number }>(list: T[]): T[] {
+  return [...list].sort((a, b) => {
+    if (!!a.featured !== !!b.featured) return a.featured ? -1 : 1;
+    if (a.year !== b.year) return Number(b.year) - Number(a.year);
+    return (b.month ?? 0) - (a.month ?? 0);
+  });
+}
+
+/** "Mar 2025" / "Mar 2025" bilingual; falls back to year when month unknown. */
+function formatPeriod(year: string, month: number | undefined, locale: Locale): string {
+  if (!month) return year;
+  return new Intl.DateTimeFormat(locale === "id" ? "id-ID" : "en-US", {
+    month: "short",
+    year: "numeric",
+  }).format(new Date(Number(year), month - 1, 1));
+}
 
 /**
  * Projects / Portfolio section with retro data table and pagination.
@@ -12,14 +31,15 @@ export default function ProjectsSection(): ReactNode {
   const { t, locale } = useI18n();
   const [currentPage, setCurrentPage] = useState(1);
 
-  const totalPages = Math.ceil(PROJECTS.length / ITEMS_PER_PAGE);
-  const paginatedProjects = PROJECTS.slice(
+  const sorted = useMemo(() => sortProjects(PROJECTS), []);
+  const totalPages = Math.ceil(sorted.length / ITEMS_PER_PAGE);
+  const paginatedProjects = sorted.slice(
     (currentPage - 1) * ITEMS_PER_PAGE,
     currentPage * ITEMS_PER_PAGE
   );
 
   const showing = (currentPage - 1) * ITEMS_PER_PAGE + 1;
-  const showingEnd = Math.min(currentPage * ITEMS_PER_PAGE, PROJECTS.length);
+  const showingEnd = Math.min(currentPage * ITEMS_PER_PAGE, sorted.length);
 
   return (
     <Section id="projects" title={t("section.projects")}>
@@ -82,7 +102,7 @@ export default function ProjectsSection(): ReactNode {
                     )}
                     <br />
                     <span className="text-retro-text-muted text-xs">
-                      {project.year}
+                      {formatPeriod(project.year, project.month, locale)}
                     </span>
                   </td>
                   <td className="py-1 px-2 border-r border-black leading-normal">
@@ -128,7 +148,7 @@ export default function ProjectsSection(): ReactNode {
       {/* Pagination */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-1 mt-2">
         <div className="text-xs text-[#666]">
-          {t("projects.showing")} {showing}-{showingEnd} {t("projects.of")} {PROJECTS.length}
+          {t("projects.showing")} {showing}-{showingEnd} {t("projects.of")} {sorted.length}
         </div>
         <div className="flex items-center gap-0.5">
           <button
