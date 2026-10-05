@@ -34,6 +34,10 @@ let player: UISFXPlayer | null = null;
 let muted = false;
 let unlocked = false;
 let unlocking = false;
+let greetingSoundPending = false;
+let greetingWaitsForClippyCue = false;
+let clippyCuePendingUnlock = false;
+let suppressRetroClickUntil = 0;
 const activeLoops = new Set<PlayingSFX>();
 
 function getPlayer(): UISFXPlayer | null {
@@ -47,6 +51,11 @@ function getPlayer(): UISFXPlayer | null {
       /* private mode — default on */
     }
     muted = !enabled;
+    if (muted) {
+      greetingSoundPending = false;
+      greetingWaitsForClippyCue = false;
+      clippyCuePendingUnlock = false;
+    }
     player = createUISFX({ pack: PACK, volume: VOLUME, enabled });
   }
   return player;
@@ -60,16 +69,48 @@ function persist() {
   }
 }
 
+function isClippyInteraction(target: EventTarget | null | undefined): boolean {
+  return typeof Element !== "undefined" && target instanceof Element &&
+    target.closest(".clippy-scope, .clippy-agent") !== null;
+}
+
+function playPendingGreeting(soundPlayer = getPlayer()): boolean {
+  if (!greetingSoundPending || muted || !unlocked || !soundPlayer) return false;
+  try {
+    const playing = soundPlayer.play(KIND_TO_CUE.speak, { volume: 0.2 });
+    if (!playing) return false;
+    greetingSoundPending = false;
+    greetingWaitsForClippyCue = false;
+    clippyCuePendingUnlock = false;
+    suppressRetroClickUntil = performance.now() + 450;
+    return true;
+  } catch {
+    /* keep the greeting queued so a later interaction can retry */
+    return false;
+  }
+}
+
 /** Call synchronously inside a pointer/keyboard handler to unlock audio. */
-export function unlockSounds(): void {
+export function unlockSounds(target?: EventTarget | null): void {
+  if (greetingSoundPending) {
+    greetingWaitsForClippyCue = isClippyInteraction(target);
+  }
+
+  if (unlocked) {
+    if (greetingSoundPending && !greetingWaitsForClippyCue) playPendingGreeting();
+    return;
+  }
   const p = getPlayer();
-  if (!p || unlocked || unlocking) return;
+  if (!p || unlocking) return;
   unlocking = true;
   void p
     .unlock()
     .then((success) => {
       unlocked = success;
       unlocking = false;
+      if (success && greetingSoundPending && (!greetingWaitsForClippyCue || clippyCuePendingUnlock)) {
+        playPendingGreeting(p);
+      }
     })
     .catch(() => {
       unlocking = false;
@@ -79,6 +120,11 @@ export function unlockSounds(): void {
 
 export function setSoundsMuted(m: boolean): void {
   muted = m;
+  if (m) {
+    greetingSoundPending = false;
+    greetingWaitsForClippyCue = false;
+    clippyCuePendingUnlock = false;
+  }
   persist();
   const p = getPlayer();
   if (!p) return;
@@ -97,14 +143,36 @@ export function areSoundsMuted(): boolean {
 export function playSound(kind: SoundKind, volume = VOLUME): void {
   if (muted) return;
   if (typeof window === "undefined") return;
+  if (kind === "click" && (greetingSoundPending || performance.now() < suppressRetroClickUntil)) return;
   // Suppress background/async cues until the first real gesture.
-  if (!unlocked) return;
+  if (!unlocked) {
+    if (greetingSoundPending && (kind === "speak" || kind === "open" || kind === "send" || kind === "receive")) {
+      clippyCuePendingUnlock = true;
+    }
+    return;
+  }
   try {
     const soundPlayer = getPlayer();
-    if (soundPlayer) soundPlayer.play(KIND_TO_CUE[kind], { volume });
+    if (soundPlayer) {
+      const isClippyCue = kind === "speak" || kind === "open" || kind === "send" || kind === "receive";
+      if (greetingSoundPending && isClippyCue && playPendingGreeting(soundPlayer)) return;
+      soundPlayer.play(KIND_TO_CUE[kind], { volume });
+    }
   } catch {
     /* never break UI for sound */
   }
+}
+
+/** Play the initial greeting once audio is allowed by a real browser gesture. */
+export function playGreetingSound(): void {
+  if (muted || typeof window === "undefined") return;
+  greetingSoundPending = true;
+  if (unlocked) {
+    playPendingGreeting();
+    return;
+  }
+  greetingWaitsForClippyCue = false;
+  clippyCuePendingUnlock = false;
 }
 
 /** Start a `processing` loop for visible async work. Idempotent per caller. */
@@ -134,11 +202,13 @@ export function stopLoops(): void {
    Call once from Layout/App. Returns cleanup fn. */
 export function wireRetroSounds(): () => void {
   if (typeof document === "undefined") return () => { };
-  const onPointerDown = () => unlockSounds();
-  const onKeyDown = () => unlockSounds();
+  const onPointerDown = (event: PointerEvent) => unlockSounds(event.target);
+  const onKeyDown = (event: KeyboardEvent) => unlockSounds(event.target);
   const onClick = (e: MouseEvent) => {
-    const t = e.target as HTMLElement | null;
-    if (t?.closest?.(".retro-btn")) playSound("click", 0.35);
+    const target = e.target;
+    if (!(target instanceof Element)) return;
+    if (target.closest(".clippy-scope, [data-no-retro]")) return;
+    if (target.closest(".retro-btn")) playSound("click", 0.35);
   };
   document.addEventListener("pointerdown", onPointerDown, { passive: true });
   document.addEventListener("keydown", onKeyDown);

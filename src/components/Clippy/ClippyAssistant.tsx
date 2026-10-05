@@ -4,7 +4,8 @@ import { useI18n } from "../../i18n/useI18n";
 import type { Translations } from "../../i18n/types";
 import { isClippyTarget, type ClippyTarget } from "../../data/clippy-knowledge";
 import ClippyMarkdown from "./ClippyMarkdown";
-import { playSound, setSoundsMuted, areSoundsMuted, startProcessing, stopLoops } from "../../lib/sound";
+import { fetchBlogPosts, type BlogPostSummary } from "../../lib/blog";
+import { playGreetingSound, playSound, setSoundsMuted, areSoundsMuted, startProcessing, stopLoops } from "../../lib/sound";
 
 interface ChatMsg {
   from: "clippy" | "user";
@@ -24,7 +25,7 @@ const CLICK_MAX_MS = 400;
 const HOME_MARGIN_PX = 16;
 const PANEL_GAP_PX = 12;
 const DOCK_MS = 400;
-const FETCH_TIMEOUT_MS = 9000;
+const FETCH_TIMEOUT_MS = 14_000;
 const HISTORY_MAX = 8;
 const HISTORY_TEXT_MAX = 300;
 const PENDING_NAV_KEY = "clippy.pendingNavigation.v1";
@@ -95,6 +96,14 @@ function currentContext(): ClippyTarget | null {
     if (top <= y && top + rect.height > y) return sectionId;
   }
   return window.scrollY < 600 ? "about" : null;
+}
+
+function wantsBlogPosts(prompt: string, context: ClippyTarget | null): boolean {
+  const asksForAuthoredPosts = /\b(?:latest|recent(?:ly)?|newest|terbaru|terakhir|artikel\w*|tulisan\w*|catatan\w*|post\w*|article\w*|cup\s+of\s+code|blog\s+(?:haidar|aku|gue)|(?:my|aku|gue)\s+blog|haidar(?:'s|’s)?\s+blog)\b/i.test(prompt);
+  const asksForCuratedLinks = context === "blogroll" ||
+    /\b(?:blogroll|curated\s+links?|recommended\s+(?:sites|blogs|links)|rekomendasi\s+(?:situs|blog|tautan)|tautan\s+kurasi|situs\s+rekomendasi)\b/i.test(prompt);
+  if (asksForCuratedLinks) return asksForAuthoredPosts;
+  return asksForAuthoredPosts || /\bblog\w*\b/i.test(prompt);
 }
 
 function targetPath(target: ClippyTarget): string {
@@ -275,12 +284,19 @@ export default function ClippyAssistant() {
   const suppressClickUntilRef = useRef(0);
   const localeRef = useRef(locale);
   const openRef = useRef(open);
+  const clippyRef = useRef(clippy);
+  const glideToRef = useRef<(pos: { x: number; y: number }, instant?: boolean) => void>(() => undefined);
+  const toggleChatRef = useRef<() => void>(() => undefined);
+  const initializedAgentElRef = useRef<HTMLElement | null>(null);
   const busyRef = useRef(false);
   // Session memory: in-memory only, cleared on refresh/unmount by design.
   const historyRef = useRef<Turn[]>([]);
   const lockedLangRef = useRef<"en" | "id" | null>(null);
   const deliveredContextsRef = useRef<Set<ClippyTarget> | null>(null);
   if (deliveredContextsRef.current === null) deliveredContextsRef.current = readSeenContexts();
+  const blogPostsRef = useRef<BlogPostSummary[]>([]);
+  const blogPostsLoadedRef = useRef(false);
+  const blogPostsPromiseRef = useRef<Promise<BlogPostSummary[]> | null>(null);
   const activeContextRef = useRef<ClippyTarget | null>(null);
   const pendingContextRef = useRef<ClippyTarget | null>(null);
   const lastProactiveContextRef = useRef<ClippyTarget | null>(null);
@@ -311,7 +327,35 @@ export default function ClippyAssistant() {
   useLayoutEffect(() => {
     localeRef.current = locale;
     openRef.current = open;
-  }, [locale, open]);
+    clippyRef.current = clippy;
+    const el = agentEl(clippy);
+    if (el) {
+      const rect = el.getBoundingClientRect();
+      setAgentPosition(clippy, el, rect.left, rect.top);
+    }
+  }, [locale, open, clippy]);
+
+  const loadBlogPosts = useCallback((): Promise<BlogPostSummary[]> => {
+    if (blogPostsLoadedRef.current) return Promise.resolve(blogPostsRef.current);
+    if (!blogPostsPromiseRef.current) {
+      blogPostsPromiseRef.current = fetchBlogPosts()
+        .then((posts) => {
+          blogPostsRef.current = posts.slice(0, 3);
+          blogPostsLoadedRef.current = true;
+          return blogPostsRef.current;
+        })
+        .catch(() => {
+          blogPostsPromiseRef.current = null;
+          return [];
+        });
+    }
+    return blogPostsPromiseRef.current;
+  }, []);
+
+  // Prime the same latest-post feed shown in the sidebar before a visitor asks about it.
+  useEffect(() => {
+    void loadBlogPosts();
+  }, [loadBlogPosts]);
 
   useEffect(() => {
     busyRef.current = busy;
@@ -324,20 +368,28 @@ export default function ClippyAssistant() {
   }, [messages, busy, open, collapsed]);
 
   const say = useCallback(
-    (text: string, animation?: string, speechText = text, copyText?: string) => {
+    (
+      text: string,
+      animation?: string,
+      speechText = text,
+      copyText?: string,
+      queueGreetingCue = false,
+    ) => {
       setMessages((m) => [...m.slice(-19), { from: "clippy", text, copyText }]);
       // Chat open: history only, no balloon (avoids double UI).
       if (openRef.current) {
-        playSound("speak", 0.15);
+        if (queueGreetingCue) playGreetingSound();
+        else playSound("speak", 0.15);
         return;
       }
       try {
         if (!reducedMotion() && animation && clippy?.hasAnimation?.(animation)) clippy.play(animation);
         clippy?.speak(speechText, false);
-        playSound("speak", 0.2);
       } catch {
         /* visual only */
       }
+      if (queueGreetingCue) playGreetingSound();
+      else playSound("speak", 0.2);
     },
     [clippy],
   );
@@ -447,7 +499,16 @@ export default function ClippyAssistant() {
     [clippy],
   );
 
+  useLayoutEffect(() => {
+    glideToRef.current = glideTo;
+  }, [glideTo]);
+
   const openChat = useCallback(() => {
+    if (openRef.current) {
+      markSuggestionRead();
+      setCollapsed(false);
+      return;
+    }
     openRef.current = true;
     markSuggestionRead();
     if (draftKickoffAvailableRef.current) {
@@ -476,6 +537,10 @@ export default function ClippyAssistant() {
     if (openRef.current) closeChat();
     else openChat();
   }, [openChat, closeChat]);
+
+  useLayoutEffect(() => {
+    toggleChatRef.current = toggleChat;
+  }, [toggleChat]);
 
   const startTour = useCallback(() => {
     const step = 0;
@@ -507,22 +572,36 @@ export default function ClippyAssistant() {
     say(message, undefined, message);
   }, [say, t]);
 
-  // Dock above the panel once it mounts / collapses (live height).
+  // Initialize an agent element once; callback changes while typing or switching
+  // locale must never send it back to its closed-chat anchor.
   useLayoutEffect(() => {
-    if (!open || !clippy) return;
-    glideTo(openAnchor(agentEl(clippy), panelRef.current));
-  }, [open, collapsed, clippy, glideTo]);
+    const el = agentEl(clippy);
+    if (!el || initializedAgentElRef.current === el) return;
+    initializedAgentElRef.current = el;
+    el.classList.add("clippy-agent");
+    el.style.cursor = "pointer";
+    el.setAttribute("role", "button");
+    el.setAttribute("tabindex", "0");
+    const position = openRef.current
+      ? openAnchor(el, panelRef.current)
+      : closedAnchor(el);
+    glideToRef.current(position, true);
+  }, [clippy]);
+
+  // Dock only when the panel opens or changes height, not on unrelated app renders.
+  useLayoutEffect(() => {
+    if (!open) return;
+    const instance = clippyRef.current;
+    if (!instance) return;
+    glideToRef.current(openAnchor(agentEl(instance), panelRef.current));
+  }, [open, collapsed]);
 
   // Character click (not drag) toggles chat. Right-click never triggers.
-  // Initial placement: bottom-right dev-status position, no animation.
+  // Pointer listeners follow the stable agent instance; action refs stay current.
   useEffect(() => {
     if (!clippy) return;
     const el = agentEl(clippy);
     if (!el) return;
-    el.style.cursor = "pointer";
-    el.setAttribute("role", "button");
-    el.setAttribute("tabindex", "0");
-    glideTo(closedAnchor(el), true);
     let sx = 0;
     let sy = 0;
     let st = 0;
@@ -551,13 +630,13 @@ export default function ClippyAssistant() {
       if (Date.now() < suppressClickUntilRef.current) return;
       const moved = Math.hypot(e.clientX - sx, e.clientY - sy);
       if (moved <= CLICK_MAX_DIST_PX && Date.now() - st <= CLICK_MAX_MS) {
-        toggleChat();
+        toggleChatRef.current();
       }
     };
     const key = (e: KeyboardEvent) => {
       if (e.key === "Enter" || e.key === " ") {
         e.preventDefault();
-        toggleChat();
+        toggleChatRef.current();
       }
     };
     el.addEventListener("pointerdown", down);
@@ -570,7 +649,7 @@ export default function ClippyAssistant() {
       el.removeEventListener("pointerup", up);
       el.removeEventListener("keydown", key);
     };
-  }, [clippy, toggleChat, glideTo]);
+  }, [clippy]);
 
   // Restore one in-flight navigation after a cross-page section action.
   useEffect(() => {
@@ -600,7 +679,7 @@ export default function ClippyAssistant() {
     const timer = window.setTimeout(() => {
       if (!reducedMotion() && clippy.hasAnimation?.("Greeting")) clippy.play("Greeting");
       const greeting = t(timeGreetingKey());
-      say(greeting, undefined, greeting);
+      say(greeting, undefined, greeting, undefined, true);
     }, 1500);
     return () => window.clearTimeout(timer);
   }, [clippy, say, t]);
@@ -759,6 +838,9 @@ export default function ClippyAssistant() {
         role: h.role,
         text: h.text.slice(0, HISTORY_TEXT_MAX),
       }));
+      const section = currentContext();
+      const blogPosts = wantsBlogPosts(text, section) ? await loadBlogPosts() : [];
+      if (ctrl.signal.aborted) throw new Error("Request aborted");
       const res = await fetch("/api/clippy", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -769,7 +851,18 @@ export default function ClippyAssistant() {
           history: historyPayload,
           context: {
             path: window.location.pathname,
-            section: currentContext() ?? "",
+            section: section ?? "",
+            ...(blogPosts.length > 0
+              ? {
+                  blogPosts: blogPosts.map(({ title, description, categoryLabel, publishedAt, url }) => ({
+                    title,
+                    description,
+                    categoryLabel,
+                    publishedAt,
+                    url,
+                  })),
+                }
+              : {}),
           },
         }),
         signal: ctrl.signal,
@@ -828,7 +921,7 @@ export default function ClippyAssistant() {
         /* ignore */
       }
     }
-  }, [input, busy, cooldownSeconds, rateLimitUntil, clippy, navigateToTarget, say, t, tourStep]);
+  }, [input, busy, cooldownSeconds, rateLimitUntil, clippy, loadBlogPosts, navigateToTarget, say, t, tourStep]);
 
   const abort = useCallback(() => {
     userAbortedRef.current = true;
