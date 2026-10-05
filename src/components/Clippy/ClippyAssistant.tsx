@@ -8,7 +8,13 @@ interface ChatMsg {
   text: string;
 }
 
-const IDLE_MS = 25000;
+interface Turn {
+  role: "user" | "model";
+  text: string;
+}
+
+const IDLE_MIN_MS = 18000;
+const IDLE_MAX_MS = 45000;
 const SCROLL_COOLDOWN_MS = 60000;
 const CLICK_MAX_DIST_PX = 6;
 const CLICK_MAX_MS = 400;
@@ -16,6 +22,51 @@ const HOME_MARGIN_PX = 16;
 const PANEL_GAP_PX = 12;
 const DOCK_MS = 400;
 const FETCH_TIMEOUT_MS = 9000;
+const HISTORY_MAX = 8;
+const HISTORY_TEXT_MAX = 300;
+const IDLE_KEYS = ["clippy.idle1", "clippy.idle2", "clippy.idle3", "clippy.idle4"] as const;
+const IDLE_ANIMS = ["GetAttention", "GestureRight", "Thinking", "Greeting"] as const;
+
+/** Random index different from last, so idle nudges feel alive. */
+function pickRandomIdx(len: number, last: number): number {
+  if (len <= 1) return 0;
+  let i = Math.floor(Math.random() * len);
+  if (i === last) i = (i + 1) % len;
+  return i;
+}
+
+/** Client-side language guess mirrors the server heuristic (cheap, no LLM). */
+function guessLocaleClient(text: string): "en" | "id" | null {
+  const t = ` ${text.toLowerCase()} `;
+  const idMarkers = [
+    "udah", "udh", "gak", "nggak", "enggak", "ngga", "sih", "nih", "deh",
+    "dong", "gimana", "apa", "yang", "aku", "kamu", "saya", "gue", "lu",
+    "banget", "ngobrol", "ngasih", "nyebelin", "yaudah", "emang", "aja",
+    "tuh", "gitu", "kok", "tau", "bisa", "proyek", "siapa", "ceritain", "spill",
+  ];
+  let id = 0;
+  for (const m of idMarkers) if (t.includes(m)) id += 1;
+  if (/\bnge\w{2,}/.test(t) || /\bny\w{2,}/.test(t)) id += 2;
+  const enMarkers = [" the ", " you ", " what ", " how ", " tell ", " about ", " project ", " contact ", " thanks "];
+  let en = 0;
+  for (const m of enMarkers) if (t.includes(m)) en += 1;
+  if (id === 0 && en === 0) return null;
+  return id >= en ? "id" : "en";
+}
+
+/** Visible section feeds the brain SITUATION without extra user effort. */
+function currentSection(): string {
+  if (typeof document === "undefined") return "";
+  const y = window.scrollY + window.innerHeight / 2;
+  for (const sectionId of ["contact", "guestbook", "projects"]) {
+    const el = document.getElementById(sectionId);
+    if (!el) continue;
+    const r = el.getBoundingClientRect();
+    const mid = r.top + window.scrollY + r.height / 2;
+    if (Math.abs(mid - y) < window.innerHeight / 2) return sectionId;
+  }
+  return "";
+}
 
 function reducedMotion(): boolean {
   return (
@@ -95,11 +146,18 @@ export default function ClippyAssistant() {
   const abortRef = useRef<AbortController | null>(null);
   const userAbortedRef = useRef(false);
   const panelRef = useRef<HTMLDivElement | null>(null);
+  const messagesEndRef = useRef<HTMLDivElement | null>(null);
   const moveTokenRef = useRef(0);
   const draggedRef = useRef(false);
   const suppressClickUntilRef = useRef(0);
   const localeRef = useRef(locale);
   const openRef = useRef(open);
+  const busyRef = useRef(false);
+  // Session memory: in-memory only, cleared on refresh/unmount by design.
+  const historyRef = useRef<Turn[]>([]);
+  const lockedLangRef = useRef<"en" | "id" | null>(null);
+  const lastIdleIdxRef = useRef(-1);
+  const lastAnimIdxRef = useRef(-1);
 
   useEffect(() => {
     if (rateLimitUntil === null) return;
@@ -121,6 +179,16 @@ export default function ClippyAssistant() {
     localeRef.current = locale;
     openRef.current = open;
   }, [locale, open]);
+
+  useEffect(() => {
+    busyRef.current = busy;
+  }, [busy]);
+
+  // Keep newest chat visible.
+  useEffect(() => {
+    if (!open || collapsed) return;
+    messagesEndRef.current?.scrollIntoView({ block: "end" });
+  }, [messages, busy, open, collapsed]);
 
   const say = useCallback(
     (text: string, animation?: string) => {
@@ -279,29 +347,47 @@ export default function ClippyAssistant() {
     return () => clearTimeout(timer);
   }, [clippy, say, t]);
 
-  // Idle nudge (static text, no API cost)
+  // Idle nudge: random range + rotating lines/anims, silent while chatting.
   useEffect(() => {
     if (!clippy) return;
     let timer: number | undefined;
-    const reset = () => {
+    const schedule = () => {
       window.clearTimeout(timer);
-      timer = window.setTimeout(() => {
-        if (document.hidden || reducedMotion()) return;
-        try {
-          clippy.play("GetAttention");
-        } catch {
-          /* ignore */
-        }
-        say(t("clippy.idle"));
-      }, IDLE_MS);
+      const ms = IDLE_MIN_MS + Math.random() * (IDLE_MAX_MS - IDLE_MIN_MS);
+      timer = window.setTimeout(fire, ms);
     };
-    reset();
+    const fire = () => {
+      // Never interrupt an open chat, in-flight reply, or hidden tab.
+      if (document.hidden || reducedMotion() || openRef.current || busyRef.current) {
+        schedule();
+        return;
+      }
+      try {
+        const ai = pickRandomIdx(IDLE_ANIMS.length, lastAnimIdxRef.current);
+        lastAnimIdxRef.current = ai;
+        const anim = IDLE_ANIMS[ai];
+        if (clippy?.hasAnimation?.(anim)) clippy.play(anim);
+      } catch {
+        /* ignore */
+      }
+      const ki = pickRandomIdx(IDLE_KEYS.length, lastIdleIdxRef.current);
+      lastIdleIdxRef.current = ki;
+      say(t(IDLE_KEYS[ki]));
+      schedule();
+    };
+    const reset = () => schedule();
+    const onVis = () => {
+      if (!document.hidden) schedule();
+    };
+    schedule();
     window.addEventListener("pointermove", reset, { passive: true });
     window.addEventListener("keydown", reset);
+    document.addEventListener("visibilitychange", onVis);
     return () => {
       window.clearTimeout(timer);
       window.removeEventListener("pointermove", reset);
       window.removeEventListener("keydown", reset);
+      document.removeEventListener("visibilitychange", onVis);
     };
   }, [clippy, say, t]);
 
@@ -358,6 +444,13 @@ export default function ClippyAssistant() {
       cooldownSeconds > 0 ||
       (rateLimitUntil !== null && rateLimitUntil > Date.now())
     ) return;
+    // Spam guard: ignore exact repeat of the last user turn while brain knows it.
+    const lastUser = [...historyRef.current].reverse().find((h) => h.role === "user");
+    if (lastUser && lastUser.text === text.slice(0, HISTORY_TEXT_MAX)) {
+      setInput("");
+      say(t("clippy.fallback"));
+      return;
+    }
     setInput("");
     setMessages((m) => [...m.slice(-19), { from: "user", text }]);
     setBusy(true);
@@ -373,12 +466,25 @@ export default function ClippyAssistant() {
     }
     startProcessing();
     try {
+      // Optimistic lang hint: follow user's words immediately, server confirms.
+      const hint = guessLocaleClient(text);
+      if (hint) lockedLangRef.current = hint;
+      const historyPayload = historyRef.current.slice(-HISTORY_MAX).map((h) => ({
+        role: h.role,
+        text: h.text.slice(0, HISTORY_TEXT_MAX),
+      }));
       const res = await fetch("/api/clippy", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           prompt: text.slice(0, 500),
-          locale: localeRef.current,
+          pageLocale: localeRef.current,
+          lockedLang: lockedLangRef.current,
+          history: historyPayload,
+          context: {
+            path: window.location.pathname,
+            section: currentSection(),
+          },
         }),
         signal: ctrl.signal,
       });
@@ -401,6 +507,17 @@ export default function ClippyAssistant() {
       const data = await res.json();
       const reply = typeof data.reply === "string" ? data.reply : "";
       if (!reply) throw new Error("empty");
+      if (data.lang === "id" || data.lang === "en") {
+        lockedLangRef.current = data.lang;
+      }
+      // Blocked turns stay visible but never poison session memory.
+      if (!data.blocked) {
+        historyRef.current = [
+          ...historyRef.current,
+          { role: "user" as const, text: text.slice(0, HISTORY_TEXT_MAX) },
+          { role: "model" as const, text: reply.slice(0, HISTORY_TEXT_MAX) },
+        ].slice(-16);
+      }
       say(reply);
     } catch {
       // User abort stays silent; failures show the retro fallback line.
@@ -501,6 +618,7 @@ export default function ClippyAssistant() {
               </p>
             )}
             {busy && <p className="text-[#666633] blink">…</p>}
+            <div ref={messagesEndRef} />
           </div>
           <div className="flex gap-1 p-1.5 border-t border-retro-border-mid">
             <input

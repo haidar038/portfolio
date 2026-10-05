@@ -191,11 +191,18 @@ export interface Translations {
     // Clippy assistant (bilingual via useI18n locale)
     "clippy.greeting": string;
     "clippy.idle": string;
+    "clippy.idle1": string;
+    "clippy.idle2": string;
+    "clippy.idle3": string;
+    "clippy.idle4": string;
     "clippy.projectsHint": string;
     "clippy.guestbookHint": string;
     "clippy.contactHint": string;
     "clippy.fallback": string;
     "clippy.offline": string;
+    "clippy.refusal": string;
+    "clippy.injectionRefusal": string;
+    "clippy.moderationRefusal": string;
     "clippy.rateLimitCooldown": string;
     "clippy.chatPlaceholder": string;
     "clippy.send": string;
