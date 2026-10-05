@@ -7,6 +7,22 @@ import { PROJECTS } from "./projects.js";
 
 export type ClippyLocale = "en" | "id";
 
+export const CLIPPY_TARGETS = [
+  "about",
+  "journey",
+  "experience",
+  "projects",
+  "contact",
+  "guestbook",
+  "blogroll",
+] as const;
+
+export type ClippyTarget = (typeof CLIPPY_TARGETS)[number];
+
+export function isClippyTarget(value: unknown): value is ClippyTarget {
+  return typeof value === "string" && CLIPPY_TARGETS.includes(value as ClippyTarget);
+}
+
 export interface ClippyKnowledge {
   profile: { en: string; id: string };
   stack: string[];
@@ -35,15 +51,15 @@ export const CLIPPY_KNOWLEDGE: ClippyKnowledge = {
     (p) => ({ name: p.name, status: p.status, en: p.description.en, id: p.description.id }),
   ),
   contact: {
-    en: "Email haidar038@gmail.com, GitHub github.com/haidar038, WhatsApp +62 812-4202-4542, contact form at #contact. Usually replies within 24 hours.",
-    id: "Email haidar038@gmail.com, GitHub github.com/haidar038, WhatsApp +62 812-4202-4542, formulir kontak di #contact. Biasanya balas dalam 24 jam.",
+    en: "Email haidar038@gmail.com (mailto:haidar038@gmail.com), GitHub https://github.com/haidar038, LinkedIn https://linkedin.com/in/haidar038, WhatsApp https://wa.me/+6281242024542, contact form at #contact. Usually replies within 24 hours.",
+    id: "Email haidar038@gmail.com (mailto:haidar038@gmail.com), GitHub https://github.com/haidar038, LinkedIn https://linkedin.com/in/haidar038, WhatsApp https://wa.me/+6281242024542, formulir kontak di #contact. Biasanya balas dalam 24 jam.",
   },
 };
 
 /* Site map so Clippy can guide navigation instead of hallucinating anchors. */
 const SITE_MAP: Record<ClippyLocale, string> = {
-  en: "PAGES: #about (profile), #projects (portfolio), #guestbook (leave a message), #contact (contact form), /blogroll (links).",
-  id: "HALAMAN: #about (profil), #projects (portfolio), #guestbook (buku tamu), #contact (formulir kontak), /blogroll (link).",
+  en: "SECTIONS: #about (profile), #journey (education), #experience (work history), #projects (portfolio), #contact (contact form). PAGES: /guestbook (leave a message), /blogroll (curated links).",
+  id: "SECTION: #about (profil), #journey (pendidikan), #experience (pengalaman kerja), #projects (portofolio), #contact (formulir kontak). HALAMAN: /guestbook (buku tamu), /blogroll (koleksi link).",
 };
 
 interface FaqEntry {

@@ -1,11 +1,15 @@
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 import { useClippy } from "@react95/clippy";
 import { useI18n } from "../../i18n/useI18n";
+import type { Translations } from "../../i18n/types";
+import { isClippyTarget, type ClippyTarget } from "../../data/clippy-knowledge";
+import ClippyMarkdown from "./ClippyMarkdown";
 import { playSound, setSoundsMuted, areSoundsMuted, startProcessing, stopLoops } from "../../lib/sound";
 
 interface ChatMsg {
   from: "clippy" | "user";
   text: string;
+  copyText?: string;
 }
 
 interface Turn {
@@ -13,9 +17,8 @@ interface Turn {
   text: string;
 }
 
-const IDLE_MIN_MS = 18000;
-const IDLE_MAX_MS = 45000;
-const SCROLL_COOLDOWN_MS = 60000;
+const CONTEXT_DWELL_MS = 3200;
+const HIGHLIGHT_MS = 1800;
 const CLICK_MAX_DIST_PX = 6;
 const CLICK_MAX_MS = 400;
 const HOME_MARGIN_PX = 16;
@@ -24,15 +27,37 @@ const DOCK_MS = 400;
 const FETCH_TIMEOUT_MS = 9000;
 const HISTORY_MAX = 8;
 const HISTORY_TEXT_MAX = 300;
-const IDLE_KEYS = ["clippy.idle1", "clippy.idle2", "clippy.idle3", "clippy.idle4"] as const;
-const IDLE_ANIMS = ["GetAttention", "GestureRight", "Thinking", "Greeting"] as const;
+const PENDING_NAV_KEY = "clippy.pendingNavigation.v1";
+const SEEN_CONTEXTS_KEY = "clippy.seenContexts.v1";
+const UNREAD_SUGGESTION_KEY = "clippy.unreadSuggestion.v1";
 
-/** Random index different from last, so idle nudges feel alive. */
-function pickRandomIdx(len: number, last: number): number {
-  if (len <= 1) return 0;
-  let i = Math.floor(Math.random() * len);
-  if (i === last) i = (i + 1) % len;
-  return i;
+const SUGGESTION_KEYS: Record<ClippyTarget, keyof Translations> = {
+  about: "clippy.suggestAbout",
+  journey: "clippy.suggestJourney",
+  experience: "clippy.suggestExperience",
+  projects: "clippy.suggestProjects",
+  contact: "clippy.suggestContact",
+  guestbook: "clippy.suggestGuestbook",
+  blogroll: "clippy.suggestBlogroll",
+};
+
+const TOUR_STOPS: Array<{ target: ClippyTarget; messageKey: keyof Translations }> = [
+  { target: "about", messageKey: "clippy.tourAbout" },
+  { target: "projects", messageKey: "clippy.tourProjects" },
+  { target: "contact", messageKey: "clippy.tourContact" },
+];
+
+const KONAMI_SEQUENCE = [
+  "arrowup", "arrowup", "arrowdown", "arrowdown", "arrowleft",
+  "arrowright", "arrowleft", "arrowright", "b", "a",
+];
+
+interface PendingNavigation {
+  target: ClippyTarget;
+  message?: ChatMsg;
+  openChat: boolean;
+  tourStep: number | null;
+  createdAt: number;
 }
 
 /** Client-side language guess mirrors the server heuristic (cheap, no LLM). */
@@ -54,18 +79,103 @@ function guessLocaleClient(text: string): "en" | "id" | null {
   return id >= en ? "id" : "en";
 }
 
-/** Visible section feeds the brain SITUATION without extra user effort. */
-function currentSection(): string {
-  if (typeof document === "undefined") return "";
+function currentContext(): ClippyTarget | null {
+  if (typeof document === "undefined") return null;
+  const path = window.location.pathname.replace(/\/$/, "") || "/";
+  if (path === "/guestbook") return "guestbook";
+  if (path === "/blogroll") return "blogroll";
+  if (path !== "/") return null;
+
   const y = window.scrollY + window.innerHeight / 2;
-  for (const sectionId of ["contact", "guestbook", "projects"]) {
+  for (const sectionId of ["about", "journey", "experience", "projects", "contact"] as const) {
     const el = document.getElementById(sectionId);
     if (!el) continue;
-    const r = el.getBoundingClientRect();
-    const mid = r.top + window.scrollY + r.height / 2;
-    if (Math.abs(mid - y) < window.innerHeight / 2) return sectionId;
+    const rect = el.getBoundingClientRect();
+    const top = rect.top + window.scrollY;
+    if (top <= y && top + rect.height > y) return sectionId;
   }
-  return "";
+  return window.scrollY < 600 ? "about" : null;
+}
+
+function targetPath(target: ClippyTarget): string {
+  if (target === "guestbook") return "/guestbook";
+  if (target === "blogroll") return "/blogroll";
+  return "/";
+}
+
+function timeGreetingKey(): keyof Translations {
+  const hour = new Date().getHours();
+  if (hour >= 5 && hour < 12) return "clippy.greetingMorning";
+  if (hour >= 12 && hour < 18) return "clippy.greetingAfternoon";
+  return "clippy.greetingEvening";
+}
+
+function readSeenContexts(): Set<ClippyTarget> {
+  try {
+    const value: unknown = JSON.parse(window.sessionStorage.getItem(SEEN_CONTEXTS_KEY) ?? "[]");
+    if (!Array.isArray(value)) return new Set();
+    return new Set(value.filter(isClippyTarget));
+  } catch {
+    return new Set();
+  }
+}
+
+function readUnreadSuggestion(): boolean {
+  try {
+    return window.sessionStorage.getItem(UNREAD_SUGGESTION_KEY) === "1";
+  } catch {
+    return false;
+  }
+}
+
+function readPendingNavigation(): PendingNavigation | null {
+  try {
+    const value: unknown = JSON.parse(window.sessionStorage.getItem(PENDING_NAV_KEY) ?? "null");
+    if (!value || typeof value !== "object") return null;
+    const pending = value as Partial<PendingNavigation>;
+    if (
+      !isClippyTarget(pending.target) ||
+      typeof pending.createdAt !== "number" ||
+      Date.now() - pending.createdAt > 30_000 ||
+      targetPath(pending.target) !== window.location.pathname
+    ) return null;
+    if (pending.message && (pending.message.from !== "clippy" || typeof pending.message.text !== "string")) {
+      return null;
+    }
+    return {
+      target: pending.target,
+      message: pending.message,
+      openChat: pending.openChat === true,
+      tourStep: Number.isInteger(pending.tourStep) ? pending.tourStep! : null,
+      createdAt: pending.createdAt,
+    };
+  } catch {
+    return null;
+  }
+}
+
+function setStoredUnreadSuggestion(unread: boolean): void {
+  try {
+    if (unread) window.sessionStorage.setItem(UNREAD_SUGGESTION_KEY, "1");
+    else window.sessionStorage.removeItem(UNREAD_SUGGESTION_KEY);
+  } catch {
+    /* Session storage is a convenience; the in-memory state still works. */
+  }
+}
+
+function scrollToSection(target: ClippyTarget): boolean {
+  if (["guestbook", "blogroll"].includes(target)) return false;
+  const element = document.getElementById(target);
+  if (!element) return false;
+
+  window.history.replaceState(window.history.state, "", `/#${target}`);
+  document.querySelectorAll(".clippy-section-highlight").forEach((node) => {
+    node.classList.remove("clippy-section-highlight");
+  });
+  element.scrollIntoView({ behavior: reducedMotion() ? "auto" : "smooth", block: "center" });
+  element.classList.add("clippy-section-highlight");
+  window.setTimeout(() => element.classList.remove("clippy-section-highlight"), HIGHLIGHT_MS);
+  return true;
 }
 
 function reducedMotion(): boolean {
@@ -133,16 +243,29 @@ function openAnchor(el?: HTMLElement, panel?: HTMLElement | null): { x: number; 
 export default function ClippyAssistant() {
   const { clippy } = useClippy();
   const { t, locale } = useI18n();
-  const [open, setOpen] = useState(false);
+  const [initialNavigation] = useState<PendingNavigation | null>(readPendingNavigation);
+  const [open, setOpen] = useState(initialNavigation?.openChat ?? false);
   const [collapsed, setCollapsed] = useState(false);
-  const [messages, setMessages] = useState<ChatMsg[]>([]);
+  const [messages, setMessages] = useState<ChatMsg[]>(() =>
+    initialNavigation?.message ? [initialNavigation.message] : [],
+  );
   const [input, setInput] = useState("");
   const [busy, setBusy] = useState(false);
   const [rateLimitUntil, setRateLimitUntil] = useState<number | null>(null);
   const [cooldownSeconds, setCooldownSeconds] = useState(0);
   const [muted, setMuted] = useState(areSoundsMuted());
+  const [unreadSuggestion, setUnreadSuggestion] = useState(() =>
+    initialNavigation?.openChat ? false : readUnreadSuggestion(),
+  );
+  const [tourStep, setTourStep] = useState<number | null>(() =>
+    initialNavigation?.tourStep !== null && initialNavigation?.tourStep !== undefined &&
+    initialNavigation.tourStep >= 0 && initialNavigation.tourStep < TOUR_STOPS.length
+      ? initialNavigation.tourStep
+      : null,
+  );
+  const [copiedDraft, setCopiedDraft] = useState<string | null>(null);
+  const [copyFailedDraft, setCopyFailedDraft] = useState<string | null>(null);
   const greeted = useRef(false);
-  const lastScrollHint = useRef(0);
   const abortRef = useRef<AbortController | null>(null);
   const userAbortedRef = useRef(false);
   const panelRef = useRef<HTMLDivElement | null>(null);
@@ -156,8 +279,18 @@ export default function ClippyAssistant() {
   // Session memory: in-memory only, cleared on refresh/unmount by design.
   const historyRef = useRef<Turn[]>([]);
   const lockedLangRef = useRef<"en" | "id" | null>(null);
-  const lastIdleIdxRef = useRef(-1);
-  const lastAnimIdxRef = useRef(-1);
+  const deliveredContextsRef = useRef<Set<ClippyTarget> | null>(null);
+  if (deliveredContextsRef.current === null) deliveredContextsRef.current = readSeenContexts();
+  const activeContextRef = useRef<ClippyTarget | null>(null);
+  const pendingContextRef = useRef<ClippyTarget | null>(null);
+  const lastProactiveContextRef = useRef<ClippyTarget | null>(null);
+  const draftKickoffAvailableRef = useRef(false);
+  const deliverSuggestionRef = useRef<(context: ClippyTarget) => void>(() => undefined);
+
+  const markSuggestionRead = useCallback(() => {
+    setUnreadSuggestion(false);
+    setStoredUnreadSuggestion(false);
+  }, []);
 
   useEffect(() => {
     if (rateLimitUntil === null) return;
@@ -191,16 +324,16 @@ export default function ClippyAssistant() {
   }, [messages, busy, open, collapsed]);
 
   const say = useCallback(
-    (text: string, animation?: string) => {
-      setMessages((m) => [...m.slice(-19), { from: "clippy", text }]);
+    (text: string, animation?: string, speechText = text, copyText?: string) => {
+      setMessages((m) => [...m.slice(-19), { from: "clippy", text, copyText }]);
       // Chat open: history only, no balloon (avoids double UI).
       if (openRef.current) {
         playSound("speak", 0.15);
         return;
       }
       try {
-        if (animation && clippy?.hasAnimation?.(animation)) clippy.play(animation);
-        clippy?.speak(text, false);
+        if (!reducedMotion() && animation && clippy?.hasAnimation?.(animation)) clippy.play(animation);
+        clippy?.speak(speechText, false);
         playSound("speak", 0.2);
       } catch {
         /* visual only */
@@ -208,6 +341,68 @@ export default function ClippyAssistant() {
     },
     [clippy],
   );
+
+  const navigateToTarget = useCallback(
+    (target: ClippyTarget, message?: ChatMsg, nextTourStep: number | null = tourStep) => {
+      if (!isClippyTarget(target)) return;
+      const destination = targetPath(target);
+      if (destination !== window.location.pathname) {
+        const pending: PendingNavigation = {
+          target,
+          message,
+          openChat: true,
+          tourStep: nextTourStep,
+          createdAt: Date.now(),
+        };
+        try {
+          window.sessionStorage.setItem(PENDING_NAV_KEY, JSON.stringify(pending));
+        } catch {
+          /* The destination still works if the browser blocks session storage. */
+        }
+        const url = destination === "/" ? `/#${target}` : destination;
+        window.location.assign(url);
+        return;
+      }
+
+      if (destination === "/") {
+        let attempts = 0;
+        const focus = () => {
+          if (scrollToSection(target) || attempts >= 12) return;
+          attempts += 1;
+          window.setTimeout(focus, 100);
+        };
+        focus();
+      }
+    },
+    [tourStep],
+  );
+
+  const deliverSuggestion = useCallback((context: ClippyTarget) => {
+    const delivered = deliveredContextsRef.current;
+    if (!delivered || delivered.has(context)) return;
+    if (document.hidden || openRef.current || busyRef.current) {
+      pendingContextRef.current = context;
+      return;
+    }
+
+    delivered.add(context);
+    pendingContextRef.current = null;
+    try {
+      window.sessionStorage.setItem(SEEN_CONTEXTS_KEY, JSON.stringify([...delivered]));
+    } catch {
+      /* Keep the once-per-context guarantee for this component lifetime. */
+    }
+    setUnreadSuggestion(true);
+    setStoredUnreadSuggestion(true);
+    lastProactiveContextRef.current = context;
+    if (context === "contact") draftKickoffAvailableRef.current = true;
+    const message = t(SUGGESTION_KEYS[context]);
+    say(message, "GestureRight", message);
+  }, [say, t]);
+
+  useEffect(() => {
+    deliverSuggestionRef.current = deliverSuggestion;
+  }, [deliverSuggestion]);
 
   /**
    * Owned glide: single-flight by token, so rapid toggles can never stack
@@ -253,23 +448,64 @@ export default function ClippyAssistant() {
   );
 
   const openChat = useCallback(() => {
+    openRef.current = true;
+    markSuggestionRead();
+    if (draftKickoffAvailableRef.current) {
+      if (!input.trim()) setInput(t("clippy.draftKickoff"));
+      draftKickoffAvailableRef.current = false;
+    }
     // Glide runs in the layout effect below, after the panel mounts
     // so openAnchor measures the live panel height.
     setOpen(true);
     setCollapsed(false);
     playSound("open", 0.5);
-  }, []);
+  }, [input, markSuggestionRead, t]);
 
   const closeChat = useCallback(() => {
+    openRef.current = false;
     setOpen(false);
     glideTo(closedAnchor(agentEl(clippy)));
     playSound("close", 0.5);
+    const pending = pendingContextRef.current;
+    if (pending && pending === currentContext()) {
+      window.setTimeout(() => deliverSuggestionRef.current(pending), 100);
+    }
   }, [glideTo, clippy]);
 
   const toggleChat = useCallback(() => {
     if (openRef.current) closeChat();
     else openChat();
   }, [openChat, closeChat]);
+
+  const startTour = useCallback(() => {
+    const step = 0;
+    const message = t(TOUR_STOPS[step].messageKey);
+    setTourStep(step);
+    openChat();
+    say(message, "GestureRight", message);
+    navigateToTarget(TOUR_STOPS[step].target, { from: "clippy", text: message }, step);
+  }, [navigateToTarget, openChat, say, t]);
+
+  const advanceTour = useCallback(() => {
+    if (tourStep === null) return;
+    if (tourStep >= TOUR_STOPS.length - 1) {
+      setTourStep(null);
+      const message = t("clippy.tourDone");
+      say(message, undefined, message);
+      return;
+    }
+    const step = tourStep + 1;
+    const message = t(TOUR_STOPS[step].messageKey);
+    setTourStep(step);
+    say(message, "GestureRight", message);
+    navigateToTarget(TOUR_STOPS[step].target, { from: "clippy", text: message }, step);
+  }, [navigateToTarget, say, t, tourStep]);
+
+  const skipTour = useCallback(() => {
+    setTourStep(null);
+    const message = t("clippy.tourSkipped");
+    say(message, undefined, message);
+  }, [say, t]);
 
   // Dock above the panel once it mounts / collapses (live height).
   useLayoutEffect(() => {
@@ -336,86 +572,135 @@ export default function ClippyAssistant() {
     };
   }, [clippy, toggleChat, glideTo]);
 
-  // Greeting on load (static, works offline)
+  // Restore one in-flight navigation after a cross-page section action.
+  useEffect(() => {
+    const pending = initialNavigation;
+    if (!pending) return;
+    greeted.current = true;
+    try {
+      window.sessionStorage.removeItem(PENDING_NAV_KEY);
+    } catch {
+      /* The redirect is already complete; storage cleanup is best effort. */
+    }
+    if (pending.openChat) setStoredUnreadSuggestion(false);
+
+    let attempts = 0;
+    const focus = () => {
+      if (targetPath(pending.target) !== window.location.pathname) return;
+      if (targetPath(pending.target) !== "/" || scrollToSection(pending.target)) return;
+      if (attempts++ < 20) window.setTimeout(focus, 100);
+    };
+    window.setTimeout(focus, 150);
+  }, [initialNavigation]);
+
+  // Time-sensitive greeting remains static and works while the AI endpoint is offline.
   useEffect(() => {
     if (!clippy || greeted.current) return;
     greeted.current = true;
-    const timer = setTimeout(() => {
-      if (!reducedMotion()) clippy.play("Greeting");
-      say(t("clippy.greeting"));
+    const timer = window.setTimeout(() => {
+      if (!reducedMotion() && clippy.hasAnimation?.("Greeting")) clippy.play("Greeting");
+      const greeting = t(timeGreetingKey());
+      say(greeting, undefined, greeting);
     }, 1500);
-    return () => clearTimeout(timer);
+    return () => window.clearTimeout(timer);
   }, [clippy, say, t]);
 
-  // Idle nudge: random range + rotating lines/anims, silent while chatting.
+  // One contextual nudge per section/page per browser tab session.
   useEffect(() => {
     if (!clippy) return;
     let timer: number | undefined;
-    const schedule = () => {
-      window.clearTimeout(timer);
-      const ms = IDLE_MIN_MS + Math.random() * (IDLE_MAX_MS - IDLE_MIN_MS);
-      timer = window.setTimeout(fire, ms);
-    };
-    const fire = () => {
-      // Never interrupt an open chat, in-flight reply, or hidden tab.
-      if (document.hidden || reducedMotion() || openRef.current || busyRef.current) {
-        schedule();
+    const checkContext = () => {
+      const context = currentContext();
+      activeContextRef.current = context;
+      if (!context) {
+        pendingContextRef.current = null;
         return;
       }
-      try {
-        const ai = pickRandomIdx(IDLE_ANIMS.length, lastAnimIdxRef.current);
-        lastAnimIdxRef.current = ai;
-        const anim = IDLE_ANIMS[ai];
-        if (clippy?.hasAnimation?.(anim)) clippy.play(anim);
-      } catch {
-        /* ignore */
+      if (deliveredContextsRef.current?.has(context)) return;
+      if (document.hidden || openRef.current || busyRef.current) {
+        pendingContextRef.current = context;
+        return;
       }
-      const ki = pickRandomIdx(IDLE_KEYS.length, lastIdleIdxRef.current);
-      lastIdleIdxRef.current = ki;
-      say(t(IDLE_KEYS[ki]));
-      schedule();
+      deliverSuggestionRef.current(context);
     };
-    const reset = () => schedule();
-    const onVis = () => {
+    const schedule = () => {
+      window.clearTimeout(timer);
+      timer = window.setTimeout(checkContext, CONTEXT_DWELL_MS);
+    };
+    const onVisibility = () => {
       if (!document.hidden) schedule();
     };
     schedule();
-    window.addEventListener("pointermove", reset, { passive: true });
-    window.addEventListener("keydown", reset);
-    document.addEventListener("visibilitychange", onVis);
+    window.addEventListener("scroll", schedule, { passive: true });
+    window.addEventListener("resize", schedule);
+    document.addEventListener("visibilitychange", onVisibility);
     return () => {
       window.clearTimeout(timer);
-      window.removeEventListener("pointermove", reset);
-      window.removeEventListener("keydown", reset);
-      document.removeEventListener("visibilitychange", onVis);
+      window.removeEventListener("scroll", schedule);
+      window.removeEventListener("resize", schedule);
+      document.removeEventListener("visibilitychange", onVisibility);
+    };
+  }, [clippy, open]);
+
+  // Konami easter egg; ignore key sequences typed into form controls.
+  useEffect(() => {
+    if (!clippy) return;
+    let progress = 0;
+    let lastFireAt = 0;
+    const timers: number[] = [];
+    const onKeyDown = (event: KeyboardEvent) => {
+      const target = event.target;
+      if (
+        target instanceof HTMLElement &&
+        (target.isContentEditable || target.matches("input, textarea, select"))
+      ) {
+        progress = 0;
+        return;
+      }
+      const key = event.key.toLowerCase();
+      if (key === KONAMI_SEQUENCE[progress]) progress += 1;
+      else progress = key === KONAMI_SEQUENCE[0] ? 1 : 0;
+      if (progress !== KONAMI_SEQUENCE.length) return;
+      progress = 0;
+      if (Date.now() - lastFireAt < 2500) return;
+      lastFireAt = Date.now();
+
+      const el = agentEl(clippy);
+      if (!reducedMotion()) {
+        el?.classList.add("clippy-konami");
+        if (clippy.hasAnimation?.("GetAttention")) clippy.play("GetAttention");
+        timers.push(window.setTimeout(() => {
+          if (clippy.hasAnimation?.("Greeting")) clippy.play("Greeting");
+        }, 550));
+        timers.push(window.setTimeout(() => el?.classList.remove("clippy-konami"), 2200));
+      }
+      const message = t("clippy.konami");
+      say(message, undefined, message);
+    };
+    window.addEventListener("keydown", onKeyDown);
+    return () => {
+      window.removeEventListener("keydown", onKeyDown);
+      timers.forEach((timer) => window.clearTimeout(timer));
+      agentEl(clippy)?.classList.remove("clippy-konami");
     };
   }, [clippy, say, t]);
 
-  // Scroll hints for #projects / #guestbook (static, cooldown)
+  // Add an accessible unread marker to the third-party agent element.
   useEffect(() => {
-    if (!clippy) return;
-    const onScroll = () => {
-      const now = Date.now();
-      if (now - lastScrollHint.current < SCROLL_COOLDOWN_MS) return;
-      const y = window.scrollY + window.innerHeight / 2;
-      const pick = (id: string) => {
-        const el = document.getElementById(id);
-        if (!el) return false;
-        const r = el.getBoundingClientRect();
-        const mid = r.top + window.scrollY + r.height / 2;
-        return Math.abs(mid - y) < window.innerHeight / 2;
-      };
-      if (pick("projects")) {
-        lastScrollHint.current = now;
-        say(t("clippy.projectsHint"), "GestureRight");
-      } else if (pick("guestbook")) {
-        lastScrollHint.current = now;
-        say(t("clippy.guestbookHint"), "GestureRight");
-      }
-    };
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
-  }, [clippy, say, t]);
+    const el = agentEl(clippy);
+    if (!el) return;
+    el.setAttribute("aria-label", unreadSuggestion ? t("clippy.newSuggestion") : t("clippy.assistantLabel"));
+    const oldBadge = el.querySelector(".clippy-presence-badge");
+    oldBadge?.remove();
+    if (!unreadSuggestion) return;
+    const badge = document.createElement("span");
+    badge.className = "clippy-presence-badge";
+    badge.textContent = "!";
+    badge.setAttribute("role", "status");
+    badge.setAttribute("aria-label", t("clippy.newSuggestion"));
+    el.appendChild(badge);
+    return () => badge.remove();
+  }, [clippy, unreadSuggestion, t]);
 
   // Abort in-flight request + loops on unmount.
   useEffect(() => {
@@ -454,6 +739,7 @@ export default function ClippyAssistant() {
     setInput("");
     setMessages((m) => [...m.slice(-19), { from: "user", text }]);
     setBusy(true);
+    busyRef.current = true;
     playSound("send", 0.5);
     userAbortedRef.current = false;
     const ctrl = new AbortController();
@@ -483,7 +769,7 @@ export default function ClippyAssistant() {
           history: historyPayload,
           context: {
             path: window.location.pathname,
-            section: currentSection(),
+            section: currentContext() ?? "",
           },
         }),
         signal: ctrl.signal,
@@ -507,6 +793,11 @@ export default function ClippyAssistant() {
       const data = await res.json();
       const reply = typeof data.reply === "string" ? data.reply : "";
       if (!reply) throw new Error("empty");
+      const speechText = typeof data.speechText === "string" ? data.speechText : reply;
+      const target = !data.blocked && isClippyTarget(data.target) ? data.target : null;
+      const copyText = !data.blocked && typeof data.copyText === "string"
+        ? data.copyText.slice(0, 1200)
+        : undefined;
       if (data.lang === "id" || data.lang === "en") {
         lockedLangRef.current = data.lang;
       }
@@ -518,7 +809,10 @@ export default function ClippyAssistant() {
           { role: "model" as const, text: reply.slice(0, HISTORY_TEXT_MAX) },
         ].slice(-16);
       }
-      say(reply);
+      say(reply, undefined, speechText, copyText);
+      if (target) {
+        navigateToTarget(target, { from: "clippy", text: reply, copyText }, tourStep);
+      }
     } catch {
       // User abort stays silent; failures show the retro fallback line.
       if (!userAbortedRef.current) say(t("clippy.fallback"));
@@ -527,13 +821,14 @@ export default function ClippyAssistant() {
       if (abortRef.current === ctrl) abortRef.current = null;
       stopLoops();
       setBusy(false);
+      busyRef.current = false;
       try {
         clippy?.stop();
       } catch {
         /* ignore */
       }
     }
-  }, [input, busy, cooldownSeconds, rateLimitUntil, clippy, say, t]);
+  }, [input, busy, cooldownSeconds, rateLimitUntil, clippy, navigateToTarget, say, t, tourStep]);
 
   const abort = useCallback(() => {
     userAbortedRef.current = true;
@@ -541,6 +836,7 @@ export default function ClippyAssistant() {
     abortRef.current = null;
     stopLoops();
     setBusy(false);
+    busyRef.current = false;
     try {
       clippy?.stop();
     } catch {
@@ -555,6 +851,17 @@ export default function ClippyAssistant() {
     setSoundsMuted(next);
     if (!next) playSound("toggle-on", 0.5);
   };
+
+  const copyDraft = useCallback(async (draft: string) => {
+    setCopyFailedDraft(null);
+    try {
+      if (!navigator.clipboard?.writeText) throw new Error("Clipboard unavailable");
+      await navigator.clipboard.writeText(draft);
+      setCopiedDraft(draft);
+    } catch {
+      setCopyFailedDraft(draft);
+    }
+  }, []);
 
   if (!open) return null;
 
@@ -594,20 +901,51 @@ export default function ClippyAssistant() {
       </div>
       {!collapsed && (
         <>
-          <div className="h-56 overflow-y-auto bg-retro-yellow-bg p-1.5 text-xs leading-normal space-y-1">
+          <div
+            className="h-56 overflow-y-auto bg-retro-yellow-bg p-1.5 text-xs leading-normal space-y-2"
+            aria-live="polite"
+            aria-relevant="additions text"
+          >
             {messages.length === 0 && (
-              <p className="text-[#666633]">{t("clippy.greeting")}</p>
+              <ClippyMarkdown
+                source={t(timeGreetingKey())}
+                onNavigate={(target) => navigateToTarget(target)}
+              />
             )}
             {messages.map((m, i) => (
-              <p
+              <div
                 key={i}
                 className={
                   m.from === "clippy" ? "text-black" : "text-right text-retro-blue-dark"
                 }
               >
                 <b>{m.from === "clippy" ? "📎 " : "You: "}</b>
-                {m.text}
-              </p>
+                {m.from === "clippy" ? (
+                  <ClippyMarkdown
+                    source={m.text}
+                    onNavigate={(target) => navigateToTarget(target, m)}
+                  />
+                ) : (
+                  <span className="whitespace-pre-wrap">{m.text}</span>
+                )}
+                {m.copyText && (
+                  <div className="clippy-draft-card">
+                    <pre>{m.copyText}</pre>
+                    <button
+                      data-no-retro
+                      className="retro-btn px-2 py-0.5 text-xs cursor-pointer font-bold"
+                      onClick={() => void copyDraft(m.copyText!)}
+                    >
+                      {copiedDraft === m.copyText ? t("clippy.copiedDraft") : t("clippy.copyDraft")}
+                    </button>
+                    {copyFailedDraft === m.copyText && (
+                      <span className="ml-1 text-retro-orange" role="status">
+                        {t("clippy.copyDraftFailed")}
+                      </span>
+                    )}
+                  </div>
+                )}
+              </div>
             ))}
             {cooldownSeconds > 0 && (
               <p className="text-right text-retro-orange" aria-live="polite">
@@ -619,6 +957,39 @@ export default function ClippyAssistant() {
             )}
             {busy && <p className="text-[#666633] blink">…</p>}
             <div ref={messagesEndRef} />
+          </div>
+          <div className="flex items-center justify-between gap-2 px-1.5 py-1 border-t border-retro-border-mid bg-retro-sidebar">
+            {tourStep === null ? (
+              <button
+                data-no-retro
+                className="retro-btn px-2 py-0.5 text-xs cursor-pointer font-bold"
+                onClick={startTour}
+              >
+                {t("clippy.tourStart")}
+              </button>
+            ) : (
+              <>
+                <span className="text-[10px] text-retro-text-muted">
+                  {t("clippy.tourStep").replace("{step}", String(tourStep + 1))}
+                </span>
+                <div className="flex gap-1">
+                  <button
+                    data-no-retro
+                    className="retro-btn px-2 py-0.5 text-xs cursor-pointer font-bold"
+                    onClick={advanceTour}
+                  >
+                    {t("clippy.tourNext")}
+                  </button>
+                  <button
+                    data-no-retro
+                    className="retro-btn px-2 py-0.5 text-xs cursor-pointer"
+                    onClick={skipTour}
+                  >
+                    {t("clippy.tourSkip")}
+                  </button>
+                </div>
+              </>
+            )}
           </div>
           <div className="flex gap-1 p-1.5 border-t border-retro-border-mid">
             <input

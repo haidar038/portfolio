@@ -5,7 +5,11 @@
  * Returns: { reply, lang, blocked? }
  */
 
-import { buildKnowledgeBlock } from "../src/data/clippy-knowledge.js";
+import {
+  buildKnowledgeBlock,
+  CLIPPY_TARGETS,
+  isClippyTarget,
+} from "../src/data/clippy-knowledge.js";
 
 type ClippyLocale = "en" | "id";
 type HistoryRole = "user" | "model";
@@ -23,7 +27,9 @@ interface ContextObj {
 const MODEL = process.env.CLIPPY_MODEL || "gemini-3.5-flash-lite";
 const TIMEOUT_MS = 8000;
 const PROMPT_MAX = 500;
-const REPLY_MAX = 500;
+const REPLY_MAX = 700;
+const SPEECH_MAX = 300;
+const COPY_MAX = 1200;
 const HISTORY_MAX = 8;
 const HISTORY_TEXT_MAX = 300;
 
@@ -161,6 +167,14 @@ function canned(locale: ClippyLocale, kind: "injection" | "moderation"): string 
     : "Can't go there — let's keep it chill. Want to talk projects or contacting Haidar instead?";
 }
 
+function cannedPayload(
+  locale: ClippyLocale,
+  kind: "injection" | "moderation",
+): { reply: string; speechText: string; lang: ClippyLocale; blocked: string } {
+  const reply = canned(locale, kind);
+  return { reply, speechText: reply, lang: locale, blocked: kind };
+}
+
 const BANNED_OPENERS = [
   "sepertinya kamu", "sepertinya anda", "it looks like you",
   "it looks like you're", "it looks like ur",
@@ -186,7 +200,11 @@ function systemInstruction(replyLang: ClippyLocale, situation: string, knowledge
       ? "TONE: Bahasa Indonesia santai, gaul sopan. Wajar pakai: udah, gak/nggak, sih, nih, deh, dong, banget, ngobrol, ngingetin, spill, kepo. Jangan kaku/formal. Jangan koreksi slang user."
       : "TONE: Casual retro English with contractions. Playful, never corporate-stiff.",
     "UNDERSTAND Indonesian slang as-is, never correct it: ngeprompt=writing a prompt, ngasih tau=informing, ngena=relatable, yaudah sih=resigned agreement, nyebelin=annoying, gitu deh=emphasis, spill=tell details, kepo=curious.",
-    "CONVERSATION: acknowledge the last message, reference 1 prior fact when relevant, optionally end with 1 short follow-up question. Max 2-3 sentences so it fits a speech bubble.",
+    "CONVERSATION: acknowledge the last message, reference 1 prior fact when relevant, optionally end with 1 short follow-up question. Keep replyMarkdown to 2-3 concise sentences. Use Markdown sparingly for emphasis and links. Never emit raw HTML.",
+    "SPEECH: speechText is a plain-text version of the answer for Clippy's speech balloon. No Markdown syntax or URLs; keep it under 220 characters.",
+    `NAVIGATION: target must be omitted unless the visitor clearly asks about information that belongs in a site destination. Allowed targets: ${CLIPPY_TARGETS.join(", ")}. Identity/profile questions target about; education targets journey; employment/experience targets experience; project questions target projects; contact/social profile questions target contact; guestbook questions target guestbook; curated-link questions target blogroll. Prefer the most relevant single target. Never invent an anchor or route.`,
+    "LINKS: Use Markdown links for useful destinations and only URLs present in KNOWLEDGE. Use [profile](#about), [contact](#contact), [guestbook](/guestbook), and [blogroll](/blogroll) for site destinations. For contact, prefer actual GitHub, LinkedIn, email, and WhatsApp links from KNOWLEDGE.",
+    "DRAFTS: include copyText only when the user explicitly asks for a contact-message draft and enough context is available. If the user asks to draft but has not explained the purpose or recipient context, ask one short clarifying question and omit copyText for that turn. Once the context is clear, copyText must contain only the draft text, without labels or Markdown. Never send a message or claim it was sent.",
     `LANGUAGE: reply strictly in ${replyLang === "id" ? "Indonesian" : "English"}. This was resolved from the user's own words — never auto-revert to the page language.`,
     "SCOPE: portfolio only — Haidar profile, stack, projects, guestbook, contact, navigation, hiring. Out-of-scope (politics, hacking, homework dumps, medical/legal advice, explicit content): decline briefly in-character and offer a relevant portfolio topic.",
     "STYLE: vary openers every reply. BANNED openers, never start with: 'Sepertinya kamu', 'Sepertinya Anda', 'It looks like you'. Max one retro nod per five replies.",
@@ -194,7 +212,7 @@ function systemInstruction(replyLang: ClippyLocale, situation: string, knowledge
     "KNOWLEDGE:",
     knowledge,
     situation ? `SITUATION: ${situation}` : "SITUATION: homepage hero.",
-    'Respond with JSON only: {"reply": "<2-3 sentences>", "lang": "id|en"}.',
+    'Respond with JSON only: {"reply": "<Markdown answer>", "speechText": "<plain spoken version>", "lang": "id|en", "target": "<optional allowed target>", "copyText": "<optional plain contact draft>"}.',
   ].join("\n");
 }
 
@@ -229,10 +247,17 @@ function situationFromContext(raw: unknown): string {
 const REPLY_SCHEMA = {
   type: "OBJECT",
   properties: {
-    reply: { type: "STRING", description: "Clippy reply, max 2-3 sentences" },
+    reply: { type: "STRING", description: "Clippy Markdown reply, max 2-3 concise sentences" },
+    speechText: { type: "STRING", description: "Plain-text Clippy speech, no Markdown, max 220 characters" },
     lang: { type: "STRING", description: "Reply language: id or en" },
+    target: {
+      type: "STRING",
+      enum: [...CLIPPY_TARGETS],
+      description: "Optional allowlisted portfolio section or page when directly relevant",
+    },
+    copyText: { type: "STRING", description: "Optional plain contact-message draft, only when requested" },
   },
-  required: ["reply"],
+  required: ["reply", "speechText", "lang"],
 };
 
 async function handler(req: Request): Promise<Response> {
@@ -299,10 +324,10 @@ async function handler(req: Request): Promise<Response> {
 
   // Pre-LLM guardrails: no model cost on abuse, in-character canned replies.
   if (detectInjection(prompt)) {
-    return json({ reply: canned(replyLang, "injection"), lang: replyLang, blocked: "injection" });
+    return json(cannedPayload(replyLang, "injection"));
   }
   if (moderateInput(prompt)) {
-    return json({ reply: canned(replyLang, "moderation"), lang: replyLang, blocked: "moderation" });
+    return json(cannedPayload(replyLang, "moderation"));
   }
 
   const knowledge = buildKnowledgeBlock(replyLang, prompt);
@@ -362,22 +387,43 @@ async function handler(req: Request): Promise<Response> {
       .join("") ?? "";
 
     let reply = "";
+    let speechText = "";
+    let target: unknown;
+    let copyText = "";
     let modelLang: ClippyLocale | null = null;
     const cleaned = raw.replace(/^```json\s*/i, "").replace(/```\s*$/, "").trim();
     try {
-      const parsed = JSON.parse(cleaned) as { reply?: unknown; lang?: unknown };
+      const parsed = JSON.parse(cleaned) as {
+        reply?: unknown;
+        speechText?: unknown;
+        lang?: unknown;
+        target?: unknown;
+        copyText?: unknown;
+      };
       if (typeof parsed.reply === "string") reply = parsed.reply;
+      if (typeof parsed.speechText === "string") speechText = parsed.speechText;
       modelLang = asLocale(parsed.lang);
+      target = parsed.target;
+      if (typeof parsed.copyText === "string") copyText = parsed.copyText;
     } catch {
       reply = cleaned;
+      speechText = cleaned;
     }
     reply = stripBannedOpener(reply.trim()).slice(0, REPLY_MAX).trim();
+    speechText = stripBannedOpener((speechText || reply).trim()).slice(0, SPEECH_MAX).trim();
+    copyText = copyText.trim().slice(0, COPY_MAX);
     // Leak guard: never let system/API internals escape.
-    if (/system instruction|api key|gemini_api|aistudio/i.test(reply)) {
-      return json({ reply: canned(replyLang, "injection"), lang: replyLang, blocked: "injection" });
+    if (/system instruction|api key|gemini_api|aistudio/i.test(`${reply} ${speechText} ${copyText}`)) {
+      return json(cannedPayload(replyLang, "injection"));
     }
     if (!reply) return json({ error: "Empty reply" }, 502);
-    return json({ reply, lang: modelLang ?? replyLang });
+    return json({
+      reply,
+      speechText: speechText || reply,
+      lang: modelLang ?? replyLang,
+      ...(isClippyTarget(target) ? { target } : {}),
+      ...(copyText ? { copyText } : {}),
+    });
   } catch (err) {
     console.error("Clippy error:", err);
     return json({ error: "Internal server error" }, 500);

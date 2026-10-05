@@ -190,6 +190,32 @@ export interface Translations {
 
     // Clippy assistant (bilingual via useI18n locale)
     "clippy.greeting": string;
+    "clippy.greetingMorning": string;
+    "clippy.greetingAfternoon": string;
+    "clippy.greetingEvening": string;
+    "clippy.suggestAbout": string;
+    "clippy.suggestJourney": string;
+    "clippy.suggestExperience": string;
+    "clippy.suggestProjects": string;
+    "clippy.suggestContact": string;
+    "clippy.suggestGuestbook": string;
+    "clippy.suggestBlogroll": string;
+    "clippy.newSuggestion": string;
+    "clippy.assistantLabel": string;
+    "clippy.draftKickoff": string;
+    "clippy.copyDraft": string;
+    "clippy.copiedDraft": string;
+    "clippy.copyDraftFailed": string;
+    "clippy.tourStart": string;
+    "clippy.tourNext": string;
+    "clippy.tourSkip": string;
+    "clippy.tourStep": string;
+    "clippy.tourAbout": string;
+    "clippy.tourProjects": string;
+    "clippy.tourContact": string;
+    "clippy.tourDone": string;
+    "clippy.tourSkipped": string;
+    "clippy.konami": string;
     "clippy.idle": string;
     "clippy.idle1": string;
     "clippy.idle2": string;
