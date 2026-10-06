@@ -1,7 +1,10 @@
 /* Canonical project dataset — single source of truth for portfolio content.
-   UI strings stay in src/i18n/locales/*, professional content lives here
-   as bilingual { en, id } fields. Components only map() this data.
-   Commented-out entries are expired / out of CV (kept for easy restore). */
+ * UI strings stay in src/i18n/locales/*, professional content lives here
+ * as bilingual { en, id } fields. Components only map() this data.
+ *
+ * Month reflects the latest verified major iteration/deployment when known.
+ * Entries are ordered newest-first.
+ */
 
 export type ProjectStatus = "Live Now" | "Live Demo" | "In Development";
 
@@ -15,7 +18,7 @@ export interface ProjectEntry {
   name: string;
   featured?: boolean;
   year: string;
-  /** Month 1-12 for newest-first tracking. Optional until confirmed — missing sorts as oldest within its year and displays year only. */
+  /** Month 1-12 for newest-first tracking. Missing month sorts as oldest within its year. */
   month?: number;
   description: { en: string; id: string };
   stack: string[];
@@ -28,31 +31,104 @@ export interface ProjectEntry {
 
 export const PROJECTS: ProjectEntry[] = [
   {
-    id: "rindang",
-    name: "Rindang",
+    id: "cupofcode",
+    name: "Cup of Code",
     featured: true,
-    year: "2023",
-    month: 10,
+    year: "2026",
+    month: 6,
     description: {
-      id: "Platform digital farming. Migrasi dari arsitektur monolithic (Flask + MySQL) ke stack modern SPA. Peningkatan performa, scalability, dan UI/UX yang lebih clean.",
-      en: "Digital farming platform. Migrated from a monolithic architecture (Flask + MySQL) to a modern SPA stack with better performance, scalability, and cleaner UI/UX.",
+      id: "Publication dan resource gratis untuk software development, UI/UX design, dan AI-assisted development. Menyediakan artikel, tutorial, snippets, dan aset digital untuk developer Indonesia.",
+      en: "Free publication and resource platform for software development, UI/UX design, and AI-assisted development, featuring articles, tutorials, snippets, and digital assets for Indonesian developers.",
     },
-    stack: ["React", "Supabase", "Vercel"],
-    links: [{ label: "Live", href: "https://rindang.vercel.app" }],
+    stack: ["Astro", "React", "Tailwind CSS", "TypeScript", "Keystatic"],
+    links: [
+      { label: "Live", href: "https://cupofcode.cc" },
+      { label: "Github", href: "https://github.com/haidar038/cupofcode" },
+    ],
     status: "Live Now",
-    thumbnail: "/thumbnails/rindang.svg",
+    thumbnail: "/thumbnails/cupofcode.svg",
+  },
+  {
+    id: "mdoc-builder",
+    name: "mdoc Builder",
+    featured: false,
+    year: "2026",
+    month: 8,
+    description: {
+      id: "Editor WYSIWYG berbasis browser untuk membuat dan mengedit file .mdoc yang kompatibel dengan Keystatic. Mendukung rich-text editing, YAML frontmatter, import, autosave, preview, dan export tanpa backend.",
+      en: "Browser-based WYSIWYG editor for creating and editing Keystatic-compatible .mdoc files, with rich-text editing, YAML frontmatter, import, autosave, preview, and export without a backend.",
+    },
+    stack: ["React", "Vite", "TypeScript", "Tiptap", "Tailwind CSS"],
+    links: [
+      { label: "Live", href: "https://mdoc-builder.vercel.app" },
+      { label: "Github", href: "https://github.com/haidar038/mdoc-builder" },
+    ],
+    status: "Live Now",
+    thumbnail: "/thumbnails/mdoc-builder.svg",
+  },
+  {
+    id: "cv4e1",
+    name: "cv4every1",
+    featured: true,
+    year: "2026",
+    month: 9,
+    description: {
+      id: "CV builder open-source dan local-first yang menghasilkan versi ATS-oriented dan Creative dari satu sumber data. Tanpa akun, tanpa backend wajib, dengan penyimpanan lokal, validasi data, dan workflow PDF.",
+      en: "Open-source, local-first CV builder that generates ATS-oriented and Creative versions from one source of data, with no required account or backend and a privacy-focused local workflow.",
+    },
+    stack: ["React", "Vite", "TypeScript", "Tailwind CSS", "Zustand", "Dexie", "Vitest", "Playwright"],
+    links: [
+      { label: "Live", href: "https://cv4e1.vercel.app" },
+      { label: "Github", href: "https://github.com/haidar038/cv4e1" },
+    ],
+    status: "Live Demo",
+    thumbnail: "/thumbnails/cv4e1.svg",
+  },
+  {
+    id: "univertex",
+    name: "UniVertex",
+    featured: true,
+    year: "2026",
+    month: 9,
+    description: {
+      id: "Platform e-voting untuk lingkungan kampus dengan role-based access untuk voter, admin, committee, dan observer. Mencakup workflow voting, hasil real-time, audit log, invitation flow, dan public results.",
+      en: "Campus e-voting platform with role-based access for voters, admins, committees, and observers. Includes voting workflows, real-time results, audit logs, invitation flows, and public results.",
+    },
+    stack: ["React", "Vite", "TypeScript", "Tailwind CSS", "shadcn/ui", "Supabase"],
+    links: [
+      { label: "Live", href: "https://univertex.vercel.app" },
+      { label: "Github", href: "https://github.com/haidar038/univertex" },
+    ],
+    status: "Live Demo",
+    thumbnail: "/thumbnails/univertex.svg",
+  },
+  {
+    id: "personal-portfolio",
+    name: "Personal Portfolio",
+    year: "2026",
+    description: {
+      id: "Website portfolio pribadi untuk showcase project, skill, dan profile profesional. Dibangun sebagai eksperimen UI/UX yang terus diiterasi dan direfactor.",
+      en: "Personal portfolio website for showcasing projects, skills, and professional profile. Built as an evolving UI/UX experiment with continuous iteration and refactoring.",
+    },
+    stack: ["Vite", "Tailwind CSS", "TypeScript"],
+    links: [
+      { label: "Github", href: "https://github.com/haidar038" },
+      { label: "Live", href: "https://hydr.codes" },
+    ],
+    status: "Live Now",
+    thumbnail: "/thumbnails/personal-portfolio.svg",
   },
   {
     id: "wargahub",
-    name: "Wargahub",
+    name: "SasaHub",
     featured: false,
     year: "2025",
     month: 10,
     description: {
-      id: "Platform manajemen desa terintegrasi. Layanan publik digital, sistem pengaduan, publikasi, dan manajemen warga dengan role-based dashboard (admin, staff, warga). Terintegrasi dengan Smart Census.",
-      en: "Integrated village management platform. Digital public services, complaint system, publications, and citizen management with role-based dashboards (admin, staff, residents). Integrated with Smart Census.",
+      id: "Platform civic/community untuk layanan publik digital, pengaduan, publikasi, dan manajemen warga. Menggunakan dashboard berbasis role dan workflow database-driven.",
+      en: "Civic and community platform for digital public services, complaints, publications, and resident management with role-based, database-driven workflows.",
     },
-    stack: ["React", "Supabase", "TypeScript"],
+    stack: ["React", "Vite", "TypeScript", "Tailwind CSS", "Supabase"],
     links: [{ label: "Live", href: "https://wargahub.biz.id" }],
     status: "Live Now",
     thumbnail: "/thumbnails/wargahub.svg",
@@ -60,14 +136,13 @@ export const PROJECTS: ProjectEntry[] = [
   {
     id: "warungly",
     name: "Warungly",
-    featured: false,
     year: "2025",
     month: 8,
     description: {
-      id: "Web-based POS System dengan fitur lengkap: transaksi, inventory management, laporan keuangan, reporting & analytics, dan AI Assistant. Lightweight yet powerful business OS for UMKM.",
-      en: "Full-featured web-based POS: transactions, inventory management, financial reports, analytics, and AI assistant. A lightweight yet powerful business OS for SMEs.",
+      id: "POS dan invoicing ringan untuk UMKM yang mencakup transaksi, inventory, laporan, analytics, dan AI Assistant. Fokus pada workflow bisnis yang sederhana namun tetap extensible.",
+      en: "Lightweight POS and invoicing product for SMEs covering transactions, inventory, reporting, analytics, and an AI assistant, with a simple but extensible business workflow.",
     },
-    stack: ["Vite", "SQLite", "TypeScript"],
+    stack: ["React", "Vite", "TypeScript", "Tailwind CSS", "SQLite", "TOON", "Groq AI"],
     links: [{ label: "Private", href: "#" }],
     status: "In Development",
     thumbnail: "/thumbnails/warungly.svg",
@@ -75,111 +150,56 @@ export const PROJECTS: ProjectEntry[] = [
   {
     id: "binary-verse",
     name: "Binary Verse",
-    featured: true,
+    featured: false,
     year: "2025",
     month: 7,
     description: {
-      id: "Website company profile & platform digital untuk studio software development. Showcase project, layanan, dan tim. Branding visual kuat, storytelling produk digital.",
-      en: "Company profile website & digital platform for a software development studio. Project showcase, services, and team. Strong visual branding and digital product storytelling.",
+      id: "Website company profile dan platform digital untuk studio software development. Menampilkan project, layanan, dan identitas Binary Verse dengan fokus pada product storytelling dan visual branding.",
+      en: "Company profile website and digital platform for a software development studio, showcasing projects, services, and Binary Verse's identity through product storytelling and visual branding.",
     },
-    stack: ["React", "Vite", "Tailwind", "Vercel"],
+    stack: ["React", "Vite", "Tailwind CSS", "Vercel"],
     links: [{ label: "Live", href: "https://binaryverse.com" }],
     status: "Live Now",
     thumbnail: "/thumbnails/binary-verse.svg",
-  },
-  {
-    id: "cupofcode",
-    name: "Cup of Code",
-    year: "2026",
-    month: 6,
-    description: {
-      id: "Website mini blog .",
-      en: "Personal blog & project showcase website. Built with Astro JS + Tailwind CSS as a retro-concept UI/UX experiment. Iterated often.",
-    },
-    stack: ["Astro", "Tailwind", "TypeScript"],
-    links: [
-      { label: "Github", href: "https://github.com/haidar038/cupofcode" }
-    ],
-    status: "In Development",
-    thumbnail: "/thumbnails/cupofcode.svg",
   },
   {
     id: "smart-census",
     name: "Smart Census",
     year: "2025",
     description: {
-      id: "Sistem sensus digital berbasis AI untuk instansi lokal. OCR + text recognition via Groq LLaMA untuk mengurangi human error dalam input data. Dashboard pengelolaan data warga.",
-      en: "AI-powered digital census system for local agencies. OCR + text recognition via Groq LLaMA to reduce manual input errors, with a citizen data dashboard.",
+      id: "Sistem sensus digital berbasis AI untuk pengelolaan data warga. Menggabungkan OCR/text recognition dan dashboard data untuk mengurangi input manual dan human error.",
+      en: "AI-assisted digital census system for citizen data management, combining OCR/text recognition with a dashboard to reduce manual input and human error.",
     },
     stack: ["React", "Supabase", "Groq AI"],
     links: [{ label: "Private", href: "#" }],
     status: "In Development",
     thumbnail: "/thumbnails/smart-census.svg",
   },
-  // ── EXPIRED / out of CV — kept commented for easy restore ──
-  // {
-  //   id: "jaga-bumi",
-  //   name: "Jaga Bumi",
-  //   year: "2025",
-  //   description: {
-  //     id: "Platform mobile manajemen sampah berbasis ekosistem. Multi-role (warga, kolektor, admin), pickup scheduling, reward system, dan in-app payments. Digital Waste Management Ecosystem for Indonesia.",
-  //     en: "Ecosystem-based mobile waste management platform. Multi-role (residents, collectors, admin) with pickup scheduling, rewards, and in-app payments.",
-  //   },
-  //   stack: ["React", "Supabase", "TypeScript"],
-  //   links: [{ label: "Private", href: "#" }],
-  //   status: "In Development",
-  //   thumbnail: "/thumbnails/jaga-bumi.svg",
-  // },
-  // {
-  //   id: "badonor",
-  //   name: "Badonor",
-  //   year: "2025",
-  //   description: {
-  //     id: "Aplikasi mobile untuk menghubungkan pencari donor darah dengan pendonor secara real-time. Donor matching berdasarkan golongan darah dan lokasi. High-impact social product.",
-  //     en: "Mobile app connecting blood seekers with donors in real time. Matching by blood type and location. High-impact social product.",
-  //   },
-  //   stack: ["React", "Supabase", "TypeScript"],
-  //   links: [{ label: "Private", href: "#" }],
-  //   status: "In Development",
-  //   thumbnail: "/thumbnails/badonor.svg",
-  // },
-  // {
-  //   id: "sapulidi",
-  //   name: "SapuLidi",
-  //   year: "2025",
-  //   description: {
-  //     id: "Platform smart waste management berbasis web dengan AI. Klasifikasi sampah berbasis gambar, AI chatbot untuk edukasi pengguna, integrasi Groq + LLaMA.",
-  //     en: "AI-powered web-based smart waste management platform. Image-based waste classification, educational AI chatbot, Groq + LLaMA integration.",
-  //   },
-  //   stack: ["React", "Groq", "LLaMA", "Supabase"],
-  //   links: [{ label: "GitHub", href: "https://sapulidiapp.vercel.app" }],
-  //   status: "Live Demo",
-  //   thumbnail: "/thumbnails/sapulidi.svg",
-  // },
   {
     id: "amtra-journey",
     name: "Amtra Journey",
-    year: "2025",
     featured: true,
+    year: "2025",
     description: {
-      id: "Website company profile & platform digital untuk tour & trip di Yogyakarta. Rebuild ke modern SPA, UI/UX storytelling untuk trust & engagement, mobile-first responsive design.",
-      en: "Company profile website & digital platform for tours and trips in Yogyakarta. Rebuilt as a modern SPA with storytelling UI/UX for trust and engagement, mobile-first.",
+      id: "Modernisasi website komersial tour & travel di Yogyakarta dengan arsitektur headless CMS menggunakan Sanity dan Supabase BaaS. Fokus pada responsive frontend dan content workflow.",
+      en: "Commercial tour and travel website modernization in Yogyakarta using a headless CMS architecture with Sanity and Supabase BaaS, focused on responsive frontend delivery and content workflows.",
     },
-    stack: ["React", "Vite", "Tailwind", "Vercel"],
-    links: [{ label: "Live", href: "https://amtrajourney.vercel.app" }],
-    status: "Live Demo",
+    stack: ["React", "Vite", "Tailwind CSS", "Sanity", "Supabase"],
+    links: [{ label: "Live", href: "https://amtrajourney.com" }],
+    status: "Live Now",
     thumbnail: "/thumbnails/amtra-journey.svg",
   },
   {
     id: "pasiar-ternate",
     name: "PASIAR Ternate",
-    year: "2025",
+    year: "2024",
+    month: 12,
     featured: true,
     description: {
-      id: "Portal budaya dan informasi lokal Ternate. Migrasi dari WordPress ke React SPA dengan CMS custom berbasis Supabase. Digitalisasi konten lokal.",
-      en: "Ternate local culture and information portal. Migrated from WordPress to a React SPA with a custom Supabase-based CMS. Local content digitalization.",
+      id: "Portal budaya dan informasi lokal Ternate. Migrasi dari WordPress ke React SPA dengan CMS custom berbasis Supabase untuk digitalisasi dan pengelolaan konten lokal.",
+      en: "Ternate local culture and information portal migrated from WordPress to a React SPA with a custom Supabase-based CMS for local content digitization and management.",
     },
-    stack: ["React", "Supabase", "Tailwind"],
+    stack: ["React", "Supabase", "Tailwind CSS"],
     links: [{ label: "Live", href: "https://pasiar.ternatekota.go.id" }],
     status: "Live Now",
     thumbnail: "/thumbnails/pasiar-ternate.svg",
@@ -189,8 +209,8 @@ export const PROJECTS: ProjectEntry[] = [
     name: "Modiv Eventcraft",
     year: "2025",
     description: {
-      id: "Aplikasi perencanaan anggaran event dan manajemen vendor. Sistem budgeting interaktif, pemilihan vendor, dan export quotation. Real-world tool untuk event organizer.",
-      en: "Event budget planning and vendor management app. Interactive budgeting, vendor selection, and quotation export. A real-world tool for event organizers.",
+      id: "Aplikasi perencanaan anggaran event dan manajemen vendor dengan budgeting interaktif, pemilihan vendor, dan export quotation.",
+      en: "Event budgeting and vendor management app with interactive budgeting, vendor selection, and quotation export workflows.",
     },
     stack: ["React", "Supabase", "TypeScript"],
     links: [{ label: "Live", href: "https://modiv-eventcraft.vercel.app" }],
@@ -198,38 +218,28 @@ export const PROJECTS: ProjectEntry[] = [
     thumbnail: "/thumbnails/modiv-eventcraft.svg",
   },
   {
-    id: "univertex",
-    name: "UniVertex",
+    id: "kagounga",
+    name: "Kagounga",
+    featured: true,
     year: "2025",
+    month: 12,
     description: {
-      id: "Sistem e-voting untuk lingkungan kampus. Voting system transparan, role-based access (admin, voter), real-time data handling. Fokus pada integritas dan kepercayaan.",
-      en: "E-voting system for campus environments. Transparent voting, role-based access (admin, voter), real-time data handling. Focused on integrity and trust.",
+      id: "Website commercial brand untuk produk lokal berbasis React/Vite. Menonjolkan responsive UI implementation, visual branding, storytelling produk, dan production deployment.",
+      en: "Commercial brand website for a local product built with React/Vite, emphasizing responsive UI implementation, visual branding, product storytelling, and production deployment.",
     },
-    stack: ["React", "Supabase", "TypeScript"],
-    links: [{ label: "Live", href: "https://univertex.vercel.app" }],
-    status: "Live Demo",
-    thumbnail: "/thumbnails/univertex.svg",
+    stack: ["React", "Vite", "Tailwind CSS"],
+    links: [{ label: "Live", href: "https://kagounga.netlify.app" }],
+    status: "Live Now",
+    thumbnail: "/thumbnails/kagounga.svg",
   },
-  // {
-  //   id: "shortlink",
-  //   name: "ShortLink",
-  //   year: "2025",
-  //   description: {
-  //     id: "URL shortener dengan authentication system. Custom short URL, dashboard tracking dan manajemen link. Fokus pada simplicity dan kecepatan akses.",
-  //     en: "URL shortener with authentication. Custom short URLs, tracking dashboard and link management. Focused on simplicity and speed.",
-  //   },
-  //   stack: ["React", "Supabase", "TypeScript"],
-  //   links: [{ label: "Live", href: "https://sl2.my.id" }],
-  //   status: "Live Now",
-  //   thumbnail: "/thumbnails/shortlink.svg",
-  // },
   {
     id: "wikisnap",
     name: "WikiSnap",
     year: "2025",
+    month: 5,
     description: {
-      id: "Tool berbasis web untuk mengekstrak dan memarafrase konten dari halaman Wikipedia. Input URL, parsing & summarization otomatis, AI-powered rephrasing.",
-      en: "Web tool to extract and paraphrase Wikipedia content. Paste a URL for automatic parsing, summarization, and AI-powered rephrasing.",
+      id: "Web tool untuk mengekstrak, merangkum, dan memarafrase konten dari halaman Wikipedia dengan bantuan AI.",
+      en: "Web tool for extracting, summarizing, and AI-assisted paraphrasing of Wikipedia content.",
     },
     stack: ["React", "Groq AI", "TypeScript"],
     links: [{ label: "Live", href: "https://wikisnap.vercel.app" }],
@@ -237,32 +247,72 @@ export const PROJECTS: ProjectEntry[] = [
     thumbnail: "/thumbnails/wikisnap.svg",
   },
   {
-    id: "kagounga",
-    name: "Kagounga",
-    year: "2025",
+    id: "rindang",
+    name: "RINDANG",
+    featured: true,
+    year: "2023",
+    month: 10,
     description: {
-      id: "Website brand UMKM untuk produk papeda. Landing page + artikel + e-commerce dengan dashboard admin terintegrasi. Branding visual kuat, storytelling produk lokal.",
-      en: "SME brand website for papeda products. Landing page + articles + e-commerce with an integrated admin dashboard. Strong visual branding and local product storytelling.",
+      id: "Platform digital agriculture yang berkembang dari arsitektur monolithic Flask + MySQL ke arsitektur web modern. Menunjukkan pengalaman full-stack lintas stack, termasuk Flask, SQLAlchemy, MySQL, React, dan Supabase.",
+      en: "Digital agriculture platform evolved from a Flask + MySQL monolith into a modern web architecture, demonstrating full-stack experience across Flask, SQLAlchemy, MySQL, React, and Supabase.",
     },
-    stack: ["React", "Supabase", "Tailwind"],
-    links: [{ label: "Live", href: "https://kagounga.vercel.app" }],
-    status: "Live Demo",
-    thumbnail: "/thumbnails/kagounga.svg",
-  },
-  {
-    id: "personal-portfolio",
-    name: "Personal Portfolio",
-    year: "2025",
-    description: {
-      id: "Website portfolio pribadi. Dibangun dengan Vite + Tailwind CSS, eksperimen UI/UX retro konsep. Showcase project dan skill. Iteratif dan sering di-refactor.",
-      en: "Personal portfolio website. Built with Vite + Tailwind CSS as a retro-concept UI/UX experiment. Project and skill showcase, iterated often.",
-    },
-    stack: ["Vite", "Tailwind", "TypeScript"],
-    links: [
-      { label: "Github", href: "https://github.com/haidar038" },
-      { label: "Live", href: "https://hydr.codes" },
-    ],
+    stack: ["React", "Supabase", "Flask", "SQLAlchemy", "MySQL"],
+    links: [{ label: "Live", href: "https://rindang.vercel.app" }],
     status: "Live Now",
-    thumbnail: "/thumbnails/personal-portfolio.svg",
+    thumbnail: "/thumbnails/rindang.svg",
   },
+
+  // ── EXPIRED / out of CV — kept commented for easy restore ──
+  // {
+  //   id: "jaga-bumi",
+  //   name: "Jaga Bumi",
+  //   year: "2025",
+  //   description: {
+  //     id: "Platform mobile manajemen sampah berbasis ekosistem. Multi-role (warga, kolektor, admin), pickup scheduling, reward system, dan in-app payments.",
+  //     en: "Ecosystem-based mobile waste management platform. Multi-role (residents, collectors, admin) with pickup scheduling, rewards, and in-app payments.",
+  //   },
+  //   stack: ["React Native", "Supabase", "TypeScript"],
+  //   links: [{ label: "Private", href: "#" }],
+  //   status: "In Development",
+  //   thumbnail: "/thumbnails/jaga-bumi.svg",
+  // },
+  // {
+  //   id: "badonor",
+  //   name: "BaDonor",
+  //   year: "2025",
+  //   description: {
+  //     id: "Aplikasi mobile untuk menghubungkan pencari donor darah dengan pendonor secara real-time. Matching berdasarkan golongan darah dan lokasi.",
+  //     en: "Mobile app connecting blood seekers with donors in real time, matching by blood type and location.",
+  //   },
+  //   stack: ["React Native", "Supabase", "TypeScript"],
+  //   links: [{ label: "Private", href: "#" }],
+  //   status: "In Development",
+  //   thumbnail: "/thumbnails/badonor.svg",
+  // },
+  // {
+  //   id: "sapulidi",
+  //   name: "SapuLidi",
+  //   year: "2025",
+  //   description: {
+  //     id: "Platform smart waste management berbasis web dengan AI untuk klasifikasi sampah dan edukasi pengguna.",
+  //     en: "AI-powered smart waste management web platform for waste classification and user education.",
+  //   },
+  //   stack: ["React", "Groq AI", "LLaMA", "Supabase"],
+  //   links: [{ label: "Github", href: "https://sapulidiapp.vercel.app" }],
+  //   status: "Live Demo",
+  //   thumbnail: "/thumbnails/sapulidi.svg",
+  // },
+  // {
+  //   id: "shortlink",
+  //   name: "ShortLink",
+  //   year: "2025",
+  //   description: {
+  //     id: "URL shortener dengan authentication, custom short URL, dashboard tracking, dan manajemen link.",
+  //     en: "URL shortener with authentication, custom short URLs, tracking dashboard, and link management.",
+  //   },
+  //   stack: ["React", "Supabase", "TypeScript"],
+  //   links: [{ label: "Live", href: "https://sl2.my.id" }],
+  //   status: "Live Now",
+  //   thumbnail: "/thumbnails/shortlink.svg",
+  // },
 ];
