@@ -1,46 +1,24 @@
-import { createBrowserRouter, RouterProvider } from 'react-router-dom';
-import { lazy, Suspense } from 'react';
+import { Route, Routes } from "react-router-dom";
+import Home from "./pages/Home";
+import Guestbook from "./pages/Guestbook";
+import Blogroll from "./pages/Blogroll";
+import Projects from "./pages/Projects";
+import ProjectDetail from "./pages/ProjectDetail";
+import NotFound from "./pages/NotFound";
 
-// Lazy load page components
-const Home = lazy(() => import('./pages/Home'));
-const Guestbook = lazy(() => import('./pages/Guestbook'));
-const Blogroll = lazy(() => import('./pages/Blogroll'));
-const NotFound = lazy(() => import('./pages/NotFound'));
-
-// Loading fallback component
-function PageLoader() {
+/**
+ * Route table shared by the client router and the build-time prerenderer.
+ * Pages are imported eagerly so server markup and the first client render match.
+ */
+export function AppRoutes() {
   return (
-    <div className="flex items-center justify-center min-h-[200px]">
-      <div className="text-retro-text">Loading...</div>
-    </div>
-  );
-}
-
-// Create browser router with all routes
-const router = createBrowserRouter([
-  {
-    path: '/',
-    element: <Home />,
-  },
-  {
-    path: '/guestbook',
-    element: <Guestbook />,
-  },
-  {
-    path: '/blogroll',
-    element: <Blogroll />,
-  },
-  {
-    path: '*',
-    element: <NotFound />,
-  },
-]);
-
-// Router component with Suspense wrapper
-export function Router() {
-  return (
-    <Suspense fallback={<PageLoader />}>
-      <RouterProvider router={router} />
-    </Suspense>
+    <Routes>
+      <Route path="/" element={<Home />} />
+      <Route path="/guestbook" element={<Guestbook />} />
+      <Route path="/blogroll" element={<Blogroll />} />
+      <Route path="/projects" element={<Projects />} />
+      <Route path="/projects/:id" element={<ProjectDetail />} />
+      <Route path="*" element={<NotFound />} />
+    </Routes>
   );
 }

@@ -119,9 +119,9 @@ export default function ContactSection(): ReactNode {
         {/* Quick message form */}
         <div className="w-full lg:w-72 shrink-0">
           <div className="border-t border-l border-retro-border-mid border-b border-r p-2 bg-retro-sidebar">
-            <div className="font-bold text-xs mb-1.5 text-retro-blue-dark flex items-center gap-1">
+            <h3 className="m-0 font-bold text-xs mb-1.5 text-retro-blue-dark flex items-center gap-1">
               <OldIcon name="VisualStudioNOTE16" size={14} alt="" /> {t("contact.formTitle")}
-            </div>
+            </h3>
 
             <div className="mb-2">
               <label className="text-xs block mb-0.5">{t("contact.name")}</label>

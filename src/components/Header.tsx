@@ -1,3 +1,4 @@
+import { useLocation } from "react-router-dom";
 import { useI18n } from "../i18n/useI18n";
 import OldIcon from "./OldIcon";
 import VisitorCounter from "./VisitorCounter";
@@ -8,6 +9,8 @@ import VisitorCounter from "./VisitorCounter";
  */
 export default function Header() {
 	const { t, locale, setLocale } = useI18n();
+	const location = useLocation();
+	const isHome = location.pathname === "/";
 
 	function toggleLocale() {
 		setLocale(locale === "en" ? "id" : "en");
@@ -18,11 +21,17 @@ export default function Header() {
 			<div className="flex flex-col sm:flex-row justify-between items-start sm:items-start px-3 py-2 gap-2">
 				{/* Left: Name & Info */}
 				<div>
-					<div className="text-retro-green-glow text-xl sm:text-2xl md:text-3xl font-bold font-retro-display drop-shadow-[2px_2px_0px_#000033] tracking-wider">
-						★ M. Khaidar ★
-					</div>
-					<div
-						className="text-retro-blue-light text-xs mt-0.5 tracking-wider"
+					{isHome ? (
+						<h1 className="m-0 text-retro-green-glow text-xl sm:text-2xl md:text-3xl font-bold font-retro-display drop-shadow-[2px_2px_0px_#000033] tracking-wider">
+							★ M. Khaidar ★
+						</h1>
+					) : (
+						<div className="text-retro-green-glow text-xl sm:text-2xl md:text-3xl font-bold font-retro-display drop-shadow-[2px_2px_0px_#000033] tracking-wider">
+							★ M. Khaidar ★
+						</div>
+					)}
+					<p
+						className="m-0 text-retro-blue-light text-xs mt-0.5 tracking-wider"
 						dangerouslySetInnerHTML={{ __html: t("header.subtitle") }}
 					/>
 					<div className="flex flex-wrap gap-1 mt-1">

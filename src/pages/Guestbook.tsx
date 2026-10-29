@@ -1,22 +1,8 @@
-import { lazy, Suspense } from "react";
 import Layout from "../components/Layout";
 import SEOHead from "../components/SEOHead";
+import GuestbookForm from "../components/GuestbookForm";
+import GuestbookEntries from "../components/GuestbookEntries";
 import { useI18n } from "../i18n/useI18n";
-
-// Lazy load Firebase-dependent components for code splitting
-const GuestbookForm = lazy(() => import("../components/GuestbookForm"));
-const GuestbookEntries = lazy(() => import("../components/GuestbookEntries"));
-
-/**
- * Loading fallback for Suspense
- */
-function LoadingFallback() {
-  return (
-    <div className="border-t border-l border-retro-border-mid border-b border-r p-3 bg-retro-sidebar-bg mb-4">
-      <div className="text-sm text-retro-blue-dark">Loading...</div>
-    </div>
-  );
-}
 
 /**
  * Guestbook page - allows visitors to leave messages.
@@ -40,12 +26,8 @@ export default function Guestbook() {
           {t("guestbook.description")}
         </p>
       </div>
-      <Suspense fallback={<LoadingFallback />}>
-        <GuestbookForm />
-      </Suspense>
-      <Suspense fallback={<LoadingFallback />}>
-        <GuestbookEntries />
-      </Suspense>
+      <GuestbookForm />
+      <GuestbookEntries />
     </Layout>
   );
 }

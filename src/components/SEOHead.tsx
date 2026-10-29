@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { useI18n } from '../i18n/useI18n';
 
@@ -32,6 +33,10 @@ export default function SEOHead(props: SEOHeadProps) {
       : [props.structuredData]
     : [];
 
+  useEffect(() => {
+    document.documentElement.lang = locale;
+  }, [locale]);
+
   return (
     <Helmet htmlAttributes={{ lang: locale }}>
       <title>{fullTitle}</title>
@@ -63,7 +68,7 @@ export default function SEOHead(props: SEOHeadProps) {
       <meta name="twitter:image:alt" content={props.imageAlt ?? fullTitle} />
 
       {/* Canonical */}
-      <link rel="canonical" href={canonicalUrl} />
+      {!props.noindex && <link rel="canonical" href={canonicalUrl} />}
       {structuredData.map((schema, index) => (
         <script key={index} type="application/ld+json">
           {JSON.stringify(schema)}

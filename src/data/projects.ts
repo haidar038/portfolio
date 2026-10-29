@@ -3,7 +3,7 @@
  * as bilingual { en, id } fields. Components only map() this data.
  *
  * Month reflects the latest verified major iteration/deployment when known.
- * Entries are ordered newest-first.
+ * Entries with `order` sort first (ascending); the rest sort newest-first.
  */
 
 export type ProjectStatus = "Live Now" | "Live Demo" | "In Development";
@@ -17,6 +17,8 @@ export interface ProjectEntry {
   id: string;
   name: string;
   featured?: boolean;
+  /** Manual sort position, starting at 0. Missing/empty falls back to date. */
+  order?: number;
   year: string;
   /** Month 1-12 for newest-first tracking. Missing month sorts as oldest within its year. */
   month?: number;
@@ -32,6 +34,7 @@ export interface ProjectEntry {
 export const PROJECTS: ProjectEntry[] = [
   {
     id: "cupofcode",
+    order: 0,
     name: "Cup of Code",
     featured: true,
     year: "2026",
@@ -177,6 +180,7 @@ export const PROJECTS: ProjectEntry[] = [
   },
   {
     id: "amtra-journey",
+    order: 2,
     name: "Amtra Journey",
     featured: true,
     year: "2025",
@@ -219,7 +223,8 @@ export const PROJECTS: ProjectEntry[] = [
   },
   {
     id: "kagounga",
-    name: "Kagounga",
+    order: 1,
+    name: "Kagōunga",
     featured: true,
     year: "2025",
     month: 12,
@@ -316,3 +321,212 @@ export const PROJECTS: ProjectEntry[] = [
   //   thumbnail: "/thumbnails/shortlink.svg",
   // },
 ];
+
+/**
+ * Sort projects for display.
+ * Explicit `order` wins, ascending from 0. Entries without a valid order keep
+ * the default newest-first date order (year, then month). Ties fall back to date.
+ */
+export function sortProjects(list: ProjectEntry[]): ProjectEntry[] {
+  const orderOf = (project: ProjectEntry) =>
+    typeof project.order === "number" && Number.isFinite(project.order)
+      ? project.order
+      : Number.POSITIVE_INFINITY;
+
+  return [...list].sort((a, b) => {
+    const orderA = orderOf(a);
+    const orderB = orderOf(b);
+    if (orderA !== orderB) return orderA - orderB;
+
+    if (a.year !== b.year) return Number(b.year) - Number(a.year);
+    return (b.month ?? 0) - (a.month ?? 0);
+  });
+}
+
+/** Factual project highlights for detail pages. Derived from each project's
+ *  existing description and stack; no metrics or outcomes are inferred. */
+export const PROJECT_HIGHLIGHTS: Record<
+  string,
+  { en: string[]; id: string[] }
+> = {
+  cupofcode: {
+    en: [
+      "Publication covering software development, UI/UX design, and AI-assisted development.",
+      "Articles, tutorials, snippets, and digital assets for Indonesian developers.",
+      "Built with Astro, React, Tailwind CSS, TypeScript, and Keystatic.",
+    ],
+    id: [
+      "Publikasi yang membahas software development, UI/UX design, dan AI-assisted development.",
+      "Artikel, tutorial, snippet, dan aset digital untuk developer Indonesia.",
+      "Dibangun dengan Astro, React, Tailwind CSS, TypeScript, dan Keystatic.",
+    ],
+  },
+  "mdoc-builder": {
+    en: [
+      "Browser-based WYSIWYG editor for Keystatic-compatible .mdoc files.",
+      "Rich-text editing with YAML frontmatter, import, autosave, preview, and export.",
+      "Works without a backend.",
+    ],
+    id: [
+      "Editor WYSIWYG berbasis browser untuk file .mdoc yang kompatibel dengan Keystatic.",
+      "Rich-text editing dengan YAML frontmatter, import, autosave, preview, dan export.",
+      "Berjalan tanpa backend.",
+    ],
+  },
+  cv4e1: {
+    en: [
+      "Generates ATS-oriented and Creative CV versions from one source of data.",
+      "Local-first storage with no required account or backend.",
+      "Validated with Vitest and Playwright.",
+    ],
+    id: [
+      "Menghasilkan versi CV ATS-oriented dan Creative dari satu sumber data.",
+      "Penyimpanan local-first tanpa akun atau backend wajib.",
+      "Diuji dengan Vitest dan Playwright.",
+    ],
+  },
+  univertex: {
+    en: [
+      "Role-based access for voters, admins, committees, and observers.",
+      "Voting workflows with real-time results, audit logs, and public results.",
+      "Invitation flow built on Supabase.",
+    ],
+    id: [
+      "Akses berbasis role untuk voter, admin, committee, dan observer.",
+      "Workflow voting dengan hasil real-time, audit log, dan public results.",
+      "Invitation flow yang dibangun di atas Supabase.",
+    ],
+  },
+  "personal-portfolio": {
+    en: [
+      "Showcases selected projects, skills, and professional experience.",
+      "Iterated as a UI/UX experiment with continuous refactoring.",
+      "Prerendered at build time for per-route metadata and faster first paint.",
+    ],
+    id: [
+      "Menampilkan project pilihan, skill, dan pengalaman profesional.",
+      "Diiterasi sebagai eksperimen UI/UX dengan refactoring berkelanjutan.",
+      "Di-prerender saat build untuk metadata per-route dan first paint lebih cepat.",
+    ],
+  },
+  wargahub: {
+    en: [
+      "Digital public services, complaints, publications, and resident management.",
+      "Role-based dashboards for village operations.",
+      "Database-driven workflows built on Supabase.",
+    ],
+    id: [
+      "Layanan publik digital, pengaduan, publikasi, dan manajemen warga.",
+      "Dashboard berbasis role untuk operasional desa.",
+      "Workflow database-driven yang dibangun di atas Supabase.",
+    ],
+  },
+  warungly: {
+    en: [
+      "Point-of-sale and invoicing workflow for UMKM.",
+      "Transactions, inventory, reporting, and analytics.",
+      "AI assistant integration with Groq AI.",
+    ],
+    id: [
+      "Workflow point-of-sale dan invoicing untuk UMKM.",
+      "Transaksi, inventory, laporan, dan analytics.",
+      "Integrasi AI assistant dengan Groq AI.",
+    ],
+  },
+  "binary-verse": {
+    en: [
+      "Company profile and digital platform for a software development studio.",
+      "Presents projects, services, and studio identity.",
+      "Focus on product storytelling and visual branding.",
+    ],
+    id: [
+      "Company profile dan platform digital untuk studio software development.",
+      "Menampilkan project, layanan, dan identitas studio.",
+      "Fokus pada product storytelling dan visual branding.",
+    ],
+  },
+  "smart-census": {
+    en: [
+      "AI-assisted citizen data management for digital census work.",
+      "OCR and text recognition to reduce manual input.",
+      "Dashboard for reviewing and managing census data.",
+    ],
+    id: [
+      "Pengelolaan data warga berbantuan AI untuk sensus digital.",
+      "OCR dan text recognition untuk mengurangi input manual.",
+      "Dashboard untuk meninjau dan mengelola data sensus.",
+    ],
+  },
+  "amtra-journey": {
+    en: [
+      "Commercial tour and travel website modernization in Yogyakarta.",
+      "Headless CMS architecture with Sanity and Supabase.",
+      "Responsive frontend and content workflow.",
+    ],
+    id: [
+      "Modernisasi website komersial tour & travel di Yogyakarta.",
+      "Arsitektur headless CMS dengan Sanity dan Supabase.",
+      "Frontend responsif dan content workflow.",
+    ],
+  },
+  "pasiar-ternate": {
+    en: [
+      "Local culture and information portal for Ternate.",
+      "Migrated from WordPress to a React SPA.",
+      "Custom Supabase-based CMS for local content.",
+    ],
+    id: [
+      "Portal budaya dan informasi lokal Ternate.",
+      "Migrasi dari WordPress ke React SPA.",
+      "CMS custom berbasis Supabase untuk konten lokal.",
+    ],
+  },
+  "modiv-eventcraft": {
+    en: [
+      "Interactive event budgeting.",
+      "Vendor selection and management.",
+      "Quotation export workflow.",
+    ],
+    id: [
+      "Perencanaan anggaran event interaktif.",
+      "Pemilihan dan manajemen vendor.",
+      "Workflow export quotation.",
+    ],
+  },
+  kagounga: {
+    en: [
+      "Commercial brand website for a local product.",
+      "Responsive UI implementation and visual branding.",
+      "Product storytelling and production deployment.",
+    ],
+    id: [
+      "Website commercial brand untuk produk lokal.",
+      "Implementasi UI responsif dan visual branding.",
+      "Product storytelling dan production deployment.",
+    ],
+  },
+  wikisnap: {
+    en: [
+      "Extracts Wikipedia content for summarization.",
+      "AI-assisted paraphrasing with Groq AI.",
+      "Browser-based tool built with React and TypeScript.",
+    ],
+    id: [
+      "Mengekstrak konten Wikipedia untuk diringkas.",
+      "Parafrase berbantuan AI dengan Groq AI.",
+      "Web tool berbasis browser dengan React dan TypeScript.",
+    ],
+  },
+  rindang: {
+    en: [
+      "Digital agriculture platform.",
+      "Evolved from a Flask + MySQL monolith into a modern web architecture.",
+      "Full-stack work across Flask, SQLAlchemy, MySQL, React, and Supabase.",
+    ],
+    id: [
+      "Platform digital agriculture.",
+      "Berkembang dari monolith Flask + MySQL ke arsitektur web modern.",
+      "Pekerjaan full-stack lintas Flask, SQLAlchemy, MySQL, React, dan Supabase.",
+    ],
+  },
+};

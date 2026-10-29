@@ -1,3 +1,4 @@
+import { useLocation } from "react-router-dom";
 import { useI18n } from "../i18n/useI18n";
 
 interface NavItem {
@@ -23,6 +24,15 @@ const NAV_ITEMS: NavItem[] = [
  */
 export default function Navigation() {
   const { t, locale } = useI18n();
+  const { pathname, hash } = useLocation();
+
+  const isActive = (item: NavItem) => {
+    if (item.download) return false;
+    if (item.href.startsWith("/#")) {
+      return pathname === "/" && hash === item.href.slice(1);
+    }
+    return pathname === item.href;
+  };
 
   return (
     <div className="bg-retro-blue-nav border-b-2 border-[#002244]">
@@ -37,7 +47,7 @@ export default function Navigation() {
               item.color ?? "",
             ].join(" ")}
             style={{ textDecoration: "underline" }}
-            aria-current={!item.href.startsWith("#") && !item.download ? "page" : undefined}
+            aria-current={isActive(item) ? "location" : undefined}
           >
             [ {t(item.labelKey)} ]
           </a>

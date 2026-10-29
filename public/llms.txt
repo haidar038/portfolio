@@ -1,0 +1,26 @@
+# M. Khaidar — Portfolio
+
+> Personal portfolio and project index for M. Khaidar, a full-stack developer and product engineer based in Ternate, Indonesia. Builds web applications with React, TypeScript, Tailwind CSS, and Supabase.
+
+## Main pages
+
+- [Home](https://hydr.codes/): about, journey, experience, selected projects, FAQ, and contact.
+- [Projects](https://hydr.codes/projects): all projects with stack, status, and links.
+- [Blogroll](https://hydr.codes/blogroll): curated friends, communities, tools, and learning resources.
+- [Guestbook](https://hydr.codes/guestbook): visitor messages.
+
+## Selected project pages
+
+- [Cup of Code](https://hydr.codes/projects/cupofcode): publication and resources for Indonesian developers.
+- [cv4every1](https://hydr.codes/projects/cv4e1): local-first CV builder with ATS and Creative output.
+- [UniVertex](https://hydr.codes/projects/univertex): campus e-voting platform with role-based access.
+- [SasaHub](https://hydr.codes/projects/wargahub): civic and community service platform.
+- [PASIAR Ternate](https://hydr.codes/projects/pasiar-ternate): local culture and information portal.
+- [RINDANG](https://hydr.codes/projects/rindang): digital agriculture platform.
+
+## Elsewhere
+
+- [GitHub](https://github.com/haidar038)
+- [LinkedIn](https://linkedin.com/in/haidar038)
+- [X](https://x.com/hdr038)
+- [Cup of Code](https://cupofcode.cc)

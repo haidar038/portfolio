@@ -26,7 +26,7 @@ export default function ExperienceSection(): ReactNode {
           {/* Job title row */}
           <div className="flex flex-col sm:flex-row justify-between gap-0.5">
             <div>
-              <b className="text-sm font-sans">{job.title[locale]}</b>
+              <h3 className="m-0 inline text-sm font-sans">{job.title[locale]}</h3>
               <span className="text-xs text-retro-text-muted ml-1">
                 ({job.type[locale]})
               </span>

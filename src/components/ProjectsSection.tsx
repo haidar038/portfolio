@@ -1,19 +1,12 @@
 import { useMemo, useState, type ReactNode } from "react";
+import { Link } from "react-router-dom";
 import Section from "./Section";
+import ProjectThumbnail from "./ProjectThumbnail";
 import { useI18n } from "../i18n/useI18n";
-import { PROJECTS } from "../data/projects";
+import { PROJECTS, sortProjects } from "../data/projects";
 import type { Locale } from "../i18n/types";
 
 const ITEMS_PER_PAGE = 5;
-
-/** Featured first, then newest-first by (year, month). Stable for ties. */
-function sortProjects<T extends { featured?: boolean; year: string; month?: number }>(list: T[]): T[] {
-  return [...list].sort((a, b) => {
-    if (!!a.featured !== !!b.featured) return a.featured ? -1 : 1;
-    if (a.year !== b.year) return Number(b.year) - Number(a.year);
-    return (b.month ?? 0) - (a.month ?? 0);
-  });
-}
 
 /** "Mar 2025" / "Mar 2025" bilingual; falls back to year when month unknown. */
 function formatPeriod(year: string, month: number | undefined, locale: Locale): string {
@@ -47,21 +40,21 @@ export default function ProjectsSection(): ReactNode {
         <table className="w-full border-collapse text-xs min-w-150">
           <thead>
             <tr className="bg-retro-blue-dark text-white text-xs border border-black">
-              <td className="py-1 px-2 border-r border-black w-24 text-center font-bold">
+              <th scope="col" className="py-1 px-2 border-r border-black w-24 text-center font-bold">
                 {t("projects.col.image")}
-              </td>
-              <td className="py-1 px-2 border-r border-black w-32 font-bold">
+              </th>
+              <th scope="col" className="py-1 px-2 border-r border-black w-32 font-bold">
                 {t("projects.col.name")}
-              </td>
-              <td className="py-1 px-2 border-r border-black font-bold">
+              </th>
+              <th scope="col" className="py-1 px-2 border-r border-black font-bold">
                 {t("projects.col.description")}
-              </td>
-              <td className="py-1 px-2 border-r border-black w-24 font-bold">
+              </th>
+              <th scope="col" className="py-1 px-2 border-r border-black w-24 font-bold">
                 {t("projects.col.stack")}
-              </td>
-              <td className="py-1 px-2 w-16 text-center font-bold">
+              </th>
+              <th scope="col" className="py-1 px-2 w-16 text-center font-bold">
                 {t("projects.col.links")}
-              </td>
+              </th>
             </tr>
           </thead>
           <tbody>
@@ -69,36 +62,28 @@ export default function ProjectsSection(): ReactNode {
               const globalIndex = (currentPage - 1) * ITEMS_PER_PAGE + i;
               return (
                 <tr
-                  key={project.name}
+                  key={project.id}
                   className={[
                     "hover:bg-retro-hover border border-black",
                     globalIndex % 2 === 0 ? "bg-retro-cream-bg" : "bg-retro-alt-row",
                   ].join(" ")}
                 >
                   <td className="p-2 border-r border-black align-top text-center">
-                    <img
-                      src={project.thumbnailUrl ?? project.thumbnail}
-                      alt={project.name}
+                    <ProjectThumbnail
+                      project={project}
                       width={80}
                       height={80}
                       className="border border-black inline-block aspect-square w-20 object-cover"
                       loading="lazy"
-                      onError={(e) => {
-                        const el = e.currentTarget;
-                        if (project.thumbnailUrl && el.dataset.fallback !== "true") {
-                          el.dataset.fallback = "true";
-                          el.src = project.thumbnail;
-                          return;
-                        }
-                        if (el.dataset.placeholder !== "true") {
-                          el.dataset.placeholder = "true";
-                          el.src = "/thumbnails/placeholder.svg";
-                        }
-                      }}
                     />
                   </td>
                   <td className="py-1 px-2 border-r border-black align-top">
-                    <b>{project.name}</b>
+                    <Link
+                      to={`/projects/${project.id}`}
+                      className="underline text-blue-800 hover:bg-blue-800 hover:text-white"
+                    >
+                      {project.name}
+                    </Link>
                     {project.featured && (
                       <>
                         <br />
@@ -140,7 +125,18 @@ export default function ProjectsSection(): ReactNode {
                   <td className="py-1 px-2 text-center align-top">
                     {project.links.map((link) => (
                       <span key={link.label}>
-                        <a href={link.href} className="underline text-blue-800 hover:bg-blue-800 hover:text-white">[{link.label}]</a>
+                        {link.href === "#" ? (
+                          <span className="text-retro-text-muted">[{link.label}]</span>
+                        ) : (
+                          <a
+                            href={link.href}
+                            className="underline text-blue-800 hover:bg-blue-800 hover:text-white"
+                            rel="noopener noreferrer"
+                            target="_blank"
+                          >
+                            [{link.label}]
+                          </a>
+                        )}
                         <br />
                       </span>
                     ))}
@@ -188,6 +184,15 @@ export default function ProjectsSection(): ReactNode {
       </div>
 
       <div className="mt-1 text-xs text-[#666]" dangerouslySetInnerHTML={{ __html: t("projects.footer") }} />
+
+      <div className="mt-2 text-right text-xs">
+        <Link
+          to="/projects"
+          className="underline text-blue-800 hover:bg-blue-800 hover:text-white"
+        >
+          {t("projects.viewAll")}
+        </Link>
+      </div>
     </Section>
   );
 }

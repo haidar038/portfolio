@@ -2,12 +2,14 @@ import type { Translations } from "../types";
 
 const id: Translations = {
     "seo.homeTitle": "M. Khaidar | Full-Stack Developer & Product Engineer",
-    "seo.homeDescription": "Portofolio M. Khaidar, Full-Stack Developer dan Product Engineer yang membangun pengalaman web modern. Jelajahi proyek, pengalaman profesional, dan perjalanan teknis.",
-    "seo.guestbookTitle": "Buku Tamu | M. Khaidar",
-    "seo.guestbookDescription": "Tinggalkan pesan untuk M. Khaidar. Bagikan masukan, pemikiran, atau sekadar menyapa melalui buku tamu portofolio.",
-    "seo.blogrollTitle": "Blogroll | M. Khaidar",
-    "seo.blogrollDescription": "Kumpulan pilihan teman, komunitas, alat, dan sumber daya yang direkomendasikan oleh M. Khaidar.",
-    "seo.notFoundTitle": "Halaman Tidak Ditemukan | M. Khaidar",
+    "seo.homeDescription": "Portofolio M. Khaidar, full-stack developer dan product engineer. Membangun aplikasi web dengan React, TypeScript, dan Supabase. Lihat proyek dan pengalaman.",
+    "seo.guestbookTitle": "Buku Tamu — Tinggalkan Pesan | M. Khaidar",
+    "seo.guestbookDescription": "Tinggalkan pesan di buku tamu M. Khaidar. Bagikan masukan, ide proyek, atau sekadar menyapa full-stack developer dan product engineer asal Indonesia.",
+    "seo.blogrollTitle": "Blogroll — Link & Sumber Pilihan | M. Khaidar",
+    "seo.blogrollDescription": "Blogroll pilihan teman, komunitas, alat, dan sumber belajar yang direkomendasikan M. Khaidar, full-stack developer dan product engineer asal Indonesia.",
+    "seo.projectsTitle": "Proyek & Studi Kasus | M. Khaidar",
+    "seo.projectsDescription": "Jelajahi 15 proyek M. Khaidar, termasuk aplikasi web, platform e-voting, alat civic, dan produk berbantuan AI dengan React, TypeScript, dan Supabase.",
+    "seo.notFoundTitle": "404 — Halaman Tidak Ditemukan | M. Khaidar",
     "seo.notFoundDescription": "Halaman ini tidak tersedia atau sudah dipindahkan. Kunjungi portofolio M. Khaidar untuk melihat proyek dan pengalaman.",
 
     // Header
@@ -64,6 +66,7 @@ const id: Translations = {
     "section.experience": "PENGALAMAN KERJA",
     "section.projects": "PROYEK / PORTOFOLIO",
     "section.contact": "HUBUNGI SAYA",
+    "section.faq": "FAQ",
 
     // About
     "about.photoAlt": "[foto_haidar.jpg]",
@@ -102,7 +105,19 @@ const id: Translations = {
     "projects.col.links": "Link",
     "projects.featured": "★ UNGGULAN ★",
     "projects.footer":
-        'Semua produk dibangun di bawah <a href="#" class="underline font-bold">Binary Verse</a> | Terbuka untuk kolaborasi - <a href="#contact" class="underline font-bold">hubungi saya</a>!',
+        'Semua produk dibangun di bawah <a href="https://bnrvrs.biz.id" class="underline font-bold">Binary Verse</a> | Terbuka untuk kolaborasi - <a href="/#contact" class="underline font-bold">hubungi saya</a>!',
+    "projects.indexTitle": "PROYEK / PORTOFOLIO",
+    "projects.indexIntro": "Kumpulan produk dan pekerjaan klien yang saya rancang dan bangun. Setiap halaman proyek memuat konteks, stack, dan tautan yang tersedia.",
+    "projects.viewAll": "Lihat semua proyek →",
+    "projects.viewDetail": "Detail proyek →",
+    "projects.backToAll": "← Kembali ke semua proyek",
+    "project.period": "Periode",
+    "project.status": "Status",
+    "project.highlights": "SOROTAN",
+    "project.stack": "STACK",
+    "project.links": "TAUTAN",
+    "project.private": "Proyek privat",
+    "faq.intro": "Jawaban singkat tentang pekerjaan, stack, dan ketersediaan saya.",
 
     // Contact
     "contact.intro": "Jangan ragu untuk menghubungi saya! Saya selalu terbuka untuk mendiskusikan proyek baru, ide produk, peluang freelance, atau sekadar ngobrol tentang teknologi dan kode.",

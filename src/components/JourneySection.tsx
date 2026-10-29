@@ -14,12 +14,12 @@ export default function JourneySection() {
         <table className="w-full border-collapse text-xs">
           <thead>
             <tr className="bg-retro-blue-nav text-white text-xs">
-              <td className="py-1 px-2 border border-[#002244] w-24 font-bold">
+              <th scope="col" className="py-1 px-2 border border-[#002244] w-24 font-bold text-left">
                 {t("journey.col.period")}
-              </td>
-              <td className="py-1 px-2 border border-[#002244] font-bold">
+              </th>
+              <th scope="col" className="py-1 px-2 border border-[#002244] font-bold text-left">
                 {t("journey.col.education")}
-              </td>
+              </th>
             </tr>
           </thead>
           <tbody>

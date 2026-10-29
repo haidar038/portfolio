@@ -7,6 +7,8 @@ export interface Translations {
     "seo.guestbookDescription": string;
     "seo.blogrollTitle": string;
     "seo.blogrollDescription": string;
+    "seo.projectsTitle": string;
+    "seo.projectsDescription": string;
     "seo.notFoundTitle": string;
     "seo.notFoundDescription": string;
 
@@ -64,6 +66,7 @@ export interface Translations {
     "section.experience": string;
     "section.projects": string;
     "section.contact": string;
+    "section.faq": string;
 
     // About
     "about.photoAlt": string;
@@ -100,6 +103,18 @@ export interface Translations {
     "projects.col.links": string;
     "projects.featured": string;
     "projects.footer": string;
+    "projects.indexTitle": string;
+    "projects.indexIntro": string;
+    "projects.viewAll": string;
+    "projects.viewDetail": string;
+    "projects.backToAll": string;
+    "project.period": string;
+    "project.status": string;
+    "project.highlights": string;
+    "project.stack": string;
+    "project.links": string;
+    "project.private": string;
+    "faq.intro": string;
 
     // Contact
     "contact.namePlaceholder": string;

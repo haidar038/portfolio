@@ -81,13 +81,13 @@ export default function AboutSection() {
 
       {/* Tech Stack Section */}
       <div>
-        <div className="bg-retro-blue-dark text-white text-sm font-bold py-1 px-3 tracking-wide mb-3 font-sans">🖙 {t("about.techStack")}</div>
+        <h3 className="m-0 bg-retro-blue-dark text-white text-sm font-bold py-1 px-3 tracking-wide mb-3 font-sans">🖙 {t("about.techStack")}</h3>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           {TECH_STACK.map((group) => {
             const translationKey = CATEGORY_KEYS[group.category];
             return (
               <div key={group.category} className="border-t border-l border-b border-r border-retro-border-light bg-[#f8f8f8] p-3">
-                <div className="text-retro-blue-accent font-bold text-sm mb-2 font-sans">▸ {translationKey ? t(translationKey) : group.category}</div>
+                <h4 className="m-0 text-retro-blue-accent font-bold text-sm mb-2 font-sans">▸ {translationKey ? t(translationKey) : group.category}</h4>
                 <div className="flex flex-wrap gap-1.5">
                   {group.items.map((item) => (
                     <span key={item} className="bg-retro-winface text-sm px-1 border border-white">{item}</span>

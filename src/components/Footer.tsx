@@ -50,23 +50,23 @@ export default function Footer() {
           {/* Right */}
           <div className="text-right">
             <div className="text-xs leading-normal footer-link">
-              <a href="#" className="text-retro-footer-link hover:text-[#ffff88]! hover:bg-transparent! no-underline!">
+              <a href="/" className="text-retro-footer-link hover:text-[#ffff88]! hover:bg-transparent! no-underline!">
                 {t("footer.home")}
               </a>{" "}
               |
-              <a href="#about" className="text-retro-footer-link hover:text-[#ffff88]! hover:bg-transparent! no-underline!">
+              <a href="/#about" className="text-retro-footer-link hover:text-[#ffff88]! hover:bg-transparent! no-underline!">
                 {t("footer.about")}
               </a>{" "}
               |
-              <a href="#projects" className="text-retro-footer-link hover:text-[#ffff88]! hover:bg-transparent! no-underline!">
+              <a href="/#projects" className="text-retro-footer-link hover:text-[#ffff88]! hover:bg-transparent! no-underline!">
                 {t("footer.projects")}
               </a>{" "}
               |
-              <a href="#contact" className="text-retro-footer-link hover:text-[#ffff88]! hover:bg-transparent! no-underline!">
+              <a href="/#contact" className="text-retro-footer-link hover:text-[#ffff88]! hover:bg-transparent! no-underline!">
                 {t("footer.contact")}
               </a>{" "}
               |
-              <a href="#" className="text-retro-footer-link hover:text-[#ffff88]! hover:bg-transparent! no-underline!">
+              <a href="/sitemap.xml" className="text-retro-footer-link hover:text-[#ffff88]! hover:bg-transparent! no-underline!">
                 {t("footer.sitemap")}
               </a>
             </div>

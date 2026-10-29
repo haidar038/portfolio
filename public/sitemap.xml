@@ -1,18 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url>
-    <loc>https://hydr.codes/</loc>
-    <changefreq>monthly</changefreq>
-    <priority>1.0</priority>
-  </url>
-  <url>
-    <loc>https://hydr.codes/blogroll</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://hydr.codes/guestbook</loc>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
+  <url><loc>https://hydr.codes/</loc></url>
+  <url><loc>https://hydr.codes/blogroll</loc></url>
+  <url><loc>https://hydr.codes/guestbook</loc></url>
+  <url><loc>https://hydr.codes/projects</loc></url>
+  <url><loc>https://hydr.codes/projects/cupofcode</loc></url>
+  <url><loc>https://hydr.codes/projects/mdoc-builder</loc></url>
+  <url><loc>https://hydr.codes/projects/cv4e1</loc></url>
+  <url><loc>https://hydr.codes/projects/univertex</loc></url>
+  <url><loc>https://hydr.codes/projects/personal-portfolio</loc></url>
+  <url><loc>https://hydr.codes/projects/wargahub</loc></url>
+  <url><loc>https://hydr.codes/projects/binary-verse</loc></url>
+  <url><loc>https://hydr.codes/projects/amtra-journey</loc></url>
+  <url><loc>https://hydr.codes/projects/pasiar-ternate</loc></url>
+  <url><loc>https://hydr.codes/projects/modiv-eventcraft</loc></url>
+  <url><loc>https://hydr.codes/projects/kagounga</loc></url>
+  <url><loc>https://hydr.codes/projects/wikisnap</loc></url>
+  <url><loc>https://hydr.codes/projects/rindang</loc></url>
 </urlset>

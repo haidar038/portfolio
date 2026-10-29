@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useSyncExternalStore } from "react";
 import { useI18n } from "../i18n/useI18n";
 import { SKILLS, TECH_STACK, type SkillLevel } from "../data/techStack";
 import { fetchBlogPosts, type BlogPostSummary } from "../lib/blog";
@@ -35,6 +35,10 @@ function calculateAge(birthDate: Date, currentDate = new Date()): number {
   );
 }
 
+const subscribeNoop = () => () => {};
+const getAgeSnapshot = () => calculateAge(BIRTH_DATE);
+const getServerAgeSnapshot = () => null;
+
 function formatBlogDate(value: string | null, locale: "en" | "id"): string | null {
   if (!value) return null;
   const date = new Date(value);
@@ -52,7 +56,11 @@ function formatBlogDate(value: string | null, locale: "en" | "id"): string | nul
  */
 export default function Sidebar() {
   const { t, locale } = useI18n();
-  const age = calculateAge(BIRTH_DATE);
+  const age = useSyncExternalStore(
+    subscribeNoop,
+    getAgeSnapshot,
+    getServerAgeSnapshot,
+  );
   const [blogPosts, setBlogPosts] = useState<BlogPostSummary[]>([]);
   const [blogLoading, setBlogLoading] = useState(true);
   const [blogError, setBlogError] = useState(false);
@@ -87,7 +95,7 @@ export default function Sidebar() {
         </div>
         <div className="p-1.5 text-xs leading-normal">
           <b>{t("sidebar.name")}</b> M. Khaidar<br />
-          <b>{t("sidebar.age")}</b> {age}<br />
+          <b>{t("sidebar.age")}</b> {age ?? "—"}<br />
           <b>{t("sidebar.location")}</b> Ternate, ID<br />
           <b>{t("sidebar.status")}</b> <span className="text-retro-green-online font-bold inline-flex items-center gap-0.5"><OldIcon name="WindowsXPMail" size={10} alt="" /> Online</span><br />
           <b>{t("sidebar.role")}</b> <span className="text-retro-orange">Product Engineer</span><br />

@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, useRef } from "react";
+import { useState, useEffect, useCallback, useRef, type ReactNode } from "react";
 import {
   collection,
   query,
@@ -115,22 +115,20 @@ export default function GuestbookEntries() {
     });
   };
 
+  let content: ReactNode;
+
   // Loading state
   if (loading) {
-    return (
-      <div className="border-t border-l border-retro-border-mid border-b border-r p-3 bg-retro-sidebar-bg">
-        <div className="flex items-center gap-2 text-sm text-retro-blue-dark">
-          <OldIcon name="VisualStudioCLOCK" size={16} alt="" />
-          {t("guestbook.entries.loading")}
-        </div>
+    content = (
+      <div className="flex items-center gap-2 text-sm text-retro-blue-dark">
+        <OldIcon name="VisualStudioCLOCK" size={16} alt="" />
+        {t("guestbook.entries.loading")}
       </div>
     );
-  }
-
-  // Error state with retry
-  if (error) {
-    return (
-      <div className="border-t border-l border-retro-border-mid border-b border-r p-3 bg-retro-sidebar-bg">
+  } else if (error) {
+    // Error state with retry
+    content = (
+      <>
         <div className="text-sm text-retro-red-link mb-2">{error}</div>
         <button
           type="button"
@@ -139,71 +137,72 @@ export default function GuestbookEntries() {
         >
           {t("error.retry")}
         </button>
+      </>
+    );
+  } else if (entries.length === 0) {
+    // Empty state
+    content = (
+      <div className="text-sm text-retro-blue-dark">
+        {t("guestbook.entries.empty")}
       </div>
     );
-  }
-
-  // Empty state
-  if (entries.length === 0) {
-    return (
-      <div className="border-t border-l border-retro-border-mid border-b border-r p-3 bg-retro-sidebar-bg">
-        <div className="text-sm text-retro-blue-dark">
-          {t("guestbook.entries.empty")}
+  } else {
+    content = (
+      <>
+        <div className="space-y-3">
+          {entries.map((entry) => (
+            <div
+              key={entry.id}
+              className="border border-retro-border-mid p-2 bg-white"
+            >
+              <div className="flex items-start justify-between gap-2 mb-1">
+                <span className="font-bold text-sm text-retro-blue-dark">
+                  {entry.name}
+                </span>
+                {entry.timestamp && (
+                  <span className="text-xs text-[#999]">
+                    {formatDate(entry.timestamp)}
+                  </span>
+                )}
+              </div>
+              <p className="text-sm text-gray-700 whitespace-pre-wrap wrap-break-words">
+                {entry.message}
+              </p>
+            </div>
+          ))}
         </div>
-      </div>
+
+        {/* Load More button */}
+        {hasMore && (
+          <div className="mt-3">
+            <button
+              type="button"
+              onClick={handleLoadMore}
+              disabled={loadingMore}
+              className="retro-btn px-4 py-1.5 text-sm cursor-pointer w-full"
+            >
+              {loadingMore ? (
+                <span className="flex items-center justify-center gap-2">
+                  <OldIcon name="VisualStudioCLOCK" size={14} alt="" />
+                  {t("guestbook.entries.loading")}
+                </span>
+              ) : (
+                t("guestbook.entries.loadMore")
+              )}
+            </button>
+          </div>
+        )}
+      </>
     );
   }
 
   return (
     <div className="border-t border-l border-retro-border-mid border-b border-r p-3 bg-retro-sidebar-bg">
-      <div className="font-bold text-sm mb-3 text-retro-blue-dark flex items-center gap-1.5">
+      <h2 className="m-0 font-bold text-sm mb-3 text-retro-blue-dark flex items-center gap-1.5">
         <OldIcon name="Windows95TextFile" size={16} alt="" />
         {t("guestbook.entries.title")}
-      </div>
-
-      <div className="space-y-3">
-        {entries.map((entry) => (
-          <div
-            key={entry.id}
-            className="border border-retro-border-mid p-2 bg-white"
-          >
-            <div className="flex items-start justify-between gap-2 mb-1">
-              <span className="font-bold text-sm text-retro-blue-dark">
-                {entry.name}
-              </span>
-              {entry.timestamp && (
-                <span className="text-xs text-[#999]">
-                  {formatDate(entry.timestamp)}
-                </span>
-              )}
-            </div>
-            <p className="text-sm text-gray-700 whitespace-pre-wrap wrap-break-words">
-              {entry.message}
-            </p>
-          </div>
-        ))}
-      </div>
-
-      {/* Load More button */}
-      {hasMore && (
-        <div className="mt-3">
-          <button
-            type="button"
-            onClick={handleLoadMore}
-            disabled={loadingMore}
-            className="retro-btn px-4 py-1.5 text-sm cursor-pointer w-full"
-          >
-            {loadingMore ? (
-              <span className="flex items-center justify-center gap-2">
-                <OldIcon name="VisualStudioCLOCK" size={14} alt="" />
-                {t("guestbook.entries.loading")}
-              </span>
-            ) : (
-              t("guestbook.entries.loadMore")
-            )}
-          </button>
-        </div>
-      )}
+      </h2>
+      {content}
     </div>
   );
 }

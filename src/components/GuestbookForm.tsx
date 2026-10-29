@@ -82,9 +82,9 @@ export default function GuestbookForm() {
 
   return (
     <div className="border-t border-l border-retro-border-mid border-b border-r p-2 bg-retro-sidebar-bg mb-2">
-      <div className="font-bold text-xs mb-1.5 text-retro-blue-dark flex items-center gap-1">
+      <h2 className="m-0 font-bold text-xs mb-1.5 text-retro-blue-dark flex items-center gap-1">
         <OldIcon name="VisualStudioNOTE16" size={14} alt="" /> {t("guestbook.form.title").replace(":", "")}
-      </div>
+      </h2>
 
       <form onSubmit={handleSubmit}>
         <div className="mb-2">

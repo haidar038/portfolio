@@ -4,29 +4,42 @@ import AboutSection from "../components/AboutSection";
 import JourneySection from "../components/JourneySection";
 import ExperienceSection from "../components/ExperienceSection";
 import ProjectsSection from "../components/ProjectsSection";
+import FaqSection from "../components/FaqSection";
 import ContactSection from "../components/ContactSection";
 import { useI18n } from "../i18n/useI18n";
+import { FAQ_ITEMS } from "../data/faq";
 
-const HOME_STRUCTURED_DATA = {
-  "@context": "https://schema.org",
-  "@graph": [
-    {
-      "@type": "Person",
-      "@id": "https://hydr.codes/#person",
-      name: "M. Khaidar",
-      url: "https://hydr.codes/",
-      image: "https://hydr.codes/profilepicture.avif",
-      jobTitle: "Full-Stack Developer & Product Engineer",
-    },
-    {
-      "@type": "WebSite",
-      "@id": "https://hydr.codes/#website",
-      url: "https://hydr.codes/",
-      name: "M. Khaidar Portfolio",
-      inLanguage: ["en", "id"],
-      publisher: { "@id": "https://hydr.codes/#person" },
-    },
+const PERSON_SCHEMA = {
+  "@type": "Person",
+  "@id": "https://hydr.codes/#person",
+  name: "M. Khaidar",
+  url: "https://hydr.codes/",
+  image: "https://hydr.codes/profilepicture.avif",
+  jobTitle: "Full-Stack Developer & Product Engineer",
+  description:
+    "Full-stack developer and product engineer based in Ternate, Indonesia, building web applications with React, TypeScript, and Supabase.",
+  sameAs: [
+    "https://github.com/haidar038",
+    "https://linkedin.com/in/haidar038",
+    "https://x.com/hdr038",
   ],
+  knowsAbout: [
+    "React",
+    "TypeScript",
+    "Tailwind CSS",
+    "Supabase",
+    "Full-stack development",
+    "Product engineering",
+  ],
+};
+
+const WEBSITE_SCHEMA = {
+  "@type": "WebSite",
+  "@id": "https://hydr.codes/#website",
+  url: "https://hydr.codes/",
+  name: "M. Khaidar Portfolio",
+  inLanguage: ["en", "id"],
+  publisher: { "@id": "https://hydr.codes/#person" },
 };
 
 /**
@@ -34,7 +47,27 @@ const HOME_STRUCTURED_DATA = {
  * Validates: Requirements 10.1
  */
 export default function Home() {
-  const { t } = useI18n();
+  const { t, locale } = useI18n();
+
+  const structuredData = {
+    "@context": "https://schema.org",
+    "@graph": [
+      PERSON_SCHEMA,
+      WEBSITE_SCHEMA,
+      {
+        "@type": "FAQPage",
+        "@id": "https://hydr.codes/#faq",
+        mainEntity: FAQ_ITEMS.map((item) => ({
+          "@type": "Question",
+          name: item.question[locale],
+          acceptedAnswer: {
+            "@type": "Answer",
+            text: item.answer[locale],
+          },
+        })),
+      },
+    ],
+  };
 
   return (
     <Layout>
@@ -42,12 +75,13 @@ export default function Home() {
         title={t("seo.homeTitle")}
         description={t("seo.homeDescription")}
         url="https://hydr.codes/"
-        structuredData={HOME_STRUCTURED_DATA}
+        structuredData={structuredData}
       />
       <AboutSection />
       <JourneySection />
       <ExperienceSection />
       <ProjectsSection />
+      <FaqSection />
       <ContactSection />
     </Layout>
   );

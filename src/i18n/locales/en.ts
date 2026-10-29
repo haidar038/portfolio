@@ -2,12 +2,14 @@ import type { Translations } from "../types";
 
 const en: Translations = {
   "seo.homeTitle": "M. Khaidar | Full-Stack Developer & Product Engineer",
-  "seo.homeDescription": "Personal portfolio of M. Khaidar, a Full-Stack Developer and Product Engineer building modern web experiences. Explore selected projects, professional experience, and technical journey.",
-  "seo.guestbookTitle": "Guestbook | M. Khaidar",
-  "seo.guestbookDescription": "Leave a message for M. Khaidar. Share feedback, a thought, or simply say hello in the portfolio guestbook.",
-  "seo.blogrollTitle": "Blogroll | M. Khaidar",
-  "seo.blogrollDescription": "A curated collection of friends, communities, tools, and resources recommended by M. Khaidar.",
-  "seo.notFoundTitle": "Page Not Found | M. Khaidar",
+  "seo.homeDescription": "Portfolio of M. Khaidar, a full-stack developer and product engineer building web apps with React, TypeScript, and Supabase. Explore projects and experience.",
+  "seo.guestbookTitle": "Guestbook — Leave a Message | M. Khaidar",
+  "seo.guestbookDescription": "Sign M. Khaidar's guestbook. Share feedback, a project idea, or just say hello to a full-stack developer and product engineer based in Indonesia.",
+  "seo.blogrollTitle": "Blogroll — Curated Links & Resources | M. Khaidar",
+  "seo.blogrollDescription": "A curated blogroll of friends, communities, tools, and learning resources recommended by M. Khaidar, a full-stack developer and product engineer.",
+  "seo.projectsTitle": "Projects & Case Studies | M. Khaidar",
+  "seo.projectsDescription": "Browse 15 projects by M. Khaidar, including web apps, e-voting platforms, civic tools, and AI-assisted products built with React, TypeScript, and Supabase.",
+  "seo.notFoundTitle": "404 — Page Not Found | M. Khaidar",
   "seo.notFoundDescription": "This page does not exist or has moved. Return to M. Khaidar's portfolio to explore projects and experience.",
 
   // Header
@@ -64,6 +66,7 @@ const en: Translations = {
   "section.experience": "WORK EXPERIENCE",
   "section.projects": "PROJECTS / PORTFOLIO",
   "section.contact": "CONTACT ME",
+  "section.faq": "FAQ",
 
   // About
   "about.photoAlt": "[haidar_photo.jpg]",
@@ -102,7 +105,19 @@ const en: Translations = {
   "projects.col.stack": "Stack",
   "projects.col.links": "Links",
   "projects.featured": "★ FEATURED ★",
-  "projects.footer": 'All products built under <a href="#">Binary Verse</a> | Open to collaboration - <a href="#contact">contact me</a>!',
+  "projects.footer": 'All products built under <a href="https://bnrvrs.biz.id" class="underline font-bold">Binary Verse</a> | Open to collaboration - <a href="/#contact" class="underline font-bold">contact me</a>!',
+  "projects.indexTitle": "PROJECTS / PORTFOLIO",
+  "projects.indexIntro": "A collection of products and client work I have designed and built. Each project page includes the context, stack, and links where available.",
+  "projects.viewAll": "View all projects →",
+  "projects.viewDetail": "Project details →",
+  "projects.backToAll": "← Back to all projects",
+  "project.period": "Period",
+  "project.status": "Status",
+  "project.highlights": "HIGHLIGHTS",
+  "project.stack": "STACK",
+  "project.links": "LINKS",
+  "project.private": "Private project",
+  "faq.intro": "Quick answers about my work, stack, and availability.",
 
   // Contact
   "contact.intro": "Feel free to reach out! I'm always open to discussing new projects, product ideas, freelance opportunities, or just to chat about tech and code.",

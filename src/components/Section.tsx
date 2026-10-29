@@ -12,17 +12,18 @@ interface SectionProps {
  */
 export default function Section({ id, title, children }: SectionProps) {
   return (
-    <div
+    <section
       id={id}
       className="mb-2 border-t-2 border-l-2 border-retro-border-light border-r-2 border-b-2"
     >
       {/* Section header bar */}
-      <div className="bg-retro-blue-dark text-white font-bold text-xs py-1 px-2 border-b-2 border-retro-blue-nav tracking-wide font-sans">
-        ═══ § {title}{" "}
-        {"═".repeat(Math.max(1, 40 - title.length))}
-      </div>
+      <h2 className="m-0 bg-retro-blue-dark text-white font-bold text-xs py-1 px-2 border-b-2 border-retro-blue-nav tracking-wide font-sans">
+        <span aria-hidden="true">═══ § </span>
+        {title}{" "}
+        <span aria-hidden="true">{"═".repeat(Math.max(1, 40 - title.length))}</span>
+      </h2>
       {/* Content area */}
       <div className="bg-retro-white-bg p-2">{children}</div>
-    </div>
+    </section>
   );
 }

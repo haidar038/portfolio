@@ -35,9 +35,9 @@ export default function Layout({ children }: LayoutProps) {
       {/* Main 2-column area */}
       <div className="flex flex-col md:flex-row md:items-stretch">
         {/* Main Content - Moves to top on mobile via order utility */}
-        <div className="flex-1 p-2 bg-retro-content-bg min-w-0 order-1 md:order-2">
+        <main className="flex-1 p-2 bg-retro-content-bg min-w-0 order-1 md:order-2">
           {children}
-        </div>
+        </main>
 
         {/* Sidebar - shown on md+, collapsible on mobile */}
         <div className="order-2 md:order-1">
